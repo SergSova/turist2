@@ -4,6 +4,7 @@
     /* @var $form yii\bootstrap\ActiveForm */
     /* @var $model app\models\RegistrationForm */
 
+    use app\widgets\uLogin\uLoginWidget;
     use yii\helpers\Html;
     use yii\bootstrap\ActiveForm;
 
@@ -27,7 +28,7 @@
     <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
     <?= $form->field($model, 'password')->passwordInput() ?>
-    <?= $form->field($model, 'confirmpassword')->passwordInput() ?>
+    <?= $form->field($model, 'confirmation')->passwordInput() ?>
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
@@ -37,5 +38,5 @@
 
     <?php ActiveForm::end(); ?>
 
-    <?=\app\widgets\uLogin\uLoginWidget::widget()?>
+    <?=uLoginWidget::widget(['redirect'=>'/site/token'])?>
 </div>

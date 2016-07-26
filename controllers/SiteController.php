@@ -5,6 +5,7 @@
     use app\models\ContactForm;
     use app\models\LoginForm;
     use app\models\RegistrationForm;
+    use app\models\User;
     use Yii;
     use yii\filters\AccessControl;
     use yii\web\Controller;
@@ -45,10 +46,16 @@
             ];
         }
 
+        /**
+         * @param \yii\base\Action $action
+         *
+         * @return bool
+         */
         public function beforeAction($action){
-            if($action->id == 'login'||$action->id == 'registration'){
+            if($action->id == 'registration' || $action->id == 'login'){
                 $this->enableCsrfValidation = false;
             }
+
             return parent::beforeAction($action);
         }
 
@@ -61,6 +68,11 @@
                 return $this->goHome();
             }
 
+            $token = Yii::$app->request->post('token');
+            if(isset($token)&&User::loginByToken($token)){
+                return $this->goBack();
+            }
+
             $model = new LoginForm();
             if($model->load(Yii::$app->request->post()) && $model->login()){
                 return $this->goBack();
@@ -71,10 +83,11 @@
             ]);
         }
 
+
         public function actionRegistration(){
 
             $model = new RegistrationForm();
-            if($model->load(Yii::$app->request->post()) && $model->login()){
+            if($model->load(Yii::$app->request->post()) && $model->register()){
                 return $this->goBack();
             }
 

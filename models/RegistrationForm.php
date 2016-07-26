@@ -12,41 +12,35 @@
         public $email;
         public $access_token;
         public $password;
-        public $confirmpassword;
+        public $confirmation;
+        public $f_name;
+        public $l_name;
 
-        public function registr($token = null){
+        public function register(){
             if($this->validate()){
                 $user = new User();
-                if(!is_null($token)){
+                $token = Yii::$app->request->post('token');
+                if(!isset($token)){
                     $this->access_token = $token;
                     $s = file_get_contents('http://ulogin.ru/token.php?token='.$this->access_token.'&host='.Yii::$app->basePath);
                     $token_user = json_decode($s, true);
 
-                    $this->email = $token_user['first_name'].$token_user['last_name'];
-                    $this->username = $token_user['email'];
-                    $user->f_name = $token_user['first_name'];
-                    $user->l_name = $token_user['last_name'];
-                    $user->status = 'active';
-
+                    $this->password = Yii::$app->security->generatePasswordHash($token_user['identity']);
+                    $this->email = $token_user['email'];
+                    $this->username = $token_user['first_name'].$token_user['last_name'];
+                    $this->f_name = $token_user['first_name'];
+                    $this->l_name = $token_user['last_name'];
 
                     //$token_user['network'] - соц. сеть, через которую авторизовался пользователь
                     //$token_user['identity'] - уникальная строка определяющая конкретного пользователя соц. сети
                     //$token_user['first_name'] - имя пользователя
                     //$token_user['last_name'] - фамилия пользователя
 
-                }else{
-                    $user->username = $this->username;
-                    $user->setPassword($this->password);
-                    $user->email = $this->email;
                 }
-                $user->save(false);
-
-                // нужно добавить следующие три строки:
-                $auth = Yii::$app->authManager;
-                $authorRole = $auth->getRole('user');
-                $auth->assign($authorRole, $user->getId());
-
-                return $user;
+                $user->load($this);
+                if($user->save(false)){
+                    return $user;
+                }
             }
 
             return null;

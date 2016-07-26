@@ -28,6 +28,10 @@
      * @property ParticEvent[] $particEvents
      */
     class User extends \yii\db\ActiveRecord implements IdentityInterface{
+        const STATUS_ACTIVE   = 'ACTIVE';
+        const STATUS_INACTIVE = 'INACTIVE';
+        const STATUS_BLOCKED  = 'BLOCKED';
+
         /**
          * @inheritdoc
          */
@@ -68,10 +72,13 @@
                 'l_name'       => 'L Name',
             ];
         }
+
         public function beforeSave($insert){
             if(parent::beforeSave($insert)){
                 if($this->isNewRecord){
                     $this->auth_key = \Yii::$app->security->generateRandomString();
+                    $this->created_at = date("d/m/Y");
+                    $this->rate=0;
                 }
 
                 return true;
@@ -134,6 +141,7 @@
          * @inheritdoc
          */
         public static function findIdentityByAccessToken($token, $type = null){
+
             return self::findOne(['access_token' => $token]);
         }
 
@@ -182,9 +190,44 @@
         }
 
         public function registration(){
+
+            $this->status = 'active';
+
+            // нужно добавить следующие три строки:
+            $auth = Yii::$app->authManager;
+            $authorRole = $auth->getRole('user');
+            $auth->assign($authorRole, $this->getId());
         }
 
         public function setPassword($password){
             $this->password = \Yii::$app->security->generatePasswordHash($password);
+        }
+
+        public static function loginByToken($token){
+
+            $s = file_get_contents('http://ulogin.ru/token.php?token='.$token.'&host='.Yii::$app->basePath);
+            $token_user = json_decode($s, true);
+
+            $user = self::findIdentityByAccessToken($token_user['identity']);
+
+
+            if(is_null($user)){
+                $user = new User();
+                $user->access_token = $token_user['identity'];
+                $user->email = $token_user['email'];
+                $user->username = $token_user['identity'];
+                $user->f_name = $token_user['first_name'];
+                $user->l_name = $token_user['last_name'];
+                $user->status = self::STATUS_ACTIVE;
+                if($user->save()){
+                    $auth = Yii::$app->authManager;
+                    $authorRole = $auth->getRole('user');
+                    $auth->assign($authorRole, $user->getId());
+                }
+            }
+
+
+            return Yii::$app->user->login($user, 3600 * 24 * 30);
+
         }
     }
