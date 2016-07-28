@@ -34,6 +34,7 @@
         const STATUS_INACTIVE = 'INACTIVE';
 
         public $imageFiles;
+        public $particip_temp;
 
         /**
          * @inheritdoc
@@ -49,7 +50,7 @@
             return [
                 [['event_type_id', 'creator_id', 'rate'], 'integer'],
                 [['desc', 'particip', 'condition', 'status'], 'string'],
-                [['date_start', 'organizators', 'date_end', 'date_creation'], 'safe'],
+                [['particip_temp', 'date_start', 'organizators', 'date_end', 'date_creation'], 'safe'],
                 [['title'], 'string', 'max' => 255],
                 [
                     ['event_type_id'],
@@ -75,8 +76,8 @@
                 'photo'         => 'Фотографии',
                 'desc'          => 'Описание',
                 'organizators'  => 'Организаторы',
-                'particip'      => 'Particip',
-                'condition'     => 'Condition',
+                'particip'      => 'Должности помошников',
+                'condition'     => 'Условия',
                 'date_start'    => 'Дата начала',
                 'date_end'      => 'Дата оклнчания',
                 'date_creation' => 'Дата создания',
@@ -144,9 +145,9 @@
             return $this->hasMany(ParticEvent::className(), ['event_id' => 'id']);
         }
 
-        public function getOrganizators(){
+        public function getAllOrganizators(){
             return ArrayHelper::map(User::find()
-                                        ->where(['not in', 'id', $this->organizators])
+                                        ->filterWhere(['not in', 'id', $this->organizators])
                                         ->all(), 'id', 'username');
         }
 
@@ -154,10 +155,11 @@
             $aa = User::findAll($this->organizators);
             $usen = '';
             foreach($aa as $item){
+                //todo сделать ссылки на страницы пользователей
                 $usen .= $item->username.', ';
             }
 
-            return $usen;
+            return substr($usen, 0, -2);
         }
 
         public function getTypes(){
@@ -167,5 +169,9 @@
 
         public function getOrganisatorById($id){
             return User::findOne($id)->username;
+        }
+
+        public function getOrganizators(){
+            return ArrayHelper::map(User::findAll($this->organizators), 'id', 'username');
         }
     }

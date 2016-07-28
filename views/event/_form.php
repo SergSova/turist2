@@ -2,6 +2,7 @@
 
     use kartik\datetime\DateTimePicker;
     use kartik\file\FileInput;
+    use yii\bootstrap\Modal;
     use yii\helpers\Html;
     use yii\widgets\ActiveForm;
 
@@ -9,7 +10,7 @@
     /* @var $model app\models\Event */
     /* @var $form yii\widgets\ActiveForm */
 
-    $this->registerJsFile('/web/js/event.js',['depends' => 'app\assets\AppAsset']);
+    $this->registerJsFile('/web/js/event.js', ['depends' => 'app\assets\AppAsset']);
 ?>
 
 <div class="event-form">
@@ -18,8 +19,6 @@
 
     <?= $form->field($model, 'event_type_id')
              ->dropDownList($model->getTypes(), ['prompt' => 'Выберите тип']) ?>
-
-    <!--    --><? //= $form->field($model, 'creator_id')->textInput() ?>
 
     <?= $form->field($model, 'title')
              ->textInput(['maxlength' => true]) ?>
@@ -36,24 +35,20 @@
              ->textarea(['rows' => 6]) ?>
 
     <?= Html::label('Выбор организаторов', 'organizators') ?>
-    <?= Html::dropDownList('organizators', '', $model->getOrganizators(),['id'=>'organizators']) ?>
+    <?= Html::dropDownList('organizators', '', $model->getAllOrganizators(), ['id' => 'organizators', 'prompt' => 'selected']) ?>
 
-    <div class="form-group field-event-organizators" id="organizators_check">
-        <?php
-            if($model->organizators){
-                foreach($model->organizators as $organizator){
-                    echo Html::checkbox($organizator, true);
-                    echo Html::label($model->getOrganisatorById($organizator), $organizator);
-                    echo ' ';
-                }
-            }
-        ?>
-        <?=$form->field($model,'organizators')->checkboxList($model->organizators)?>
-    </div>
+    <?= $form->field($model, 'organizators')
+             ->checkboxList($model->getOrganizators()) ?>
 
-    <?= $form->field($model, 'particip')
-             ->textarea(['rows' => 6]) ?>
-
+    <div id="particip"><div class="form-inline " >
+        <?= $form->field($model, 'particip[name][]')
+                 ->textInput()
+                 ->label('Particip') ?>
+        <?= $form->field($model, 'particip[user_id][]')
+                 ->dropDownList($model->getOrganizators())
+                 ->label('user') ?>
+            <?= Html::button('Добавить должность', ['id' => 'btn_addPartic', 'class' => 'btn btn-success']) ?>
+    </div></div>
     <?= $form->field($model, 'condition')
              ->textarea(['rows' => 6]) ?>
 
@@ -73,5 +68,6 @@
     </div>
 
     <?php ActiveForm::end(); ?>
+
 
 </div>
