@@ -26,9 +26,10 @@
                                     ]); ?>
 
     <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+    <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
     <?= $form->field($model, 'password')->passwordInput() ?>
-    <?= $form->field($model, 'confirmation')->passwordInput() ?>
+    <?= $form->field($model, 'password_repeat')->passwordInput() ?>
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">

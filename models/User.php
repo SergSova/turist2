@@ -3,6 +3,7 @@
     namespace app\models;
 
     use Yii;
+    use yii\db\ActiveRecord;
     use yii\web\IdentityInterface;
 
     /**
@@ -27,7 +28,7 @@
      * @property Log[]         $logs
      * @property ParticEvent[] $particEvents
      */
-    class User extends \yii\db\ActiveRecord implements IdentityInterface{
+    class User extends ActiveRecord implements IdentityInterface{
         const STATUS_ACTIVE   = 'ACTIVE';
         const STATUS_INACTIVE = 'INACTIVE';
         const STATUS_BLOCKED  = 'BLOCKED';
@@ -54,6 +55,13 @@
             ];
         }
 
+        public function scenarios(){
+            return [
+                'default'      => ['username', 'password'],
+                'registration' => ['username', 'password', 'f_name', 'l_name', 'email', 'status']
+            ];
+        }
+
         /**
          * @inheritdoc
          */
@@ -77,8 +85,8 @@
             if(parent::beforeSave($insert)){
                 if($this->isNewRecord){
                     $this->auth_key = \Yii::$app->security->generateRandomString();
-                    $this->created_at = date("d/m/Y");
-                    $this->rate=0;
+                    $this->created_at = date("Y-m-d H:i:s");
+                    $this->rate = 0;
                 }
 
                 return true;
@@ -191,7 +199,7 @@
 
         public function registration(){
 
-            $this->status = 'active';
+            $this->status = self::STATUS_INACTIVE;
 
             // нужно добавить следующие три строки:
             $auth = Yii::$app->authManager;
@@ -209,8 +217,6 @@
             $token_user = json_decode($s, true);
 
             $user = self::findIdentityByAccessToken($token_user['identity']);
-
-
             if(is_null($user)){
                 $user = new User();
                 $user->access_token = $token_user['identity'];
@@ -226,8 +232,6 @@
                 }
             }
 
-
             return Yii::$app->user->login($user, 3600 * 24 * 30);
-
         }
     }
