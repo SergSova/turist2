@@ -171,7 +171,13 @@
             return User::findOne($id)->username;
         }
 
-        public function getOrganizators(){
-            return ArrayHelper::map(User::findAll($this->organizators), 'id', 'username');
+        public function getParticToEvent(){
+            $respPartic = [];
+            foreach($this->particEvents as $partic){
+                $respPartic[$partic->user_id]['username']=$partic->user->username;
+                $respPartic[$partic->user_id]['foto']=$partic->user->foto;
+            }
+            return $respPartic;
         }
+
     }

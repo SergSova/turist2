@@ -10,6 +10,7 @@ use Yii;
  * @property integer $id
  * @property integer $user_id
  * @property integer $event_id
+ * @property boolean $confirmed
  *
  * @property Event $event
  * @property User $user
@@ -31,8 +32,10 @@ class ParticEvent extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'event_id'], 'integer'],
+            [['confirmed'], 'boolean'],
             [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::className(), 'targetAttribute' => ['event_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['event_id','user_id'] ,'unique']
         ];
     }
 

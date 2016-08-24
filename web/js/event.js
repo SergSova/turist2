@@ -1,7 +1,3 @@
-/**
- * Created by Sova on 28.07.2016.
- */
-
 $('#organizators').change(function () {
 
     var oldHtml = $('#event-organizators').html();
@@ -11,7 +7,6 @@ $('#organizators').change(function () {
         '</label>';
     $('#event-organizators').html(oldHtml + text);
 
-    console.log($('#event-particip-user_id'));
     var newEl = $('<option value="' + $(this).val() + '">' + $('#organizators :selected').html() + '</option>');
     $('#event-particip-user_id').append(newEl);
     $('#organizators :selected').remove();
@@ -24,16 +19,32 @@ $("#event-organizators").change(function (event) {
 });
 
 
-$('#btn_addPartic').click(function () {
+$('.btn_addPartic').click(function () {
     $('#particip').prepend($('<div class="form-inline ">' +
-        '<div class="form-group field-event-particip-name has-success">' +
+        '<div class="form-group field-event-particip-name">' +
         '<label class="control-label" for="event-particip-name">Particip</label>' +
-        '<input type="text" id="event-particip-name" class="form-control" name="Event[particip][name][]">' +
+        '<input type="text" id="event-particip-name" class="form-control">' +
         '<div class="help-block"></div>' +
-        '</div>' +
-        '  <div class="form-group field-event-particip-user_id has-success">' +
-        '<label class="control-label" for="event-particip-user_id">user</label>' +
-        '<select id="event-particip-user_id" class="form-control" name="Event[particip][user_id][]">' +
-        '<div class="help-block"></div>' +
-        '</div></div>'));
+        '</div>            <button type="button" class="btn_addUser">Назначить</button>' +
+        '</div>'));
 });
+
+function particEventInit(id, username, foto) {
+    console.log(id + ' ' + username + ' ' + foto);
+    var item = '<div class="col-lg-3"><div class="">';
+    if (foto) {
+        item = item + '<img src="/web/storage/' + foto + '" alt="">';
+    }
+    item = item + '</div><div class="">' + username + '</div></div>';
+    $('.particEvent').append(item);
+}
+$(document).ready(function () {
+    if (particEvent) {
+        for (var item in particEvent) {
+            for (var name in particEvent[item]) {
+                particEventInit(item, name, particEvent[item][name]);
+            }
+        }
+    }
+});
+

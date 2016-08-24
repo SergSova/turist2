@@ -1,7 +1,7 @@
 <?php
 
-    use kartik\datetime\DateTimePicker;
-    use kartik\file\FileInput;
+    //    use kartik\datetime\DateTimePicker;
+    //    use kartik\file\FileInput;
     use yii\bootstrap\Modal;
     use yii\helpers\Html;
     use yii\widgets\ActiveForm;
@@ -11,6 +11,7 @@
     /* @var $form yii\widgets\ActiveForm */
 
     $this->registerJsFile('/web/js/event.js', ['depends' => 'app\assets\AppAsset']);
+    $this->registerJsFile('/web/js/eventCondition.js', ['depends' => 'app\assets\AppAsset']);
 ?>
 
 <div class="event-form">
@@ -23,45 +24,63 @@
     <?= $form->field($model, 'title')
              ->textInput(['maxlength' => true]) ?>
 
-    <!--    --><? //= $form->field($model, 'photo')
-        //             ->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'photo')
+             ->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'imageFiles')
-             ->widget(FileInput::classname(), [
-                 'options' => ['accept' => 'image/*', 'multiple' => true],
-             ]) ?>
+    <!--    --><? //= $form->field($model, 'imageFiles')
+        //             ->widget(FileInput::classname(), [
+        //                 'options' => ['accept' => 'image/*', 'multiple' => true],
+        //             ]) ?>
 
     <?= $form->field($model, 'desc')
              ->textarea(['rows' => 6]) ?>
 
-    <?= Html::label('Выбор организаторов', 'organizators') ?>
-    <?= Html::dropDownList('organizators', '', $model->getAllOrganizators(), ['id' => 'organizators', 'prompt' => 'selected']) ?>
+<!--    участинки-->
+    <div class="form-group">
+        <?php if($model->particEvents){echo '<label class="control-label" for="particEvent">Участники</label>';}?>
+        <div class="particEvent col-lg-12" id="particEvent"></div>
+    </div>
+    <?php
+        foreach($model->getParticToEvent() as $key => $item):?>
+            <script>
+                if(!particEvent){
+                    var particEvent = {};
+                }
+                particEvent[<?=$key?>]={};
+                particEvent[<?=$key?>]['<?=$item['username']?>']='<?=$item['foto']?>';
+            </script>
+        <?php endforeach; ?>
+<!--    участинки-->
 
-    <?= $form->field($model, 'organizators')
-             ->checkboxList($model->getOrganizators()) ?>
+    <div class="form-group">
+        <?= Html::button('Добавить организаторов', ['class' => 'btn btn-success btn_addOrganisator']) ?>
+    </div>
 
-    <div id="particip"><div class="form-inline " >
-        <?= $form->field($model, 'particip[name][]')
-                 ->textInput()
-                 ->label('Particip') ?>
-        <?= $form->field($model, 'particip[user_id][]')
-                 ->dropDownList($model->getOrganizators())
-                 ->label('user') ?>
-            <?= Html::button('Добавить должность', ['id' => 'btn_addPartic', 'class' => 'btn btn-success']) ?>
-    </div></div>
+    <div class="form-group">
+        <?= Html::button('Добавить должность', ['class' => 'btn btn-success btn_addPartic']) ?>
+    </div>
+    <div id="particip"></div>
+
+    <!-- condition-->
     <?= $form->field($model, 'condition')
-             ->textarea(['rows' => 6]) ?>
+             ->hiddenInput()
+             ->label(false) ?>
+    <div class="form-group">
+        <?= Html::button('Добавить требование', ['id' => 'btn_addContition', 'class' => 'btn btn-success']) ?>
+    </div>
+    <div class="condition"></div>
+    <!-- end condition-->
 
     <?= $form->field($model, 'date_start')
-             ->widget(DateTimePicker::className(), [
-                 'language' => 'ru',
-                 'size'     => 'ms',
-             ]) ?>
+        /*->widget(DateTimePicker::className(), [
+            'language' => 'ru',
+            'size'     => 'ms',
+        ])*/ ?>
     <?= $form->field($model, 'date_end')
-             ->widget(DateTimePicker::className(), [
-                 'language' => 'ru',
-                 'size'     => 'ms',
-             ]) ?>
+        /*->widget(DateTimePicker::className(), [
+            'language' => 'ru',
+            'size'     => 'ms',
+        ])*/ ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

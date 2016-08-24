@@ -5,6 +5,7 @@
     use Yii;
     use yii\db\ActiveRecord;
     use yii\web\IdentityInterface;
+    use yii\web\UploadedFile;
 
     /**
      * This is the model class for table "tur_user".
@@ -20,6 +21,7 @@
      * @property integer       $rate
      * @property string        $f_name
      * @property string        $l_name
+     * @property string        $foto
      *
      * @property Coments[]     $coments
      * @property Event[]       $events
@@ -32,6 +34,7 @@
         const STATUS_ACTIVE   = 'ACTIVE';
         const STATUS_INACTIVE = 'INACTIVE';
         const STATUS_BLOCKED  = 'BLOCKED';
+        public $file;
 
         /**
          * @inheritdoc
@@ -46,7 +49,7 @@
         public function rules(){
             return [
                 [['status'], 'string'],
-                [['created_at'], 'safe'],
+                [['created_at', 'foto'], 'safe'],
                 [['rate'], 'integer'],
                 [['username', 'email', 'f_name', 'l_name'], 'string', 'max' => 50],
                 [['password', 'auth_key', 'access_token'], 'string', 'max' => 255],
@@ -58,7 +61,7 @@
         public function scenarios(){
             return [
                 'default'      => ['username', 'password'],
-                'registration' => ['username', 'password', 'f_name', 'l_name', 'email', 'status']
+                'registration' => ['username', 'password', 'f_name', 'l_name', 'email', 'status', 'file']
             ];
         }
 
@@ -78,8 +81,10 @@
                 'rate'         => 'Rate',
                 'f_name'       => 'F Name',
                 'l_name'       => 'L Name',
+                'foto'         => 'Foto',
             ];
         }
+
 
         public function beforeSave($insert){
             if(parent::beforeSave($insert)){
@@ -88,7 +93,11 @@
                     $this->created_at = date("Y-m-d H:i:s");
                     $this->rate = 0;
                 }
-
+                if($this->file){
+                    $file_name = 'user/'.$this->username.'.'.$this->file->extension;
+                    $this->file->saveAs(__DIR__.'/../web/storage/'.$file_name);
+                    $this->foto = $file_name;
+                }
                 return true;
             }
 

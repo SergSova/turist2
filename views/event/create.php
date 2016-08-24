@@ -1,14 +1,14 @@
 <?php
 
-use yii\helpers\Html;
+    use yii\helpers\Html;
 
+    /* @var $this yii\web\View */
+    /* @var $model app\models\Event */
+    /** @var \yii\data\ActiveDataProvider $dataProvider */
 
-/* @var $this yii\web\View */
-/* @var $model app\models\Event */
-
-$this->title = 'Create Event';
-$this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+    $this->title = 'Create Event';
+    $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
+    $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-create">
 

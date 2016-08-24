@@ -2,6 +2,9 @@
 
     namespace app\controllers;
 
+    use app\models\EventConditionForm;
+    use app\models\ParticEvent;
+    use app\models\User;
     use Yii;
     use app\models\Event;
     use app\models\search\EventSearch;
@@ -10,6 +13,7 @@
     use yii\web\NotFoundHttpException;
     use yii\filters\VerbFilter;
     use yii\web\UploadedFile;
+    use yii\web\UrlManager;
 
     /**
      * EventController implements the CRUD actions for Event model.
@@ -36,6 +40,64 @@
                     ],
                 ],
             ];
+        }
+
+        public function actionEventList(){
+            $searchModel = new EventSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            return $this->render('event-list', [
+                'searchModel'  => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+        }
+
+        public function actionAddParticip($id){
+            $model = new ParticEvent();
+            $model->user_id = Yii::$app->user->id;
+            if(Event::findOne($id)->eventType->name == 'free'){
+                $model->event_id = $id;
+                if($model->save()){
+                    Yii::$app->session->setFlash('success', 'Вы добавлены к событию.');
+                }else{
+                    foreach($model->getErrors() as $error){
+                        Yii::$app->session->setFlash('error', $error[0]);
+                    }
+                }
+            }else{
+                Yii::$app->session->setFlash('error', 'Событие не доступно для регистрации');
+            }
+
+            return $this->redirect('event-list');
+        }
+
+        public function actionRemoveParticip($id){
+            $partEvent = ParticEvent::findOne(['event_id' => $id, 'user_id' => Yii::$app->user->id]);
+            $partEvent->delete();
+
+            return $this->redirect('event-list');
+        }
+
+        public function actionSendConfirm(){
+            $user = Yii::$app->user->identity;
+            $requset = Yii::$app->request->post('Mail');
+            $event = Event::findOne($requset['event_id']);
+
+            /** @var User $user */
+            if(Yii::$app->mailer->compose()
+                                ->setFrom([Yii::$app->params['supportEmail'] => $user->username])
+                                ->setTo($event->creator->email)
+                                ->setTextBody($requset['body'])//                             ->setHtmlBody($requset['body'])
+                                ->setSubject('Request from '.$user->username.' to event '.$event->title)
+                                ->send()
+            ){
+                Yii::$app->session->setFlash('success', 'Запрос отправлен');
+            }
+            $particEvent = new ParticEvent(['user_id' => $user->id, 'event_id' => $event->id]);
+            $particEvent->confirmed = false;
+            $particEvent->save();
+
+            $this->redirect('event-list');
         }
 
         /**
@@ -74,9 +136,10 @@
             $model = new Event();
             if($model->load(Yii::$app->request->post()) && $model->save()){
                 $model->imageFiles = UploadedFile::getInstance($model, 'imageFiles');
-//                if($model->upload()){
-                    return $this->redirect(['view', 'id' => $model->id]);
-//                }
+
+                //                if($model->upload()){
+                return $this->redirect(['view', 'id' => $model->id]);
+                //                }
             }else{
                 return $this->render('create', [
                     'model' => $model,
@@ -95,11 +158,12 @@
         public function actionUpdate($id){
             $model = $this->findModel($id);
 
-            if($model->load(Yii::$app->request->post())&&$model->save()){
+            if($model->load(Yii::$app->request->post()) && $model->save()){
                 $model->imageFiles = UploadedFile::getInstance($model, 'imageFiles');
-//                if($model->upload() && ){
-                    return $this->redirect(['view', 'id' => $model->id]);
-//                }
+
+                //                if($model->upload() && ){
+                return $this->redirect(['view', 'id' => $model->id]);
+                //                }
             }else{
                 return $this->render('update', [
                     'model' => $model,
