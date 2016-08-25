@@ -2,7 +2,6 @@
 
     //    use kartik\datetime\DateTimePicker;
     //    use kartik\file\FileInput;
-    use yii\bootstrap\Modal;
     use yii\helpers\Html;
     use yii\widgets\ActiveForm;
 
@@ -38,7 +37,7 @@
 <!--    участинки-->
     <div class="form-group">
         <?php if($model->particEvents){echo '<label class="control-label" for="particEvent">Участники</label>';}?>
-        <div class="particEvent col-lg-12" id="particEvent"></div>
+        <div class="particEvents col-lg-12" id="particEvents"></div>
     </div>
     <?php
         foreach($model->getParticToEvent() as $key => $item):?>

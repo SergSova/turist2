@@ -6,8 +6,8 @@
         public function safeUp(){
             $this->createTable('{{%user}}', [
                                               'id'           => $this->primaryKey(10),
-                                              'username'     => $this->string(50),
-                                              'password'     => $this->string(255),
+                                              'username'     => $this->string(50)->notNull(),
+                                              'password'     => $this->string(255)->notNull(),
                                               'auth_key'     => $this->string(255),
                                               'status'       => "enum('inactive', 'active', 'blocked')",
                                               'email'        => $this->string(50),
@@ -22,32 +22,37 @@
 
             $this->createTable('{{%event}}', [
                 'id'            => $this->primaryKey(10),
-                'event_type_id' => $this->integer(10), //связь с типом акции
-                'creator_id'    => $this->integer(10), //связь с пользователем
-                'title'         => $this->string(255),
+                'event_type_id' => $this->integer(10)->notNull(), //связь с типом акции
+                'creator_id'    => $this->integer(10)->notNull(), //связь с пользователем
+                'title'         => $this->string(255)->notNull(),
                 'photo'         => $this->text(),
-                'desc'          => $this->text(),
+                'desc'          => $this->text()->notNull(),
                 'organizators'  => $this->text(), //список организаторов id
                 'particip'      => $this->text(),
                 'condition'     => $this->text(),
-                'date_start'    => $this->dateTime(),
-                'date_end'      => $this->dateTime(),
+                'date_start'    => $this->dateTime()->notNull(),
+                'date_end'      => $this->dateTime()->notNull(),
                 'date_creation' => $this->timestamp()
                                         ->defaultExpression('CURRENT_TIMESTAMP'),
                 'status'        => "ENUM('ACTIVE', 'INACTIVE', 'BLOCKED','FINISH') DEFAULT 'INACTIVE'",
-                'rate'          => $this->integer()
+                'rate'          => $this->integer()->defaultValue(0)
             ]);
 
             $this->createTable('{{%event_type}}', [
                 'id'   => $this->primaryKey(10),
-                'name' => $this->string(50)
+                'name' => $this->string(50)->notNull()
             ]);
+
+            $this->insert('{{%event_type}}',['name'=>'free']);
+            $this->insert('{{%event_type}}',['name'=>'cash']);
+            $this->insert('{{%event_type}}',['name'=>'closed']);
+            $this->insert('{{%event_type}}',['name'=>'registred']);
 
             $this->createTable('{{%coments}}', [
                 'id'       => $this->primaryKey(10),
                 'event_id' => $this->integer(10),
                 'user_id'  => $this->integer(10),
-                'text'     => $this->text(),
+                'text'     => $this->text()->notNull(),
                 'rate'     => $this->integer()
             ]);
 
@@ -59,15 +64,15 @@
 
             $this->createTable('{{%friends}}', [
                 'id'        => $this->primaryKey(10),
-                'user_id'   => $this->integer(10),
-                'friend_id' => $this->integer(10)
+                'user_id'   => $this->integer(10)->notNull(),
+                'friend_id' => $this->integer(10)->notNull()
             ]);
 
             $this->createTable('{{%log}}', [
                 'id'      => $this->primaryKey(10),
                 'date'    => $this->timestamp()
                                   ->defaultExpression('CURRENT_TIMESTAMP'),
-                'user_id' => $this->integer(10),
+                'user_id' => $this->integer(10)->notNull(),
                 'action'  => $this->string(50),
                 'table'   => $this->string(50),
                 'blob'    => $this->string()
@@ -94,6 +99,9 @@
             $this->addForeignKey('{{%friends-user_id}}', '{{%friends}}', 'user_id', '{{%user}}', 'id');
             $this->addForeignKey('{{%friends-friend_id}}', '{{%friends}}', 'friend_id', '{{%user}}', 'id');
             $this->addForeignKey('{{%log-user_id}}', '{{%log}}', 'user_id', '{{%user}}', 'id');
+
+
+
         }
 
         public function safeDown(){

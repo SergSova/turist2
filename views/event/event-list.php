@@ -14,7 +14,9 @@
         echo '</ul>';
     }
 ?>
+<?php \yii\widgets\Pjax::begin()?>
 <?=ListView::widget([
     'dataProvider'=>$dataProvider,
     'itemView'=>'_list'
                     ])?>
+<?php \yii\widgets\Pjax::end()?>

@@ -71,7 +71,7 @@
         public function attributeLabels(){
             return [
                 'id'           => 'ID',
-                'username'     => 'Username',
+                'username'     => 'Имя пользователя',
                 'password'     => 'Password',
                 'auth_key'     => 'Auth Key',
                 'status'       => 'Status',

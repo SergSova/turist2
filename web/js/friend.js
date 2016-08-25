@@ -10,7 +10,7 @@ $('.friend-info').on('click', function () {
 });
 
 $('.remove-friend').on('click', function () {
-    var data = $(this).data('userid')
+    var data = $(this).data('userid');
     $.post({
         url: location.href,
         data: 'removeId=' + data,

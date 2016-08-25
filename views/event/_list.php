@@ -5,45 +5,62 @@
     use yii\widgets\ActiveForm;
 
 ?>
-<?php \yii\widgets\Pjax::begin()?>
-<div class="form-inline">
-    <div class="alert-success col-lg-3"><?= $model->title ?></div>
-    <div class="alert-danger col-lg-3"><?= $model->desc ?></div>
-    <div class="alert-info col-lg-3"><?= $model->creator->username ?></div>
-    <div class="col-lg-3">
-        <?php
-            $particip = $model->getParticEvents()
-                              ->where(['event_id' => $model->id, 'user_id' => Yii::$app->user->id])
-                              ->one();
-            if(!$particip){
-                if($model->eventType->name == 'registred' && !$particip->confirmed){
-                    Modal::begin([
-                                     'header'       => '<h2>Отправить запрос на добавление</h2>',
-                                     'toggleButton' => [
-                                         'tag'   => 'a',
-                                         'class' => '',
-                                         'label' => 'Подать заявку!',
-                                     ]
-                                 ]);
+<div class="panel-primary"">
+    <div class="panel-heading">
+        Событие: <strong><?= $model->title ?></strong>
+    </div>
+    <div class="panel-body">
+        <div class="col-lg-9"><?= $model->desc ?></div>
+        <div class="col-lg-3 text-right">
+            <?php
+                $event_type = $model->eventType->name;
+                /** @var \app\models\ParticEvent $particip если существует возвращает связку пользователь-событие*/
+                $particip = $model->isRegistred(); ?>
+            <?php switch($event_type):
+                case 'free': ?>
+                    <?php if($particip): ?>
+                        <?= Html::a('Отменить', ['/event/remove-particip', 'id' => $model->id],['data-pjax'=>0]) ?>
+                    <?php else: ?>
+                        <?= Html::a('Участвовать', ['/event/add-particip', 'id' => $model->id],['data-pjax'=>0]) ?>
+                        <?php
+                    endif;
+                    break; ?>
 
-                    $form = ActiveForm::begin(['action' => ['event/send-confirm']]);
-                    echo Html::hiddenInput('Mail[event_id]', $model->id);
-                    echo Html::textarea('Mail[body]', null, ['class' => 'col-lg-12']);
-                    echo Html::submitButton('Отправить');
-                    ActiveForm::end();
-                    Modal::end();;
-                }else{
-                    echo Html::a('Участвовать', ['/event/add-particip', 'id' => $model->id]);
-                }
-            }else{
-                if(!$particip->confirmed){
-                    echo 'подтвеждается ';
-                    echo Html::a('Отменить', ['/event/remove-particip', 'id' => $model->id]);
-                }else{
-                    echo Html::a('Отменить', ['/event/remove-particip', 'id' => $model->id]);
-                }
-            }
-        ?>
+                <?php case 'cash': ?>
+                    <?= 'заплатить' ?>
+                    <?php break; ?>
+                <?php case 'registred': ?>
+                    <?php if($particip): ?>
+                        <?php if(!$particip->confirmed): ?>
+                            <?= 'подтверждается ' ?>
+                        <?php endif; ?>
+                        <?= Html::a('Отменить', ['/event/remove-particip', 'id' => $model->id],['data-pjax'=>0]) ?>
+                    <?php else: ?>
+                        <?php Modal::begin([
+                                               'header'       => '<h2>Отправить запрос на добавление</h2>',
+                                               'toggleButton' => [
+                                                   'tag'   => 'a',
+                                                   'class' => '',
+                                                   'label' => 'Подать заявку!',
+                                               ]
+                                           ]) ?>
+                        <?php $form = ActiveForm::begin(['action' => ['event/send-confirm']]) ?>
+                        <?= Html::hiddenInput('Mail[event_id]', $model->id) ?>
+                        <?= Html::textarea('Mail[body]', null, ['class' => 'col-lg-12']) ?>
+                        <?= Html::submitButton('Отправить') ?>
+                        <?php ActiveForm::end();
+                        Modal::end(); ?>
+                    <?php endif; ?>
+                    <?php break; ?>
+
+                <?php default: ?>
+                <?php endswitch; ?>
+        </div>
+
+    </div>
+    <div class="panel-footer ">
+        <div class="text-right">
+            Создатель: <strong><?= $model->creator->username ?></strong>
+        </div>
     </div>
 </div>
-<?php \yii\widgets\Pjax::end()?>

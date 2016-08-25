@@ -50,7 +50,7 @@
             return [
                 [['event_type_id', 'creator_id', 'rate'], 'integer'],
                 [['desc', 'particip', 'condition', 'status'], 'string'],
-                [['particip_temp', 'date_start', 'organizators', 'date_end', 'date_creation'], 'safe'],
+                [['particip_temp', 'organizators', 'date_creation'], 'safe'],
                 [['title'], 'string', 'max' => 255],
                 [
                     ['event_type_id'],
@@ -107,6 +107,7 @@
 
         public function upload(){
             if($this->validate()){
+                /** @var UploadedFile $file */
                 foreach($this->imageFiles as $file){
                     $file->saveAs('uploads/'.$this->id.'_'.$file->baseName.'.'.$file->extension);
                 }
@@ -174,10 +175,19 @@
         public function getParticToEvent(){
             $respPartic = [];
             foreach($this->particEvents as $partic){
-                $respPartic[$partic->user_id]['username']=$partic->user->username;
-                $respPartic[$partic->user_id]['foto']=$partic->user->foto;
+                if($partic->confirmed){
+                    $respPartic[$partic->user_id]['username'] = $partic->user->username;
+                    $respPartic[$partic->user_id]['foto'] = $partic->user->foto;
+                }
             }
+
             return $respPartic;
+        }
+
+        public function isRegistred(){
+            return $this->getParticEvents()
+                        ->where(['event_id' => $this->id, 'user_id' => Yii::$app->user->id])
+                        ->one();
         }
 
     }

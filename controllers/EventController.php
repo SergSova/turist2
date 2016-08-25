@@ -2,18 +2,17 @@
 
     namespace app\controllers;
 
-    use app\models\EventConditionForm;
     use app\models\ParticEvent;
     use app\models\User;
     use Yii;
     use app\models\Event;
     use app\models\search\EventSearch;
+    use yii\data\ActiveDataProvider;
     use yii\filters\AccessControl;
     use yii\web\Controller;
     use yii\web\NotFoundHttpException;
     use yii\filters\VerbFilter;
     use yii\web\UploadedFile;
-    use yii\web\UrlManager;
 
     /**
      * EventController implements the CRUD actions for Event model.
@@ -34,6 +33,11 @@
                     'class' => AccessControl::className(),
                     'rules' => [
                         [
+                            'allow'   => true,
+                            'actions' => ['event-list'],
+                            'roles'   => ['?'],
+                        ],
+                        [
                             'allow' => true,
                             'roles' => ['admin', 'moder', 'user'],
                         ],
@@ -50,6 +54,18 @@
                 'searchModel'  => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
+        }
+
+        public function actionConfirmParticip($id, $confirm = true){
+            $model = ParticEvent::findOne($id);
+            if($confirm){
+                $model->confirmed = 1;
+                $model->save();
+            }else{
+                $model->delete();
+            }
+
+            return $this->redirect(Yii::$app->request->referrer);
         }
 
         public function actionAddParticip($id){
@@ -87,7 +103,7 @@
             if(Yii::$app->mailer->compose()
                                 ->setFrom([Yii::$app->params['supportEmail'] => $user->username])
                                 ->setTo($event->creator->email)
-                                ->setTextBody($requset['body'])//                             ->setHtmlBody($requset['body'])
+                                ->setTextBody($requset['body'])
                                 ->setSubject('Request from '.$user->username.' to event '.$event->title)
                                 ->send()
             ){
@@ -95,6 +111,7 @@
             }
             $particEvent = new ParticEvent(['user_id' => $user->id, 'event_id' => $event->id]);
             $particEvent->confirmed = false;
+            $particEvent->confirmedtext = $requset['body'];
             $particEvent->save();
 
             $this->redirect('event-list');
@@ -122,8 +139,16 @@
          * @return mixed
          */
         public function actionView($id){
+            $model = $this->findModel($id);
+            $participDataProvider = new ActiveDataProvider([
+                                                               'query' => $model->getParticEvents()
+                                                                                ->andWhere(['user_id' => Yii::$app->user->id])
+                                                                                ->andWhere(['confirmed' => 0])
+                                                           ]);
+
             return $this->render('view', [
-                'model' => $this->findModel($id),
+                'model'                => $this->findModel($id),
+                'participDataProvider' => $participDataProvider,
             ]);
         }
 

@@ -36,7 +36,7 @@ function particEventInit(id, username, foto) {
         item = item + '<img src="/web/storage/' + foto + '" alt="">';
     }
     item = item + '</div><div class="">' + username + '</div></div>';
-    $('.particEvent').append(item);
+    $('.particEvents').append(item);
 }
 $(document).ready(function () {
     if (particEvent) {

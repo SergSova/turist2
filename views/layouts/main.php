@@ -37,8 +37,8 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'Evetn', 'url' => ['/event/index']],
-            ['label' => 'EventType', 'url' => ['/event-type/index']],
+            ['label' => 'Event', 'url' => ['/event/index']],
+            ['label' => 'Event-List', 'url' => ['/event/event-list']],
             ['label' => 'Friends', 'url' => ['/friends/index']],
             ['label' => 'User', 'url' => ['/user/index']],
             ['label' => 'About', 'url' => ['/site/about']],
