@@ -4,6 +4,7 @@
 
     use app\models\ParticEvent;
     use app\models\User;
+    use app\widgets\rateCounter\VoteAction;
     use Yii;
     use app\models\Event;
     use app\models\search\EventSearch;
@@ -27,6 +28,7 @@
                     'class'   => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'upvote-event' => ['POST'],
                     ],
                 ],
                 'access' => [
@@ -43,6 +45,15 @@
                         ],
                     ],
                 ],
+            ];
+        }
+
+        public function actions(){
+            return [
+                'vote-event'=>[
+                    'class'=>VoteAction::className(),
+                    'type'=>'event'
+                ]
             ];
         }
 
@@ -115,6 +126,12 @@
             $particEvent->save();
 
             $this->redirect('event-list');
+        }
+
+        public function actionEventCalendar(){
+            $eventsSearch = new EventSearch();
+            $events = $eventsSearch->searchCalendar(Yii::$app->request->post());
+            return $this->render('event-calendar', ['events' => $events]);
         }
 
         /**

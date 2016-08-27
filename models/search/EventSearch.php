@@ -1,81 +1,108 @@
 <?php
 
-namespace app\models\search;
+    namespace app\models\search;
 
-use Yii;
-use yii\base\Model;
-use yii\data\ActiveDataProvider;
-use app\models\Event;
-
-/**
- * EventSearch represents the model behind the search form about `app\models\Event`.
- */
-class EventSearch extends Event
-{
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['id', 'event_type_id', 'creator_id', 'rate'], 'integer'],
-            [['title', 'photo', 'desc', 'organizators', 'particip', 'condition', 'date_start', 'date_end', 'date_creation', 'status'], 'safe'],
-        ];
-    }
+    use Yii;
+    use yii\base\Model;
+    use yii\data\ActiveDataProvider;
+    use app\models\Event;
 
     /**
-     * @inheritdoc
+     * EventSearch represents the model behind the search form about `app\models\Event`.
      */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
+    class EventSearch extends Event{
+        /**
+         * @inheritdoc
+         */
+        public function rules(){
+            return [
+                [['id', 'event_type_id', 'creator_id', 'rate'], 'integer'],
+                [['title', 'photo', 'desc', 'organizators', 'particip', 'condition', 'date_start', 'date_end', 'date_creation', 'status'], 'safe'],
+            ];
+        }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($params)
-    {
-        $query = Event::find();
+        /**
+         * @inheritdoc
+         */
+        public function scenarios(){
+            // bypass scenarios() implementation in the parent class
+            return Model::scenarios();
+        }
 
-        // add conditions that should always apply here
+        /**
+         * Creates data provider instance with search query applied
+         *
+         * @param array $params
+         *
+         * @return ActiveDataProvider
+         */
+        public function search($params){
+            $query = Event::find();
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+            // add conditions that should always apply here
 
-        $this->load($params);
+            $dataProvider = new ActiveDataProvider([
+                                                       'query' => $query,
+                                                   ]);
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $this->load($params);
+
+            if(!$this->validate()){
+                // uncomment the following line if you do not want to return any records when validation fails
+                // $query->where('0=1');
+                return $dataProvider;
+            }
+
+            // grid filtering conditions
+            $query->andFilterWhere([
+                                       'id'            => $this->id,
+                                       'event_type_id' => $this->event_type_id,
+                                       'creator_id'    => $this->creator_id,
+                                       'date_start'    => $this->date_start,
+                                       'date_end'      => $this->date_end,
+                                       'date_creation' => $this->date_creation,
+                                       'rate'          => $this->rate,
+                                   ]);
+
+            $query->andFilterWhere(['like', 'title', $this->title])
+                  ->andFilterWhere(['like', 'photo', $this->photo])
+                  ->andFilterWhere(['like', 'desc', $this->desc])
+                  ->andFilterWhere(['like', 'organizators', $this->organizators])
+                  ->andFilterWhere(['like', 'particip', $this->particip])
+                  ->andFilterWhere(['like', 'condition', $this->condition])
+                  ->andFilterWhere(['like', 'status', $this->status]);
+
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'event_type_id' => $this->event_type_id,
-            'creator_id' => $this->creator_id,
-            'date_start' => $this->date_start,
-            'date_end' => $this->date_end,
-            'date_creation' => $this->date_creation,
-            'rate' => $this->rate,
-        ]);
-
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'photo', $this->photo])
-            ->andFilterWhere(['like', 'desc', $this->desc])
-            ->andFilterWhere(['like', 'organizators', $this->organizators])
-            ->andFilterWhere(['like', 'particip', $this->particip])
-            ->andFilterWhere(['like', 'condition', $this->condition])
-            ->andFilterWhere(['like', 'status', $this->status]);
-
-        return $dataProvider;
+        /**
+         * @param $post
+         *
+         * @return \yii2fullcalendar\models\Event[] array
+         */
+        public function searchCalendar($post){
+            $events = $this->search($post)->models;
+            $calEvents=[];
+            /** @var Event $event */
+            foreach($events as $event){
+                $cur = new \yii2fullcalendar\models\Event();
+                $cur->id = $event->id;
+                $cur->title = $event->title;
+                $cur->start = $event->date_start;
+                $cur->end = $event->date_end;
+                $cur->description = $event->desc;
+                $cur->source = '<div class= "test">testContent</div>';
+                $cur->url = Yii::$app->urlManager->createUrl(['event/view', 'id' => $event->id]);
+                switch($event->eventType->name){
+                    case 'cash':
+                        $cur->backgroundColor = 'green';
+                        break;
+                    case 'registred':
+                        $cur->backgroundColor = 'red';
+                        break;
+                }
+                $calEvents[]=$cur;
+            }
+            return $calEvents;
+        }
     }
-}
