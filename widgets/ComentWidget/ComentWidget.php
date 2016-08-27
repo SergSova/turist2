@@ -4,14 +4,16 @@
 
     use app\models\Coments;
     use yii\base\Widget;
+    use yii\data\ActiveDataProvider;
 
     class ComentWidget extends Widget{
         public $model_id;
 
         public function run(){
-            $modelComent = Coments::findAll(['event_id' => $this->model_id]);
+            $comentQuery = Coments::find()->where(['event_id' => $this->model_id]);
+            $dataProvider = new ActiveDataProvider(['query'=>$comentQuery]);
 
-            return $this->render('coment', ['modelComent' => $modelComent]);
+            return $this->render('coment', ['dataProvider' => $dataProvider]);
         }
 
     }

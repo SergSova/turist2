@@ -1,5 +1,6 @@
 <?php
 
+    use app\widgets\ComentWidget\ComentWidget;
     use app\widgets\rateCounter\rateCounterWidget;
     use yii\bootstrap\ActiveForm;
     use yii\grid\GridView;
@@ -153,5 +154,7 @@
         <?php ActiveForm::end() ?>
     </div>
 
-    <?=ComentWidget::widget()?>
+    <?= ComentWidget::widget([
+                                 'model_id' => $model->id
+                             ]) ?>
 </div>
