@@ -2,6 +2,7 @@
 
     namespace app\controllers;
 
+    use app\widgets\rateCounter\VoteAction;
     use Yii;
     use app\models\User;
     use app\models\search\UserSearch;
@@ -24,6 +25,11 @@
                     'rules' => [
                         [
                             'allow'   => true,
+                            'actions' => ['vote-user'],
+                            'roles'   => ['user'],
+                        ],
+                        [
+                            'allow'   => true,
                             'roles'   => ['admin'],
                         ],
                     ],
@@ -37,6 +43,14 @@
             ];
         }
 
+        public function actions(){
+            return [
+                'vote-user' => [
+                    'class' => VoteAction::className(),
+                    'type'  => 'user'
+                ]
+            ];
+        }
         /**
          * Lists all User models.
          * @return mixed

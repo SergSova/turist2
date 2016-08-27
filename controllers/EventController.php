@@ -2,6 +2,7 @@
 
     namespace app\controllers;
 
+    use app\models\Coments;
     use app\models\ParticEvent;
     use app\models\User;
     use app\widgets\rateCounter\VoteAction;
@@ -27,7 +28,7 @@
                 'verbs'  => [
                     'class'   => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete'       => ['POST'],
                         'upvote-event' => ['POST'],
                     ],
                 ],
@@ -36,7 +37,7 @@
                     'rules' => [
                         [
                             'allow'   => true,
-                            'actions' => ['event-list'],
+                            'actions' => ['event-list','event-calendar','view'],
                             'roles'   => ['?'],
                         ],
                         [
@@ -50,9 +51,9 @@
 
         public function actions(){
             return [
-                'vote-event'=>[
-                    'class'=>VoteAction::className(),
-                    'type'=>'event'
+                'vote-event' => [
+                    'class' => VoteAction::className(),
+                    'type'  => 'event'
                 ]
             ];
         }
@@ -67,6 +68,14 @@
             ]);
         }
 
+        public function actionEventCalendar(){
+            $eventsSearch = new EventSearch();
+            $events = $eventsSearch->searchCalendar(Yii::$app->request->post());
+
+            return $this->render('event-calendar', ['events' => $events]);
+        }
+
+        //region Particip
         public function actionConfirmParticip($id, $confirm = true){
             $model = ParticEvent::findOne($id);
             if($confirm){
@@ -127,12 +136,7 @@
 
             $this->redirect('event-list');
         }
-
-        public function actionEventCalendar(){
-            $eventsSearch = new EventSearch();
-            $events = $eventsSearch->searchCalendar(Yii::$app->request->post());
-            return $this->render('event-calendar', ['events' => $events]);
-        }
+        //endregion
 
         /**
          * Lists all Event models.
@@ -157,15 +161,22 @@
          */
         public function actionView($id){
             $model = $this->findModel($id);
-            $participDataProvider = new ActiveDataProvider([
-                                                               'query' => $model->getParticEvents()
-                                                                                ->andWhere(['user_id' => Yii::$app->user->id])
-                                                                                ->andWhere(['confirmed' => 0])
-                                                           ]);
+            $comentModel = new Coments();
+            $pendingDataProvider = new ActiveDataProvider([
+                                                              'query' => $model->getParticEvents()
+//                                                                               ->andWhere(['user_id' => Yii::$app->user->id])
+                                                                               ->andWhere(['confirmed' => 0])
+                                                          ]);
+            $participantsDataProvider = new ActiveDataProvider([
+                                                                   'query' => $model->getParticEvents()
+                                                                                    ->andWhere(['confirmed' => 1])
+                                                               ]);
 
             return $this->render('view', [
                 'model'                => $this->findModel($id),
-                'participDataProvider' => $participDataProvider,
+                'pendingDataProvider' => $pendingDataProvider,
+                'participantsDataProvider'=>$participantsDataProvider,
+                'comentModel'=>$comentModel
             ]);
         }
 
@@ -243,5 +254,13 @@
             }else{
                 throw new NotFoundHttpException('The requested page does not exist.');
             }
+        }
+
+        public function actionAddComent(){
+            $coment = new Coments();
+            if($coment->load(Yii::$app->request->post())&&$coment->save()){
+                return $this->redirect(['view','id'=>$coment->event_id]);
+            }
+            return $this->refresh();
         }
     }

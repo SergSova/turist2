@@ -48,7 +48,7 @@ class Coments extends \yii\db\ActiveRecord
             'id' => 'ID',
             'event_id' => 'Event ID',
             'user_id' => 'User ID',
-            'text' => 'Text',
+            'text' => 'Коментарий',
             'rate' => 'Rate',
         ];
     }

@@ -24,6 +24,21 @@
             $auth->add($author);
             $auth->addChild($author, $createPost);
 
+            $rule = new AuthorRule();
+            $auth->add($rule);
+
+            // добавляем разрешение "updateOwnPost" и привязываем к нему правило.
+            $updateOwnPost = $auth->createPermission('updateOwnPost');
+            $updateOwnPost->description = 'Update own post';
+            $updateOwnPost->ruleName = $rule->name;
+            $auth->add($updateOwnPost);
+
+            // "updateOwnPost" будет использоваться из "updatePost"
+            $auth->addChild($updateOwnPost, $updatePost);
+
+            // разрешаем "автору" обновлять его посты
+            $auth->addChild($author, $updateOwnPost);
+
             // добавляем роль "admin" и даём роли разрешение "updatePost"
             // а также все разрешения роли "author"
             $admin = $auth->createRole('admin');

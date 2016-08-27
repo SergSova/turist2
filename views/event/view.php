@@ -1,22 +1,22 @@
 <?php
 
+    use app\widgets\rateCounter\rateCounterWidget;
+    use yii\bootstrap\ActiveForm;
+    use yii\grid\GridView;
     use yii\helpers\Html;
-    use yii\widgets\DetailView;
 
     /* @var $this yii\web\View */
     /* @var $model app\models\Event */
-    /** @var \yii\data\ActiveDataProvider $participDataProvider */
+    /** @var \yii\data\ActiveDataProvider $participantsDataProvider */
+    /** @var \yii\data\ActiveDataProvider $pendingDataProvider */
+    /** @var \app\models\Coments $comentModel */
 
     $this->title = $model->title;
     $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
     $this->params['breadcrumbs'][] = $this->title;
+    $event = $model;
 ?>
 <div class="event-view">
-
-
-    <p>
-
-    </p>
 
     <div class="panel-default">
         <div class="panel-heading">
@@ -59,71 +59,99 @@
                         <?php endforeach; ?>
                 </table>
             <?php endif; ?>
+            <? if(Yii::$app->user->can('createPost')): ?>
+                <label for="w0">Запросы на участие</label>
+                <?= GridView::widget([
+                                         'dataProvider' => $pendingDataProvider,
+                                         'columns'      => [
+                                             ['class' => 'yii\grid\SerialColumn'],
 
-            <label for="w0">Запросы на участие</label>
-            <?= \yii\grid\GridView::widget([
-                                               'dataProvider' => $participDataProvider,
-                                               'columns'      => [
-                                                   ['class' => 'yii\grid\SerialColumn'],
+                                             'user.username',
+                                             'confirmedtext',
+                                             [
+                                                 'label'   => 'Подтверждение',
+                                                 'content' => function($data){
+                                                     return Html::a('Подтвердить', [
+                                                         'confirm-particip',
+                                                         'id' => $data->id
+                                                     ], ['data-pjax' => 0]).' | '.Html::a('Отказать', [
+                                                         'confirm-particip',
+                                                         'id'      => $data->id,
+                                                         'confirm' => false,
+                                                     ], ['data-pjax' => 0]);
+                                                 }
+                                             ]
+                                         ],
+                                     ]) ?>
+            <? endif ?>
+            <label for="w0">Участники</label>
+            <?= GridView::widget([
+                                     'dataProvider' => $participantsDataProvider,
+                                     'columns'      => [
+                                         ['class' => 'yii\grid\SerialColumn'],
 
-                                                   'user.username',
-                                                   'confirmedtext',
-                                                   [
-                                                       'label'   => 'Подтверждение',
-                                                       'content' => function($data){
-                                                           return Html::a('Подтвердить', [
-                                                               'confirm-particip',
-                                                               'id' => $data->id
-                                                           ], ['data-pjax' => 0]).' | '.Html::a('Отказать', [
-                                                               'confirm-particip',
-                                                               'id'      => $data->id,
-                                                               'confirm' => false,
-                                                           ], ['data-pjax' => 0]);
-                                                       }
-                                                   ]
-                                               ],
-                                           ]) ?>
+                                         'user.username',
+                                         [
+                                             'attribute' => 'user.rate',
+                                             'content'   => function($data){
+                                                 return rateCounterWidget::widget([
+                                                                                      'rate' => $data->user->rate,
+                                                                                      'vote' => [
+                                                                                          'user/vote-user',
+                                                                                          'model_id' => $data->user->id
+                                                                                      ],
+                                                                                  ]);
+                                             }
+                                         ],
+                                         [
+                                             'label'   => 'ФИО',
+                                             'content' => function($data){
+                                                 return $data->user->f_name.' '.$data->user->l_name;
+                                             }
+                                         ],
+                                         'user.email',
+                                         [
+                                             'label'   => 'Подтверждение',
+                                             'content' => function($data){
+                                                 return Yii::$app->user->can('updatePost', ['event' => $data->event]) ? Html::tag('div', Html::a('Отказать', [
+                                                     'confirm-particip',
+                                                     'id'      => $data->id,
+                                                     'confirm' => false,
+                                                 ], ['data-pjax' => 0]), ['class' => 'row']) : '';
+                                             }
+                                         ],
+
+                                     ],
+                                 ]) ?>
         </div>
         <div class="panel-footer">
-            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
-                'data'  => [
-                    'confirm' => 'Are you sure you want to delete this item?',
-                    'method'  => 'post',
-                ],
-            ]) ?>
+            <?php if(Yii::$app->user->can('updatePost', ['event' => $model])): ?>
+                <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+                    'class' => 'btn btn-danger',
+                    'data'  => ['confirm' => 'Are you sure you want to delete this item?', 'method' => 'post',],
+                ]) ?>
+            <?php endif; ?>
             <div class="text-right">Создано: <?= $model->date_creation ?></div>
             <div class="text-right">Рейтинг: <?= $model->rate ?></div>
             <div class="text-right">Создатель: <strong><?= $model->creator->username ?></strong></div>
         </div>
     </div>
 
+    <div class="form-coment">
+        <?php $comentForm = ActiveForm::begin([
+                                                  'action'  => 'add-coment',
+                                                  'options' => ['class' => 'form-inline'],
+                                              ]) ?>
+        <?= $comentForm->field($comentModel, 'text')
+                       ->textarea(['rows' => 6, 'placeholder' => 'Ваш комментарий']) ?>
+        <?= $comentForm->field($comentModel, 'user_id')
+                       ->hiddenInput(['value' => Yii::$app->user->id]) ?>
+        <?= $comentForm->field($comentModel, 'event_id')
+                       ->hiddenInput(['value' => $model->id]) ?>
+        <?= Html::submitButton('Отправить'); ?>
+        <?php ActiveForm::end() ?>
+    </div>
 
-    <? /*= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            [
-                'label'=>'Тип события',
-                'value'=>$model->eventType->name
-            ],
-            'creator_id',
-            'title',
-            'photo:ntext',
-            'desc:ntext',
-            [
-                'label'=>'Организаторы',
-                'value'=>$model->getOrganizatorsList()
-            ],
-            'particip:ntext',
-            'condition:ntext',
-            'date_start',
-            'date_end',
-            'date_creation',
-            'status',
-            'rate',
-        ],
-    ]) */ ?>
-
+    <?=ComentWidget::widget()?>
 </div>
