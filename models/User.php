@@ -3,9 +3,7 @@
     namespace app\models;
 
     use Yii;
-    use yii\db\ActiveRecord;
     use yii\web\IdentityInterface;
-    use yii\web\UploadedFile;
 
     /**
      * This is the model class for table "tur_user".
@@ -29,12 +27,13 @@
      * @property Friends[]     $friends0
      * @property Log[]         $logs
      * @property ParticEvent[] $particEvents
+     * @property SocialAcc[]   $socialAccs
+     * @property Vote[]        $votes
      */
-    class User extends ActiveRecord implements IdentityInterface{
-        const STATUS_ACTIVE   = 'ACTIVE';
+    class User extends \yii\db\ActiveRecord implements IdentityInterface{
         const STATUS_INACTIVE = 'INACTIVE';
+        const STATUS_ACTIVE   = 'ACTIVE';
         const STATUS_BLOCKED  = 'BLOCKED';
-        public $file;
 
         /**
          * @inheritdoc
@@ -43,25 +42,23 @@
             return 'tur_user';
         }
 
+        public static function findByUsername($username){
+            return self::findOne(['username'=>$username]);
+        }
+
         /**
          * @inheritdoc
          */
         public function rules(){
             return [
+                [['username'], 'required'],
                 [['status'], 'string'],
-                [['created_at', 'foto'], 'safe'],
+                [['created_at'], 'safe'],
                 [['rate'], 'integer'],
                 [['username', 'email', 'f_name', 'l_name'], 'string', 'max' => 50],
-                [['password', 'auth_key', 'access_token'], 'string', 'max' => 255],
-                [['email'], 'unique'],
+                [['password', 'auth_key', 'access_token', 'foto'], 'string', 'max' => 255],
                 [['username'], 'unique'],
-            ];
-        }
-
-        public function scenarios(){
-            return [
-                'default'      => ['username', 'password'],
-                'registration' => ['username', 'password', 'f_name', 'l_name', 'email', 'status', 'file']
+                [['email'], 'unique'],
             ];
         }
 
@@ -71,7 +68,7 @@
         public function attributeLabels(){
             return [
                 'id'           => 'ID',
-                'username'     => 'Имя пользователя',
+                'username'     => 'Username',
                 'password'     => 'Password',
                 'auth_key'     => 'Auth Key',
                 'status'       => 'Status',
@@ -85,26 +82,6 @@
             ];
         }
 
-
-        public function beforeSave($insert){
-            if(parent::beforeSave($insert)){
-                if($this->isNewRecord){
-                    $this->auth_key = \Yii::$app->security->generateRandomString();
-                    $this->created_at = date("Y-m-d H:i:s");
-                    $this->rate = 0;
-                }
-                if($this->file){
-                    $file_name = 'user/'.$this->username.'.'.$this->file->extension;
-                    $this->file->saveAs(__DIR__.'/../web/storage/'.$file_name);
-                    $this->foto = $file_name;
-                }
-                return true;
-            }
-
-            return false;
-        }
-
-        //region Satandart func
         /**
          * @return \yii\db\ActiveQuery
          */
@@ -148,52 +125,84 @@
         }
 
         /**
-         * @inheritdoc
+         * @return \yii\db\ActiveQuery
+         */
+        public function getSocialAccs(){
+            return $this->hasMany(SocialAcc::className(), ['user_id' => 'id']);
+        }
+
+        /**
+         * @return \yii\db\ActiveQuery
+         */
+        public function getVotes(){
+            return $this->hasMany(Vote::className(), ['user_id' => 'id']);
+        }
+
+        /**
+         * Finds an identity by the given ID.
+         *
+         * @param string|integer $id the ID to be looked for
+         *
+         * @return IdentityInterface the identity object that matches the given ID.
+         * Null should be returned if such an identity cannot be found
+         * or the identity is not in an active state (disabled, deleted, etc.)
          */
         public static function findIdentity($id){
             return self::findOne($id);
         }
 
         /**
-         * @inheritdoc
+         * Finds an identity by the given token.
+         *
+         * @param mixed $token the token to be looked for
+         * @param mixed $type  the type of the token. The value of this parameter depends on the implementation.
+         *                     For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
+         *
+         * @return IdentityInterface the identity object that matches the given token.
+         * Null should be returned if such an identity cannot be found
+         * or the identity is not in an active state (disabled, deleted, etc.)
          */
         public static function findIdentityByAccessToken($token, $type = null){
-
             return self::findOne(['access_token' => $token]);
         }
 
         /**
-         * Finds user by username
-         *
-         * @param string $username
-         *
-         * @return static|null
-         */
-        public static function findByUsername($username){
-            return self::findOne(['username' => $username]);
-        }
-
-        /**
-         * @inheritdoc
+         * Returns an ID that can uniquely identify a user identity.
+         * @return string|integer an ID that uniquely identifies a user identity.
          */
         public function getId(){
             return $this->id;
         }
 
         /**
-         * @inheritdoc
+         * Returns a key that can be used to check the validity of a given identity ID.
+         *
+         * The key should be unique for each individual user, and should be persistent
+         * so that it can be used to check the validity of the user identity.
+         *
+         * The space of such keys should be big enough to defeat potential identity attacks.
+         *
+         * This is required if [[User::enableAutoLogin]] is enabled.
+         * @return string a key that is used to check the validity of a given identity ID.
+         * @see validateAuthKey()
          */
         public function getAuthKey(){
             return $this->auth_key;
         }
 
         /**
-         * @inheritdoc
+         * Validates the given auth key.
+         *
+         * This is required if [[User::enableAutoLogin]] is enabled.
+         *
+         * @param string $authKey the given auth key
+         *
+         * @return boolean whether the given auth key is valid.
+         * @see getAuthKey()
          */
         public function validateAuthKey($authKey){
             return $this->auth_key === $authKey;
         }
-        //endregion
 
         /**
          * Validates password
@@ -217,30 +226,75 @@
         }
 
         public function setPassword($password){
-            $this->password = \Yii::$app->security->generatePasswordHash($password);
+            $this->password = Yii::$app->security->generatePasswordHash($password);
         }
 
         public static function loginByToken($token){
-
             $s = file_get_contents('http://ulogin.ru/token.php?token='.$token.'&host='.Yii::$app->basePath);
             $token_user = json_decode($s, true);
 
-            $user = self::findIdentityByAccessToken($token_user['identity']);
+            $user = self::findOne(['email' => $token_user['email']]);
             if(is_null($user)){
-                $user = new User();
-                $user->access_token = $token_user['identity'];
-                $user->email = $token_user['email'];
-                $user->username = $token_user['identity'];
-                $user->f_name = $token_user['first_name'];
-                $user->l_name = $token_user['last_name'];
-                $user->status = self::STATUS_ACTIVE;
-                if($user->save()){
+                $transaction = Yii::$app->db->beginTransaction();
+                try{
+                    $user = new self();
+                    $user->access_token = $token_user['identity'];
+                    $user->email = $token_user['email'];
+                    $user->username = $token_user['first_name'].' '.$token_user['last_name'];
+                    $user->f_name = $token_user['first_name'];
+                    $user->l_name = $token_user['last_name'];
+                    $user->status = self::STATUS_ACTIVE;
+                    $user->setPassword('0');
+                    if(!$user->save()){
+                        throw new \Exception('ошибка сохранения user');
+                    }
                     $auth = Yii::$app->authManager;
                     $authorRole = $auth->getRole('user');
                     $auth->assign($authorRole, $user->getId());
+
+                    $social = new SocialAcc();
+                    $social->user_id = $user->id;
+                    $social->social_id = $token_user['identity'];
+                    $social->social_name = $token_user['network'];
+                    if(!$social->save()){
+                        throw new \Exception('ошибка сохранения social');
+                    }
+                    $transaction->commit();
+                }catch(\Exception $e){
+                    $transaction->rollBack();
+                }
+            }else{
+                if(!$user->getSocialAccs()
+                         ->where(['social_name' => $token_user['network']])
+                         ->exists()
+                ){
+                    $social = new SocialAcc();
+                    $social->user_id = $user->id;
+                    $social->social_id = $token_user['identity'];
+                    $social->social_name = $token_user['network'];
+                    if(!$social->save()){
+                        $user->addError('username', 'ошибка добавления соц. сети');
+                    }
                 }
             }
+            if(!$user->hasErrors()){
+                return Yii::$app->user->login($user, 3600 * 24 * 30);
+            }
 
-            return Yii::$app->user->login($user, 3600 * 24 * 30);
+            return false;
+        }
+
+        public function beforeSave($insert){
+            if(parent::beforeSave($insert)){
+                if($this->isNewRecord){
+                    $this->auth_key = Yii::$app->security->generateRandomString();
+                    $this->created_at = date("Y-m-d H:i:s");
+                    $this->rate = 0;
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }

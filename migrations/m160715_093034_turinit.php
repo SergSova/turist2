@@ -10,7 +10,6 @@
                                        ->notNull()
                                        ->comment('Логин'),
                 'password'     => $this->string(255)
-                                       ->notNull()
                                        ->comment('Пароль'),
                 'auth_key'     => $this->string(255),
                 'status'       => "enum('inactive', 'active', 'blocked')",
@@ -126,8 +125,21 @@
                 'rate_type'  => $this->string(5)
                                      ->notNull(),
             ]);
+
             $this->createIndex('IX_user_model_model_id', '{{%vote}}', ['user_id', 'model_name', 'model_id'], true);
             $this->addForeignKey('FK_vote_user', '{{%vote}}', 'user_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE');
+
+            $this->createTable('{{%social_acc}}', [
+                'id'          => $this->primaryKey(),
+                'user_id'     => $this->integer()
+                                      ->notNull(),
+                'social_name' => $this->string()
+                                      ->notNull(),
+                'social_id'   => $this->string()
+                                      ->notNull()
+            ]);
+
+            $this->addForeignKey('FK_social_user', '{{%social_acc}}', 'user_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE');
 
             // add indexes for performance optimization
             $this->createIndex('{{%event-creator_id}}', '{{%event}}', 'creator_id');
