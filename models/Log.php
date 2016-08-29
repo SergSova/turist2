@@ -8,13 +8,13 @@ use Yii;
  * This is the model class for table "tur_log".
  *
  * @property integer $id
- * @property string $date
+ * @property string  $date
  * @property integer $user_id
- * @property string $action
- * @property string $table
- * @property string $blob
+ * @property string  $action
+ * @property string  $table
+ * @property string  $blob
  *
- * @property User $user
+ * @property User   $user
  */
 class Log extends \yii\db\ActiveRecord
 {

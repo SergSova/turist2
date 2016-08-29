@@ -14,7 +14,7 @@
      * @property string  $confirmedtext
      *
      * @property Event   $event
-     * @property User    $user
+     * @property User   $user
      */
     class ParticEvent extends \yii\db\ActiveRecord{
         /**

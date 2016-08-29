@@ -26,7 +26,7 @@
      *
      * @property Coments[]     $coments
      * @property EventType     $eventType
-     * @property User          $creator
+     * @property User         $creator
      * @property ParticEvent[] $particEvents
      */
     class Event extends \yii\db\ActiveRecord{
@@ -148,8 +148,8 @@
 
         public function getAllOrganizators(){
             return ArrayHelper::map(User::find()
-                                        ->filterWhere(['not in', 'id', $this->organizators])
-                                        ->all(), 'id', 'username');
+                                         ->filterWhere(['not in', 'id', $this->organizators])
+                                         ->all(), 'id', 'username');
         }
 
         public function getOrganizatorsList(){

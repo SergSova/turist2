@@ -13,7 +13,7 @@
      * @property integer $model_id
      * @property string  $rate_type
      *
-     * @property User    $user
+     * @property User   $user
      */
     class Vote extends \yii\db\ActiveRecord{
         /**

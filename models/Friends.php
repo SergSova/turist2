@@ -15,8 +15,8 @@
      * @property integer $user_id
      * @property integer $friend_id
      *
-     * @property User    $friend
-     * @property User    $user
+     * @property User   $friend
+     * @property User   $user
      */
     class Friends extends \yii\db\ActiveRecord{
         /**
@@ -65,7 +65,7 @@
 
         public function getAllUsers(){
             return ArrayHelper::map(\app\models\User::find()
-                                                    ->all(), 'id', 'username');
+                                                     ->all(), 'id', 'username');
         }
 
         public function getAllFriendArrayId(){
