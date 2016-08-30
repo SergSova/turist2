@@ -1,10 +1,11 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\EventType */
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\data\DetailView;
+
+    /* @var $model app\models\EventType */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Event Types', 'url' => ['index']];

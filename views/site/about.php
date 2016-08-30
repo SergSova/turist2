@@ -2,9 +2,9 @@
 
 /* @var $this yii\web\View */
 
-use yii\helpers\Html;
+    use macgyer\yii2materializecss\lib\Html;
 
-$this->title = 'About';
+    $this->title = 'About';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">

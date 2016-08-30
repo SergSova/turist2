@@ -1,10 +1,9 @@
 <?php
     /** @var \app\models\Event $model */
     use app\widgets\rateCounter\rateCounterWidget;
-    use yii\bootstrap\Modal;
-    use yii\helpers\Html;
-    use yii\helpers\Url;
-    use yii\widgets\ActiveForm;
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+    use macgyer\yii2materializecss\widgets\Modal;
 
     $d = new DateTime($model->date_start);
 
@@ -42,12 +41,17 @@
                     <?= Html::a('Отменить', ['/event/remove-particip', 'id' => $model->id], ['data-pjax' => 0]) ?>
                 <?php else: ?>
                     <?php Modal::begin([
-                                           'header'       => '<h2>Отправить запрос на добавление</h2>',
+                                           //'header'       => '<h2>Отправить запрос на добавление</h2>',
+                                           'modalType'    => Modal::TYPE_LEAN,
                                            'toggleButton' => [
-                                               'tag'   => 'a',
-                                               'class' => '',
+//                                               'tag'   => 'a',
+//                                               'class' => '',
                                                'label' => 'Подать заявку!',
-                                           ]
+                                           ],
+                                           'closeButton' => [
+                                               'label' => 'Закрыть',
+                                               'tag' => 'span'
+                                           ],
                                        ]) ?>
                     <?php $form = ActiveForm::begin(['action' => ['event/send-confirm']]) ?>
                     <?= Html::hiddenInput('Mail[event_id]', $model->id) ?>
@@ -68,8 +72,8 @@
         Создатель: <strong><?= $model->creator->username ?></strong>
     </div>
     <div><?= rateCounterWidget::widget([
-                                           'rate'     => $model->rate,
-                                           'vote'   => ['vote-event','model_id'=>$model->id],
+                                           'rate' => $model->rate,
+                                           'vote' => ['vote-event', 'model_id' => $model->id],
                                        ]) ?></div>
 </div>
 </div>

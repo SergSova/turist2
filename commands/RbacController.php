@@ -39,6 +39,24 @@
             // разрешаем "автору" обновлять его посты
             $auth->addChild($author, $updateOwnPost);
 
+            //добавляем правило на добавление фото
+            $photo = new ParticipantRule();
+            $auth->add($photo);
+
+            //добавляем разрешение "addPhoto"  и привязываем к нему правило
+            $addPhoto = $auth->createPermission('addPhoto');
+            $addPhoto->description='Add photo to post';
+            $addPhoto->ruleName = $photo->name;
+            $auth->add($addPhoto);
+
+            // добавляем роль "participant" и даём роли разрешение "addPhoto"
+            $participant = $auth->createRole('participant');
+            $auth->add($participant);
+            $auth->addChild($participant,$addPhoto);
+
+            $auth->addChild($author, $addPhoto);
+
+
             // добавляем роль "admin" и даём роли разрешение "updatePost"
             // а также все разрешения роли "author"
             $admin = $auth->createRole('admin');

@@ -4,9 +4,11 @@
     /* @var $form yii\bootstrap\ActiveForm */
     /* @var $model app\models\RegistrationForm */
 
+    use app\widgets\FileManagerWidget\FileManagerWidget;
     use app\widgets\uLogin\uLoginWidget;
-    use yii\helpers\Html;
-    use yii\bootstrap\ActiveForm;
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+    use yii\helpers\Url;
 
     $this->title = 'Registration';
     $this->params['breadcrumbs'][] = $this->title;
@@ -35,12 +37,17 @@
              ->passwordInput() ?>
     <?= $form->field($model, 'password_repeat')
              ->passwordInput() ?>
-    <div class="form-group">
-        <?= Html::label('Фото','foto',['class' => 'col-lg-1 control-label'])?>
-        <div class="col-lg-3">
-            <?= Html::fileInput('foto',null,['id'=>'foto','class'=>'']) ?>
-        </div>
-    </div>
+
+
+    <?= Html::activeHiddenInput($model, 'photo', ['id' => 'user-photo']) ?>
+    <?= FileManagerWidget::widget([
+                                      'uploadUrl' => Url::to(['user-upload-photo']),
+                                      'removeUrl' => Url::to(['user-remove-photo']),
+                                      'maxFiles' => 1,
+                                      'targetInputId' => 'user-photo',
+                                      'files' => $model->photo
+                                  ]) ?>
+
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
             <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>

@@ -1,10 +1,11 @@
 <?php
 
-use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model app\models\User */
+    use macgyer\yii2materializecss\lib\Html;
+
+    /* @var $model app\models\User */
 
 $this->title = 'Create User';
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];

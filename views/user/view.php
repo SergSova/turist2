@@ -1,7 +1,7 @@
 <?php
 
-    use yii\helpers\Html;
-    use yii\widgets\DetailView;
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\data\DetailView;
 
     /* @var $this yii\web\View */
     /* @var $model app\models\User */
@@ -24,17 +24,15 @@
             ],
         ]) ?>
     </p>
-    <?= Html::img('/web/storage/'.$model->foto) ?>
+
+    <?=$model->getPhoto()?>
     <?= DetailView::widget([
                                'model'      => $model,
                                'attributes' => [
                                    'id',
                                    'username',
-                                   'password',
-                                   'auth_key',
                                    'status',
                                    'email:email',
-                                   'access_token',
                                    'created_at',
                                    'rate',
                                    'f_name',

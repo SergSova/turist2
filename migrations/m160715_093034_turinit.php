@@ -24,7 +24,7 @@
                                        ->comment('Фамилия'),
                 'l_name'       => $this->string(50)
                                        ->comment('Имя'),
-                'foto'         => $this->string(255)
+                'photo'         => $this->string(255)->comment('Фото')
             ]);
             $this->createIndex('{{%user_email}}', '{{%user}}', 'email', true);
             $this->createIndex('{{%user_username}}', '{{%user}}', 'username', true);
@@ -72,7 +72,7 @@
             $this->insert('{{%event_type}}', ['name' => 'closed']);
             $this->insert('{{%event_type}}', ['name' => 'registred']);
 
-            $this->createTable('{{%coments}}', [
+            $this->createTable('{{%comments}}', [
                 'id'       => $this->primaryKey(10),
                 'event_id' => $this->integer(10)
                                    ->notNull(),
@@ -144,8 +144,8 @@
             // add indexes for performance optimization
             $this->createIndex('{{%event-creator_id}}', '{{%event}}', 'creator_id');
             $this->createIndex('{{%event-event_type_id}}', '{{%event}}', 'event_type_id');
-            $this->createIndex('{{%coments-event_id}}', '{{%coments}}', 'event_id');
-            $this->createIndex('{{%coments-user_id}}', '{{%coments}}', 'user_id');
+            $this->createIndex('{{%comments-event_id}}', '{{%comments}}', 'event_id');
+            $this->createIndex('{{%comments-user_id}}', '{{%comments}}', 'user_id');
             $this->createIndex('{{%partic_event-user_id}}', '{{%partic_event}}', 'user_id');
             $this->createIndex('{{%partic_event-event_id}}', '{{%partic_event}}', 'event_id');
             $this->createIndex('{{%friends-user_id}}', '{{%friends}}', 'user_id');
@@ -155,8 +155,8 @@
             // add foreign keys for data integrity
             $this->addForeignKey('{{%event-creator_id}}', '{{%event}}', 'creator_id', '{{%user}}', 'id');
             $this->addForeignKey('{{%event-event_type_id}}', '{{%event}}', 'event_type_id', '{{%event_type}}', 'id');
-            $this->addForeignKey('{{%coments-event_id}}', '{{%coments}}', 'event_id', '{{%event}}', 'id');
-            $this->addForeignKey('{{%coments-user_id}}', '{{%coments}}', 'user_id', '{{%user}}', 'id');
+            $this->addForeignKey('{{%comments-event_id}}', '{{%comments}}', 'event_id', '{{%event}}', 'id');
+            $this->addForeignKey('{{%comments-user_id}}', '{{%comments}}', 'user_id', '{{%user}}', 'id');
             $this->addForeignKey('{{%partic_event-user_id}}', '{{%partic_event}}', 'user_id', '{{%user}}', 'id');
             $this->addForeignKey('{{%partic_event-event_id}}', '{{%partic_event}}', 'event_id', '{{%event}}', 'id');
             $this->addForeignKey('{{%friends-user_id}}', '{{%friends}}', 'user_id', '{{%user}}', 'id');
@@ -167,7 +167,7 @@
         public function safeDown(){
             echo "m160715_093034_turinit cannot be reverted.\n";
             $this->dropTable('{{%vote}}');
-            $this->dropTable('{{%coments}}');
+            $this->dropTable('{{%comments}}');
             $this->dropTable('{{%log}}');
             $this->dropTable('{{%partic_event}}');
             $this->dropTable('{{%event}}');

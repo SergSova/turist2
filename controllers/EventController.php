@@ -2,13 +2,15 @@
 
     namespace app\controllers;
 
-    use app\models\Coments;
+    use app\models\Comments;
     use app\models\ParticEvent;
     use app\models\User;
     use app\widgets\rateCounter\VoteAction;
     use Yii;
     use app\models\Event;
     use app\models\search\EventSearch;
+    use yii\alexposseda\fileManager\actions\UploadAction;
+    use yii\alexposseda\fileManager\models\UploadPictureModel;
     use yii\data\ActiveDataProvider;
     use yii\filters\AccessControl;
     use yii\web\Controller;
@@ -37,7 +39,7 @@
                     'rules' => [
                         [
                             'allow'   => true,
-                            'actions' => ['event-list','event-calendar','view'],
+                            'actions' => ['event-list', 'event-calendar', 'view'],
                             'roles'   => ['?'],
                         ],
                         [
@@ -51,10 +53,28 @@
 
         public function actions(){
             return [
-                'vote-event' => [
+                'vote-event'         => [
                     'class' => VoteAction::className(),
                     'type'  => 'event'
-                ]
+                ],
+                'vote-comment'       => [
+                    'class' => VoteAction::className(),
+                    'type'  => 'comments'
+                ],
+                'event-upload-photo' => [
+                    'class'         => UploadAction::className(),
+                    'uploadPath'    => 'event',
+                    'sessionEnable' => true,
+                    'uploadModel'   => new UploadPictureModel([
+                                                                  'validationRules' => [
+                                                                      'extensions' => 'jpg, png',
+                                                                      'maxSize'    => 1024 * 1024
+                                                                  ]
+                                                              ])
+                ],
+                'event-remove-photo' => [
+                    'class' => '\yii\alexposseda\fileManager\actions\RemoveAction',
+                ],
             ];
         }
 
@@ -78,10 +98,14 @@
         //region Particip
         public function actionConfirmParticip($id, $confirm = true){
             $model = ParticEvent::findOne($id);
+            $auth = Yii::$app->authManager;
+            $authorRole = $auth->getRole('participant');
             if($confirm){
                 $model->confirmed = 1;
+                $auth->assign($authorRole, $model->user_id);
                 $model->save();
             }else{
+                $auth->revoke($authorRole, $model->user_id);
                 $model->delete();
             }
 
@@ -92,8 +116,13 @@
             $model = new ParticEvent();
             $model->user_id = Yii::$app->user->id;
             if(Event::findOne($id)->eventType->name == 'free'){
+
                 $model->event_id = $id;
                 if($model->save()){
+                    $auth = Yii::$app->authManager;
+                    $authorRole = $auth->getRole('participant');
+                    $auth->assign($authorRole, $model->user_id);
+
                     Yii::$app->session->setFlash('success', 'Вы добавлены к событию.');
                 }else{
                     foreach($model->getErrors() as $error){
@@ -109,6 +138,10 @@
 
         public function actionRemoveParticip($id){
             $partEvent = ParticEvent::findOne(['event_id' => $id, 'user_id' => Yii::$app->user->id]);
+            $auth = Yii::$app->authManager;
+            $authorRole = $auth->getRole('participant');
+            $auth->revoke($authorRole, $partEvent->user_id);
+
             $partEvent->delete();
 
             return $this->redirect('event-list');
@@ -161,10 +194,9 @@
          */
         public function actionView($id){
             $model = $this->findModel($id);
-            $comentModel = new Coments();
+            $commentModel = new Comments();
             $pendingDataProvider = new ActiveDataProvider([
                                                               'query' => $model->getParticEvents()
-//                                                                               ->andWhere(['user_id' => Yii::$app->user->id])
                                                                                ->andWhere(['confirmed' => 0])
                                                           ]);
             $participantsDataProvider = new ActiveDataProvider([
@@ -173,10 +205,10 @@
                                                                ]);
 
             return $this->render('view', [
-                'model'                => $this->findModel($id),
-                'pendingDataProvider' => $pendingDataProvider,
-                'participantsDataProvider'=>$participantsDataProvider,
-                'comentModel'=>$comentModel
+                'model'                    => $this->findModel($id),
+                'pendingDataProvider'      => $pendingDataProvider,
+                'participantsDataProvider' => $participantsDataProvider,
+                'commentModel'             => $commentModel
             ]);
         }
 
@@ -256,11 +288,12 @@
             }
         }
 
-        public function actionAddComent(){
-            $coment = new Coments();
-            if($coment->load(Yii::$app->request->post())&&$coment->save()){
-                return $this->redirect(['view','id'=>$coment->event_id]);
+        public function actionAddComment(){
+            $comment = new Comments();
+            if($comment->load(Yii::$app->request->post()) && $comment->save()){
+                return $this->redirect(['view', 'id' => $comment->event_id]);
             }
+
             return $this->refresh();
         }
     }

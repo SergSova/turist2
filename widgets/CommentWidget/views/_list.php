@@ -2,7 +2,7 @@
 
     use app\widgets\rateCounter\rateCounterWidget;
 
-    /** @var \app\models\Coments $model */
+    /** @var \app\models\Comments $model */
 ?>
 
 <div class="panel-info">
@@ -15,7 +15,10 @@
     <div class="panel-footer">
         <?= rateCounterWidget::widget([
                                           'rate' => $model->rate,
-                                          'vote' => ''
+                                          'vote' => [
+                                              '/event/vote-comment',
+                                              'model_id' => $model->id
+                                          ]
                                       ]) ?>
     </div>
 </div>

@@ -3,6 +3,9 @@
     namespace app\models;
 
     use Yii;
+    use yii\alexposseda\fileManager\FileManager;
+    use yii\bootstrap\Html;
+    use yii\helpers\ArrayHelper;
     use yii\web\IdentityInterface;
 
     /**
@@ -19,9 +22,9 @@
      * @property integer       $rate
      * @property string        $f_name
      * @property string        $l_name
-     * @property string        $foto
+     * @property string        $photo
      *
-     * @property Coments[]     $coments
+     * @property Comments[]    $comments
      * @property Event[]       $events
      * @property Friends[]     $friends
      * @property Friends[]     $friends0
@@ -42,8 +45,17 @@
             return 'tur_user';
         }
 
+        public function afterFind(){
+            $comment = $this->getComments()
+                            ->sum('rate');
+            $event = $this->getEvents()
+                          ->sum('rate');
+            $this->rate = $comment + $event;
+        }
+
+
         public static function findByUsername($username){
-            return self::findOne(['username'=>$username]);
+            return self::findOne(['username' => $username]);
         }
 
         /**
@@ -56,7 +68,7 @@
                 [['created_at'], 'safe'],
                 [['rate'], 'integer'],
                 [['username', 'email', 'f_name', 'l_name'], 'string', 'max' => 50],
-                [['password', 'auth_key', 'access_token', 'foto'], 'string', 'max' => 255],
+                [['password', 'auth_key', 'access_token', 'photo'], 'string', 'max' => 255],
                 [['username'], 'unique'],
                 [['email'], 'unique'],
             ];
@@ -75,18 +87,18 @@
                 'email'        => 'Email',
                 'access_token' => 'Access Token',
                 'created_at'   => 'Created At',
-                'rate'         => 'Rate',
-                'f_name'       => 'F Name',
-                'l_name'       => 'L Name',
-                'foto'         => 'Foto',
+                'rate'         => 'Рейтинг',
+                'f_name'       => 'Фамилия',
+                'l_name'       => 'Имя',
+                'photo'        => 'Фото',
             ];
         }
 
         /**
          * @return \yii\db\ActiveQuery
          */
-        public function getComents(){
-            return $this->hasMany(Coments::className(), ['user_id' => 'id']);
+        public function getComments(){
+            return $this->hasMany(Comments::className(), ['user_id' => 'id']);
         }
 
         /**
@@ -245,6 +257,8 @@
                     $user->l_name = $token_user['last_name'];
                     $user->status = self::STATUS_ACTIVE;
                     $user->setPassword('0');
+                    $user->photo = json_encode([$token_user['photo_big']]);
+
                     if(!$user->save()){
                         throw new \Exception('ошибка сохранения user');
                     }
@@ -272,7 +286,10 @@
                     $social->user_id = $user->id;
                     $social->social_id = $token_user['identity'];
                     $social->social_name = $token_user['network'];
-                    if(!$social->save()){
+                    if(!$user->photo){
+                        $user->photo = json_encode([$token_user['photo_big']]);
+                    }
+                    if(!$social->save() && $user->save()){
                         $user->addError('username', 'ошибка добавления соц. сети');
                     }
                 }
@@ -297,4 +314,13 @@
 
             return false;
         }
+
+        public function getPhoto(){
+            $user_photo = json_decode($this->photo);
+            $photo = explode('/', $user_photo[0]);
+
+            return $photo[0] == 'http:' ? '<img src="'.$user_photo[0].'">' : Html::img(FileManager::getInstance()
+                                                                                                  ->getStorageUrl().$user_photo[0]);
+        }
+
     }

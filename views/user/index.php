@@ -1,14 +1,15 @@
 <?php
 
-use yii\helpers\Html;
-use yii\grid\GridView;
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\search\UserSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+    /* @var $this yii\web\View */
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\grid\GridView;
 
-$this->title = 'Users';
-$this->params['breadcrumbs'][] = $this->title;
+    /* @var $searchModel app\models\search\UserSearch */
+    /* @var $dataProvider yii\data\ActiveDataProvider */
+
+    $this->title = 'Users';
+    $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
@@ -19,30 +20,30 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                             'dataProvider' => $dataProvider,
+                             'filterModel'  => $searchModel,
+                             'columns'      => [
+                                 ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            [
-                'attribute'=>'foto',
-                'content'=>function($model){
-                    return '<img src="/web/storage/'.$model->foto.'"/>';
-                }
-            ],
-            'username',
-//            'password',
-//            'auth_key',
-            'status',
-             'email:email',
-            // 'access_token',
-             'created_at',
-             'rate',
-             'f_name',
-             'l_name',
+                                 'id',
+                                 [
+                                     'attribute' => 'photo',
+                                     'content'   => function($model){
+                                         return $model->getPhoto();
+                                     }
+                                 ],
+                                 'username',
+                                 //            'password',
+                                 //            'auth_key',
+                                 'status',
+                                 'email:email',
+                                 // 'access_token',
+                                 'created_at',
+                                 'rate',
+                                 'f_name',
+                                 'l_name',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+                                 ['class' => 'yii\grid\ActionColumn'],
+                             ],
+                         ]); ?>
 </div>

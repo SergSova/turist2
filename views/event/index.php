@@ -1,10 +1,12 @@
 <?php
 
-use yii\helpers\Html;
-use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\search\EventSearch */
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\grid\ActionColumn;
+    use macgyer\yii2materializecss\widgets\grid\GridView;
+
+    /* @var $searchModel app\models\search\EventSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Events';
@@ -24,7 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-//            'id',
             'eventType.name',
             'creator.username',
             'title',
@@ -39,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
              'status',
              'rate',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => ActionColumn::className()],
         ],
     ]); ?>
 </div>

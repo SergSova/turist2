@@ -1,10 +1,11 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\search\FriendsSearch */
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+
+    /* @var $model app\models\search\FriendsSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 

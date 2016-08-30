@@ -1,9 +1,10 @@
 <?php
 
-    use yii\helpers\Html;
-    use yii\widgets\ActiveForm;
 
     /* @var $this yii\web\View */
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+
     /* @var $model app\models\Friends */
     /* @var $form yii\widgets\ActiveForm */
     /* @var \yii\data\ActiveDataProvider $dataProvider */

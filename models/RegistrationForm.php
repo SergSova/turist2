@@ -15,11 +15,12 @@
         public $password_repeat;
         public $f_name;
         public $l_name;
-        public $foto;
+        public $photo;
 
         public function rules(){
             return [
                 [['username', 'password', 'email'], 'required'],
+                ['photo','safe'],
                 [['username'], 'unique', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['username' => 'username']],
                 [['email'], 'unique', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['email' => 'email']],
                 [['email', 'password', 'password_repeat', 'username'], 'trim'],
@@ -37,8 +38,7 @@
                 $user->f_name = $this->f_name;
                 $user->l_name = $this->l_name;
                 $user->status = User::STATUS_INACTIVE;
-                $this->foto = UploadedFile::getInstanceByName('foto');
-                $user->file = $this->foto;
+                $user->photo = json_encode($this->photo);
 
                 if($user->save(false)){
                     $auth = Yii::$app->authManager;

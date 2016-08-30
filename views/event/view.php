@@ -1,16 +1,16 @@
 <?php
 
-    use app\widgets\ComentWidget\ComentWidget;
+    use app\widgets\CommentWidget\CommentWidget;
     use app\widgets\rateCounter\rateCounterWidget;
-    use yii\bootstrap\ActiveForm;
-    use yii\grid\GridView;
-    use yii\helpers\Html;
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+    use macgyer\yii2materializecss\widgets\grid\GridView;
 
     /* @var $this yii\web\View */
     /* @var $model app\models\Event */
     /** @var \yii\data\ActiveDataProvider $participantsDataProvider */
     /** @var \yii\data\ActiveDataProvider $pendingDataProvider */
-    /** @var \app\models\Coments $comentModel */
+    /** @var \app\models\Comments $commentModel */
 
     $this->title = $model->title;
     $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
@@ -60,7 +60,7 @@
                         <?php endforeach; ?>
                 </table>
             <?php endif; ?>
-            <? if(Yii::$app->user->can('createPost')): ?>
+            <? if(Yii::$app->user->can('updatePost',['event'=>$model])): ?>
                 <label for="w0">Запросы на участие</label>
                 <?= GridView::widget([
                                          'dataProvider' => $pendingDataProvider,
@@ -90,7 +90,10 @@
                                      'dataProvider' => $participantsDataProvider,
                                      'columns'      => [
                                          ['class' => 'yii\grid\SerialColumn'],
-
+['attribute'=>'user.photo',
+'content'=>function($data){
+                return $data->user->getPhoto();
+}],
                                          'user.username',
                                          [
                                              'attribute' => 'user.rate',
@@ -139,22 +142,7 @@
         </div>
     </div>
 
-    <div class="form-coment">
-        <?php $comentForm = ActiveForm::begin([
-                                                  'action'  => 'add-coment',
-                                                  'options' => ['class' => 'form-inline'],
-                                              ]) ?>
-        <?= $comentForm->field($comentModel, 'text')
-                       ->textarea(['rows' => 6, 'placeholder' => 'Ваш комментарий']) ?>
-        <?= $comentForm->field($comentModel, 'user_id')
-                       ->hiddenInput(['value' => Yii::$app->user->id]) ?>
-        <?= $comentForm->field($comentModel, 'event_id')
-                       ->hiddenInput(['value' => $model->id]) ?>
-        <?= Html::submitButton('Отправить'); ?>
-        <?php ActiveForm::end() ?>
-    </div>
-
-    <?= ComentWidget::widget([
-                                 'model_id' => $model->id
+    <?= CommentWidget::widget([
+                                 'model' => $model
                              ]) ?>
 </div>

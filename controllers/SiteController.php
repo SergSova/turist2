@@ -7,6 +7,8 @@
     use app\models\RegistrationForm;
     use app\models\User;
     use Yii;
+    use yii\alexposseda\fileManager\actions\UploadAction;
+    use yii\alexposseda\fileManager\models\UploadPictureModel;
     use yii\filters\AccessControl;
     use yii\web\Controller;
     use yii\filters\VerbFilter;
@@ -39,9 +41,19 @@
                 'error'   => [
                     'class' => 'yii\web\ErrorAction',
                 ],
-                'captcha' => [
-                    'class'           => 'yii\captcha\CaptchaAction',
-                    'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'user-upload-photo' => [
+                    'class' => UploadAction::className(),
+                    'uploadPath' => 'user',
+                    'sessionEnable' => true,
+                    'uploadModel' => new UploadPictureModel([
+                                                                'validationRules' => [
+                                                                    'extensions' => 'jpg, png',
+                                                                    'maxSize' => 1024 * 50
+                                                                ]
+                                                            ])
+                ],
+                'user-remove-photo' => [
+                    'class' => '\yii\alexposseda\fileManager\actions\RemoveAction',
                 ],
             ];
         }

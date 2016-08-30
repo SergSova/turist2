@@ -1,10 +1,11 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Friends */
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\data\DetailView;
+
+    /* @var $model app\models\Friends */
 
 $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Friends', 'url' => ['index']];

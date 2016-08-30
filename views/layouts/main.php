@@ -3,10 +3,10 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\Breadcrumbs;
+    use macgyer\yii2materializecss\widgets\Nav;
+    use macgyer\yii2materializecss\widgets\NavBar;
 use app\assets\AppAsset;
 
 AppAsset::register($this);

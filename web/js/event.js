@@ -33,18 +33,21 @@ function particEventInit(id, username, foto) {
     console.log(id + ' ' + username + ' ' + foto);
     var item = '<div class="col-lg-3"><div class="">';
     if (foto) {
-        item = item + '<img src="/web/storage/' + foto + '" alt="">';
+        item = item + '<img src="' + foto + '" alt="">';
     }
     item = item + '</div><div class="">' + username + '</div></div>';
     $('.particEvents').append(item);
 }
 $(document).ready(function () {
-    if (particEvent) {
+    try{
+        console.log(particEvent);
         for (var item in particEvent) {
             for (var name in particEvent[item]) {
                 particEventInit(item, name, particEvent[item][name]);
             }
         }
+    }catch(e){
+        console.log(e)
     }
 });
 

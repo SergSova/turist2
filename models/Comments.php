@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "tur_coments".
+ * This is the model class for table "tur_comments".
  *
  * @property integer $id
  * @property integer $event_id
@@ -16,14 +16,14 @@ use Yii;
  * @property User   $user
  * @property Event   $event
  */
-class Coments extends \yii\db\ActiveRecord
+class Comments extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'tur_coments';
+        return 'tur_comments';
     }
 
     /**

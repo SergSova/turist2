@@ -1,9 +1,10 @@
 <?php
 
-use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\EventType */
+    use macgyer\yii2materializecss\lib\Html;
+
+    /* @var $model app\models\EventType */
 
 $this->title = 'Update Event Type: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Event Types', 'url' => ['index']];

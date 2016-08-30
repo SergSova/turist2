@@ -5,8 +5,8 @@
 /* @var $model app\models\LoginForm */
 
     use app\widgets\uLogin\uLoginWidget;
-    use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
