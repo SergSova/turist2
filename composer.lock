@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "345f8cfc415db46f898d166537db9061",
-    "content-hash": "5d98d719aaee29b0d4fe30e28ac0ffc9",
+    "hash": "8854d3bedcc16c0478c2904428c35946",
+    "content-hash": "af50d8baad5311851d2d11a37ec71bed",
     "packages": [
         {
             "name": "alexposseda/filemanager",
@@ -486,6 +486,53 @@
                 "markdown-extra"
             ],
             "time": "2015-03-06 05:28:07"
+        },
+        {
+            "name": "esoftkz/yii2-timer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/esoftkz/yii2-timer.git",
+                "reference": "e52b42a70aea9678f13ddd3e12058a691988aabb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/esoftkz/yii2-timer/zipball/e52b42a70aea9678f13ddd3e12058a691988aabb",
+                "reference": "e52b42a70aea9678f13ddd3e12058a691988aabb",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "~2.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                },
+                "asset-installer-paths": {
+                    "bower-asset-library": "vendor/bower"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "esoftkz\\timer\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "CKEditor widget for Yii2.",
+            "keywords": [
+                "esoftkz",
+                "extension",
+                "timer",
+                "widget",
+                "yii",
+                "yii 2",
+                "yii2"
+            ],
+            "time": "2015-06-08 07:10:37"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -1280,7 +1327,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "esoftkz/yii2-timer": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -7,7 +7,7 @@
     <div class="col-lg-6">
         <?= $model->username ?>
     </div>
-    <div class="col-lg-6">
-        <?= $model->f_name.' '.$model->l_name ?>
-    </div>
+<!--    <div class="col-lg-6">-->
+<!--        --><?//= $model->f_name.' '.$model->l_name ?>
+<!--    </div>-->
 </div>

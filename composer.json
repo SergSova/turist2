@@ -20,7 +20,8 @@
         "yiisoft/yii2-swiftmailer": "*",
         "philippfrenzel/yii2fullcalendar":"*",
         "alexposseda/filemanager": "^1.0",
-        "macgyer/yii2-materializecss": "*"
+        "macgyer/yii2-materializecss": "*",
+        "esoftkz/yii2-timer": "~1.0@dev"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

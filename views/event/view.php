@@ -2,16 +2,18 @@
 
     use app\widgets\CommentWidget\CommentWidget;
     use app\widgets\rateCounter\rateCounterWidget;
+    use esoftkz\timer\Timer;
     use macgyer\yii2materializecss\lib\Html;
-    use macgyer\yii2materializecss\widgets\form\ActiveForm;
     use macgyer\yii2materializecss\widgets\grid\GridView;
 
-    /* @var $this yii\web\View */
-    /* @var $model app\models\Event */
-    /** @var \yii\data\ActiveDataProvider $participantsDataProvider */
-    /** @var \yii\data\ActiveDataProvider $pendingDataProvider */
-    /** @var \app\models\Comments $commentModel */
-
+    /**
+     * @var                              $this yii\web\View
+     *
+     * @var \app\models\Event            $model
+     * @var \yii\data\ActiveDataProvider $participantsDataProvider
+     * @var \yii\data\ActiveDataProvider $pendingDataProvider
+     * @var \app\models\Comments         $commentModel
+     */
     $this->title = $model->title;
     $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
     $this->params['breadcrumbs'][] = $this->title;
@@ -42,7 +44,17 @@
                     </div>
                 </div>
                 <div class="col-lg-3 text-center">
-                    Timer
+                    <?= Timer::widget([
+                                          'clientOptions' => [
+                                              'scaleColor' => false,
+                                              'trackColor' => 'rgba(255,255,255,0.3)',
+                                              'barColor' => '#E7F7F5',
+                                              'lineWidth' => 6,
+                                              'lineCap' => 'butt',
+                                              'size' => 50
+                                          ],
+                                          'endTimeStamp' => $model->date_end,
+                                      ]) ?>
                 </div>
             </div>
             <?php if($model->condition): ?>
@@ -60,7 +72,7 @@
                         <?php endforeach; ?>
                 </table>
             <?php endif; ?>
-            <? if(Yii::$app->user->can('updatePost',['event'=>$model])): ?>
+            <? if(Yii::$app->user->can('updatePost', ['event' => $model])): ?>
                 <label for="w0">Запросы на участие</label>
                 <?= GridView::widget([
                                          'dataProvider' => $pendingDataProvider,
@@ -90,10 +102,12 @@
                                      'dataProvider' => $participantsDataProvider,
                                      'columns'      => [
                                          ['class' => 'yii\grid\SerialColumn'],
-['attribute'=>'user.photo',
-'content'=>function($data){
-                return $data->user->getPhoto();
-}],
+                                         [
+                                             'attribute' => 'user.photo',
+                                             'content'   => function($data){
+                                                 return $data->user->getPhoto();
+                                             }
+                                         ],
                                          'user.username',
                                          [
                                              'attribute' => 'user.rate',
@@ -143,6 +157,6 @@
     </div>
 
     <?= CommentWidget::widget([
-                                 'model' => $model
-                             ]) ?>
+                                  'model' => $model
+                              ]) ?>
 </div>

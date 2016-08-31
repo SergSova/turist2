@@ -1,11 +1,11 @@
 <?php
 
-    /*
-     * @var $this yii\web\View
-     * @var $model app\models\Event
-     */
     use macgyer\yii2materializecss\lib\Html;
 
+    /**
+     * @var \app\models\Event $model
+     * @var                   $this yii\web\View
+     */
     $this->title = 'Изменить: '.$model->title;
     $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
     $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
