@@ -2,9 +2,8 @@
 
     namespace app\components\widgets;
 
-    use app\models\Event;
+    use macgyer\yii2materializecss\lib\Html;
     use yii\base\Widget;
-    use yii\helpers\Html;
 
     class ParticipWidget extends Widget{
         public $message;

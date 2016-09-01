@@ -109,7 +109,7 @@
                                   ->defaultExpression('CURRENT_TIMESTAMP'),
                 'user_id' => $this->integer(10)
                                   ->notNull(),
-                'action'  => $this->string(50),
+                'action'  => $this->integer(),
                 'table'   => $this->string(50),
                 'blob'    => $this->string()
             ]);

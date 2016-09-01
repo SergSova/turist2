@@ -30,7 +30,7 @@ JS;
 
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <?php if(Yii::$app->user->can('upupdateOwnPost', ['event' => $model])): ?>
+    <?php if($model->isNewRecord || Yii::$app->user->can('upupdateOwnPost', ['event' => $model])): ?>
 
         <?= $form->field($model, 'event_type_id')
                  ->dropDownList($model->getTypes(), ['prompt' => 'Выберите тип', 'class' => 'dropdown-button']) ?>
