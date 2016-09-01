@@ -2,6 +2,7 @@
 
     namespace app\models;
 
+    use app\components\Logging\Logging;
     use Yii;
     use yii\alexposseda\fileManager\FileManager;
     use yii\helpers\ArrayHelper;
@@ -36,6 +37,15 @@
 
         public $imageFiles;
         public $particip_temp;
+
+        public function init()
+        {
+            parent::init();
+            $this->on($this::EVENT_AFTER_INSERT,[Logging::class,'addCommentLog']);
+            $this->on($this::EVENT_AFTER_UPDATE,[Logging::class,'addCommentLog']);
+            $this->on($this::EVENT_AFTER_INSERT,[Logging::class,'addCommentLog']);
+        }
+
 
         /**
          * @inheritdoc

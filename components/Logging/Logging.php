@@ -1,26 +1,22 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: sergey
+ * Date: 01.09.16
+ * Time: 15:46
+ */
 
-    namespace app\components\Logging;
+namespace app\components\Logging;
 
-    use yii\base\Event;
 
-    class Logging{
+use app\models\Log;
 
-        public function __construct(){
-            $event = new \app\models\Event();
+class Logging
+{
+    const EVENT_ADD_LOG = 'addLog';
 
-        }
-
-        public function init(){
-            $event = new \app\models\Event();
-            $event->on(\app\models\Event::EVENT_BEFORE_INSERT, [$this, 'addCommentLog']);
-        }
-
-        protected function addCommentLog(Event $event){
-            $data = array_merge($event->data, [
-                $event->sender->class_name() => $event->sender->id
-            ]);
-            Log::addLog($event->name, $data);
-        }
-
+    public function addLog($event)
+    {
+        Log::addLog($event);
     }
+}

@@ -107,9 +107,8 @@
                 'id'      => $this->primaryKey(10),
                 'date'    => $this->timestamp()
                                   ->defaultExpression('CURRENT_TIMESTAMP'),
-                'user_id' => $this->integer(10)
-                                  ->notNull(),
-                'action'  => $this->integer(),
+                'user_id' => $this->integer(10),
+                'action'  => $this->string(150),
                 'table'   => $this->string(50),
                 'blob'    => $this->string()
             ]);
@@ -150,7 +149,7 @@
             $this->createIndex('{{%partic_event-event_id}}', '{{%partic_event}}', 'event_id');
             $this->createIndex('{{%friends-user_id}}', '{{%friends}}', 'user_id');
             $this->createIndex('{{%friends-friend_id}}', '{{%friends}}', 'friend_id');
-            $this->createIndex('{{%log-user_id}}', '{{%log}}', 'user_id');
+//            $this->createIndex('{{%log-user_id}}', '{{%log}}', 'user_id');
 
             // add foreign keys for data integrity
             $this->addForeignKey('{{%event-creator_id}}', '{{%event}}', 'creator_id', '{{%user}}', 'id');
@@ -161,7 +160,7 @@
             $this->addForeignKey('{{%partic_event-event_id}}', '{{%partic_event}}', 'event_id', '{{%event}}', 'id');
             $this->addForeignKey('{{%friends-user_id}}', '{{%friends}}', 'user_id', '{{%user}}', 'id');
             $this->addForeignKey('{{%friends-friend_id}}', '{{%friends}}', 'friend_id', '{{%user}}', 'id');
-            $this->addForeignKey('{{%log-user_id}}', '{{%log}}', 'user_id', '{{%user}}', 'id');
+//            $this->addForeignKey('{{%log-user_id}}', '{{%log}}', 'user_id', '{{%user}}', 'id');
         }
 
         public function safeDown(){
