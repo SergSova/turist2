@@ -17,7 +17,8 @@
 $('select').material_select();
 $('.datepicker').pickadate({
     selectMonths: true, // Creates a dropdown to control month
-    selectYears: 15 // Creates a dropdown of 15 years to control year
+    selectYears: 15, // Creates a dropdown of 15 years to control year
+    format: 'yyyy-mm-dd'
   });
  var particEvent = JSON.parse('{$model->getParticToEvent()}');
  console.log(particEvent);
@@ -27,50 +28,84 @@ JS;
 ?>
 
 <div class="event-form">
-
+    <div class="card">
+        <div class="card-content">
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?php if($model->isNewRecord || Yii::$app->user->can('upupdateOwnPost', ['event' => $model])): ?>
+        <div class="row">
+            <div class="col s9">
+                <?= $form->field($model, 'event_type_id')
+                    ->dropDownList($model->getTypes(), ['prompt' => 'Выберите тип', 'class' => 'dropdown-button']) ?>
 
-        <?= $form->field($model, 'event_type_id')
-                 ->dropDownList($model->getTypes(), ['prompt' => 'Выберите тип', 'class' => 'dropdown-button']) ?>
+                <?= $form->field($model, 'title')
+                    ->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'title')
-                 ->textInput(['maxlength' => true]) ?>
-
-        <?= $form->field($model, 'desc')
-                 ->textarea(['rows' => 6]) ?>
-
-        <!--    участинки-->
-        <div class="form-group">
-            <?php if($model->particEvents): ?>
-                <label class="control-label" for="particEvent">Участники</label>
-            <?php endif; ?>
-            <div class="particEvents col-lg-12" id="particEvents"></div>
+                <?= $form->field($model, 'desc')
+                    ->textarea(['rows' => 4]) ?>
+                <div class="row">
+                    <div class="col s3">
+                        <div class="input-field">
+                        <?= Html::activeInput('date', $model, 'date_start', ['class' => 'datepicker']) ?>
+                        <label for="event-date_start">Дата старта</label>
+                        </div>
+                    </div>
+                    <div class="col s3">
+                        <div class="input-field">
+                        <?= Html::activeInput('text', $model, 'time_start', ['class' => 'timepicker']) ?>
+                        <label for="event-time_start">Время старта</label>
+                        </div>
+                    </div>
+                    <div class="col s3">
+                        <div class="input-field">
+                            <?= Html::activeInput('date', $model, 'date_end', ['class' => 'datepicker']) ?>
+                            <label for="event-date_start">Дата окончания</label>
+                        </div>
+                    </div>
+                    <div class="col s3">
+                        <div class="input-field">
+                            <?= Html::activeInput('text', $model, 'time_end', ['class' => 'timepicker']) ?>
+                            <label for="event-time_start">Время окончания</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s6">
+                        <div class="card-panel">
+                            <?= Html::button('<i class="material-icons right">add</i>Организатор', ['class' => 'btn btn-success btn_addOrganisator fullWidth']) ?>
+                        </div>
+                    </div>
+                    <div class="col s6">
+                        <div class="card-panel">
+                                <?= Html::activeHiddenInput($model, 'condition')?>
+                                <?= Html::button('<i class="material-icons right">add</i>Требование', ['id' => 'btn_addContition', 'class' => 'btn btn-success fullWidth']) ?>
+                            <div class="condition"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col s3">
+                <h5>Участники</h5>
+                <?php
+                if($model->particEvents):?>
+                    <ul class="collection">
+                    <?php
+                    foreach ($model->particEvents as $person):
+                    ?>
+                        <li class="collection-item"><div class="chip">
+                            <img src="<?= $person->user->getPhoto()?>" alt="Contact Person">
+                            <?= $person->user->username?>
+                        </div></li>
+                <?php
+                    endforeach; ?>
+                    </ul>
+                        <?php
+                else: ?>
+                    <div class="card-panel">Нет участников</div>
+                <?php endif;?>
+                <div class="particEvents col-lg-12" id="particEvents"></div>
+            </div>
         </div>
-        <!-- end участинки-->
-
-        <div class="form-group">
-            <?= Html::button('Добавить организаторов', ['class' => 'btn btn-success btn_addOrganisator']) ?>
-        </div>
-
-        <div class="form-group">
-            <?= Html::button('Добавить должность', ['class' => 'btn btn-success btn_addPartic']) ?>
-        </div>
-        <div id="particip"></div>
-
-        <!-- condition-->
-        <?= $form->field($model, 'condition')
-                 ->hiddenInput()
-                 ->label(false) ?>
-        <div class="form-group">
-            <?= Html::button('Добавить требование', ['id' => 'btn_addContition', 'class' => 'btn btn-success']) ?>
-        </div>
-        <div class="condition"></div>
-        <!-- end condition-->
-
-        <?= Html::activeInput('datetime-local', $model, 'date_start', ['class' => 'datepicker']) ?>
-        <?= Html::activeInput('datetime-local', $model, 'date_end') ?>
 
     <?php endif; ?>
 
@@ -94,6 +129,7 @@ JS;
     </div>
 
     <?php ActiveForm::end(); ?>
-
+        </div>
+    </div>
 
 </div>

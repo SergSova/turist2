@@ -7,9 +7,7 @@
     /* @var $model app\models\Event */
     /** @var \yii\data\ActiveDataProvider $dataProvider */
 
-    $this->title = 'Create Event';
-    $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $this->title;
+    $this->title = 'Создать событие';
 ?>
 <div class="event-create">
 

@@ -16,8 +16,9 @@
     }
 ?>
 <?php \yii\widgets\Pjax::begin()?>
-<?=ListView::widget([
+<?= ListView::widget([
     'dataProvider'=>$dataProvider,
-    'itemView'=>'_list'
+    'itemView'=>'_list',
+    'layout' => '{items}{summary}{pager}'
                     ])?>
 <?php \yii\widgets\Pjax::end()?>

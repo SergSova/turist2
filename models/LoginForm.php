@@ -34,6 +34,14 @@
             ];
         }
 
+        public function attributeLabels()
+        {
+            return [
+                'username' => 'Имя пользователя',
+                'password' => 'Пароль',
+            ];
+        }
+
         /**
          * Validates the password.
          * This method serves as the inline validation for password.

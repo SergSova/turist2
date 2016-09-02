@@ -4,47 +4,17 @@
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model app\models\LoginForm */
 
-    use app\widgets\uLogin\uLoginWidget;
-    use macgyer\yii2materializecss\lib\Html;
-    use macgyer\yii2materializecss\widgets\form\ActiveForm;
 
 $this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>Please fill out the following fields to login:</p>
-
-    <?php $form = ActiveForm::begin([
-        'id' => 'login-form',
-        'options' => ['class' => 'form-horizontal'],
-        'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            'labelOptions' => ['class' => 'col-lg-1 control-label'],
-        ],
-    ]); ?>
-
-        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-        <?= $form->field($model, 'password')->passwordInput() ?>
-
-        <?= $form->field($model, 'rememberMe')->checkbox([
-            'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
-        ]) ?>
-
-        <div class="form-group">
-            <div class="col-lg-offset-1 col-lg-11">
-                <div class="form-inline"><?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                <div class="form-group"><?=Html::a('Registration',['registration'],['class'=>'col-lg-offset-4'])?></div></div>
-            </div>
+    <div class="row">
+        <div class="col s12 m8 offset-m3 l6 offset-l5">
+            <?php if($model->hasErrors()):?>
+                <div class="card-panel materialize-red center-align">Ошибка входа!</div>
+            <?php endif;?>
+            <?= $this->render('inc/formLogin', ['model' => $model]);?>
         </div>
-
-    <?php ActiveForm::end(); ?>
-
-    <?= uLoginWidget::widget() ?>
-    <div class="col-lg-offset-1" style="color:#999;">
-        You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>
-        To modify the username/password, please check out the code <code>app\models\User::$users</code>.
     </div>
+
 </div>

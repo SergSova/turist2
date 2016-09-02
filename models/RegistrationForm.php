@@ -23,11 +23,25 @@
                 ['photo','safe'],
                 [['username'], 'unique', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['username' => 'username']],
                 [['email'], 'unique', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['email' => 'email']],
+                ['email', 'email'],
                 [['email', 'password', 'password_repeat', 'username'], 'trim'],
                 ['password', 'compare'],
             ];
         }
 
+        public function attributeLabels()
+        {
+            return [
+                'username' => 'Ваш логин',
+                'email' => 'Ваш Email',
+                'password' => 'Подтвердите пароль',
+                'password_repeat' => 'Ваш пароль',
+                'photo' => 'Аватар',
+                'f_name' => 'Фамилия',
+                'l_name' => 'Имя',
+
+            ];
+        }
 
         public function register(){
             if($this->validate()){

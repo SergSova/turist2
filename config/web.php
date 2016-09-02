@@ -36,7 +36,7 @@ $config = [
 
         'loggining' => [
             'class' => 'app\components\Logging\Logging',
-            'onaddLog' => function($event){\app\models\Log::addLog($event);} /*['app\components\Logging\Logging', 'addLog']*/
+//            'on addLog' => function($event){\app\models\Log::addLog($event);} /*['app\components\Logging\Logging', 'addLog']*/
             ],
 
         'log' => [

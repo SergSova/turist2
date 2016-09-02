@@ -11,50 +11,28 @@
     use yii\helpers\Url;
 
     $this->title = 'Registration';
-    $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>Please fill out the following fields to login:</p>
-
-    <?php $form = ActiveForm::begin([
-                                        'id'          => 'registr-form',
-                                        'options'     => ['class' => 'form-horizontal', 'enctype' => 'multipart/form-data'],
-                                        'fieldConfig' => [
-                                            'template'     => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-                                            'labelOptions' => ['class' => 'col-lg-1 control-label'],
-
-                                        ],
-                                    ]); ?>
-
-    <?= $form->field($model, 'username')
-             ->textInput(['autofocus' => true]) ?>
-    <?= $form->field($model, 'email')
-             ->textInput(['autofocus' => true]) ?>
-
-    <?= $form->field($model, 'password')
-             ->passwordInput() ?>
-    <?= $form->field($model, 'password_repeat')
-             ->passwordInput() ?>
-
-
-    <?= Html::activeHiddenInput($model, 'photo', ['id' => 'user-photo']) ?>
-    <?= FileManagerWidget::widget([
-                                      'uploadUrl' => Url::to(['user-upload-photo']),
-                                      'removeUrl' => Url::to(['user-remove-photo']),
-                                      'maxFiles' => 1,
-                                      'targetInputId' => 'user-photo',
-                                      'files' => $model->photo
-                                  ]) ?>
-
-    <div class="form-group">
-        <div class="col-lg-offset-1 col-lg-11">
-            <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+<div class="row">
+    <div class="col s12 m8 offset-m3 l6 offset-l5">
+        <?php
+        $form = ActiveForm::begin([
+            'fieldConfig' => [
+                'template' => "{input}\n{label}\n{error}"
+            ]
+        ]);
+        ?>
+        <div class="card">
+            <div class="card-content">
+                <p class="card-title">Регистрация</p>
+                <?= $form->field($model, 'username')?>
+                <?= $form->field($model, 'email')->input('email')?>
+                <?= $form->field($model, 'password_repeat')?>
+                <?= $form->field($model, 'password')?>
+            </div>
+            <div class="card-action">
+                <?= Html::submitButton('Зарегистрироваться<i class="material-icons right">send</i>', ['class' => 'btn waves-effect waves-light fullWidth'])?>
+            </div>
         </div>
+        <?php ActiveForm::end(); ?>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
-    <?= uLoginWidget::widget(['redirect' => '/site/token']) ?>
 </div>
