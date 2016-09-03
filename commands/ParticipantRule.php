@@ -8,6 +8,7 @@
 
     class ParticipantRule extends Rule{
         public $name = 'isParticipant';
+
         /**
          * Executes the rule.
          *
@@ -19,5 +20,8 @@
          * @return boolean a value indicating whether the rule permits the auth item it is associated with.
          */
         public function execute($user, $item, $params){
-            return $params['event']->getParticEvents()->where(['user_id'=>$user])->exists();
-        }}
+            return $params['event']->getParticEvents()
+                                   ->where(['user_id' => $user])
+                                   ->exists();
+        }
+    }

@@ -1,6 +1,5 @@
 <?php
 
-
     /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
 

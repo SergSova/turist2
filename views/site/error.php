@@ -1,14 +1,13 @@
 <?php
 
-/* @var $this yii\web\View */
+    /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
 
     /* @var $name string */
-/* @var $message string */
-/* @var $exception Exception */
+    /* @var $message string */
+    /* @var $exception Exception */
 
-
-$this->title = $name;
+    $this->title = $name;
 ?>
 <div class="site-error">
 

@@ -1,11 +1,11 @@
 <?php
 
-/* @var $this yii\web\View */
+    /* @var $this yii\web\View */
 
     use macgyer\yii2materializecss\lib\Html;
 
     $this->title = 'About';
-$this->params['breadcrumbs'][] = $this->title;
+    $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">
     <h1><?= Html::encode($this->title) ?></h1>

@@ -15,8 +15,8 @@
      * @property integer $user_id
      * @property integer $friend_id
      *
-     * @property User   $friend
-     * @property User   $user
+     * @property User    $friend
+     * @property User    $user
      */
     class Friends extends \yii\db\ActiveRecord{
         /**
@@ -31,9 +31,27 @@
          */
         public function rules(){
             return [
-                [['user_id', 'friend_id'], 'integer'],
-                [['friend_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['friend_id' => 'id']],
-                [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+                [
+                    [
+                        'user_id',
+                        'friend_id'
+                    ],
+                    'integer'
+                ],
+                [
+                    ['friend_id'],
+                    'exist',
+                    'skipOnError' => true,
+                    'targetClass' => User::className(),
+                    'targetAttribute' => ['friend_id' => 'id']
+                ],
+                [
+                    ['user_id'],
+                    'exist',
+                    'skipOnError' => true,
+                    'targetClass' => User::className(),
+                    'targetAttribute' => ['user_id' => 'id']
+                ],
             ];
         }
 
@@ -42,8 +60,8 @@
          */
         public function attributeLabels(){
             return [
-                'id'        => 'ID',
-                'user_id'   => 'User ID',
+                'id' => 'ID',
+                'user_id' => 'User ID',
                 'friend_id' => 'Friend ID',
             ];
         }
@@ -65,13 +83,13 @@
 
         public function getAllUsers(){
             return ArrayHelper::map(\app\models\User::find()
-                                                     ->all(), 'id', 'username');
+                                                    ->all(), 'id', 'username');
         }
 
         public function getAllFriendArrayId(){
             return self::find()
-                          ->filterWhere(['user_id' => Yii::$app->user->id])
-                          ->all();
+                       ->filterWhere(['user_id' => Yii::$app->user->id])
+                       ->all();
         }
 
         public function addFriend($userId){
@@ -80,7 +98,10 @@
         }
 
         public function removeFriend($userId){
-            $friend = Friends::findOne(['user_id' => $this->user_id, 'friend_id' => $userId]);
+            $friend = Friends::findOne([
+                                           'user_id' => $this->user_id,
+                                           'friend_id' => $userId
+                                       ]);
             $friend->delete();
         }
     }

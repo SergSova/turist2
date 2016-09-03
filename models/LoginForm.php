@@ -26,16 +26,27 @@
         public function rules(){
             return [
                 // username and password are both required
-                [['username', 'password'], 'required'],
+                [
+                    [
+                        'username',
+                        'password'
+                    ],
+                    'required'
+                ],
                 // rememberMe must be a boolean value
-                ['rememberMe', 'boolean'],
+                [
+                    'rememberMe',
+                    'boolean'
+                ],
                 // password is validated by validatePassword()
-                ['password', 'validatePassword'],
+                [
+                    'password',
+                    'validatePassword'
+                ],
             ];
         }
 
-        public function attributeLabels()
-        {
+        public function attributeLabels(){
             return [
                 'username' => 'Имя пользователя',
                 'password' => 'Пароль',

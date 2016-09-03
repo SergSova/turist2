@@ -19,18 +19,53 @@
 
         public function rules(){
             return [
-                [['username', 'password', 'email'], 'required'],
-                ['photo','safe'],
-                [['username'], 'unique', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['username' => 'username']],
-                [['email'], 'unique', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['email' => 'email']],
-                ['email', 'email'],
-                [['email', 'password', 'password_repeat', 'username'], 'trim'],
-                ['password', 'compare'],
+                [
+                    [
+                        'username',
+                        'password',
+                        'email'
+                    ],
+                    'required'
+                ],
+                [
+                    'photo',
+                    'safe'
+                ],
+                [
+                    ['username'],
+                    'unique',
+                    'skipOnError' => true,
+                    'targetClass' => User::className(),
+                    'targetAttribute' => ['username' => 'username']
+                ],
+                [
+                    ['email'],
+                    'unique',
+                    'skipOnError' => true,
+                    'targetClass' => User::className(),
+                    'targetAttribute' => ['email' => 'email']
+                ],
+                [
+                    'email',
+                    'email'
+                ],
+                [
+                    [
+                        'email',
+                        'password',
+                        'password_repeat',
+                        'username'
+                    ],
+                    'trim'
+                ],
+                [
+                    'password',
+                    'compare'
+                ],
             ];
         }
 
-        public function attributeLabels()
-        {
+        public function attributeLabels(){
             return [
                 'username' => 'Ваш логин',
                 'email' => 'Ваш Email',

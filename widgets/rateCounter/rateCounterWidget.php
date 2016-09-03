@@ -12,8 +12,8 @@
         public function init(){
             parent::init();
             $this->params = [
-                'rate'     => $this->rate,
-                'vote'   => $this->vote,
+                'rate' => $this->rate,
+                'vote' => $this->vote,
             ];
         }
 

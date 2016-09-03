@@ -1,19 +1,19 @@
 <?php
 
-
-/* @var $this yii\web\View */
+    /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
 
     /* @var $model app\models\EventType */
-/* @var $form yii\widgets\ActiveForm */
+    /* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="event-type-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')
+             ->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

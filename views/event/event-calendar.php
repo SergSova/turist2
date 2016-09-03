@@ -15,9 +15,9 @@
 </div>
 
 <?= yii2fullcalendar::widget([
-                                 'events'        => $events,
-                                 'options'       => [
-                                     'id'   => 'calendar',
+                                 'events' => $events,
+                                 'options' => [
+                                     'id' => 'calendar',
                                      'lang' => 'ru',
                                  ],
                                  'clientOptions' => [

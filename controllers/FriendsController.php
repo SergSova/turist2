@@ -50,10 +50,13 @@
             }
 
             if($model->load(Yii::$app->request->post()) && $model->save()){
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect([
+                                           'view',
+                                           'id' => $model->id
+                                       ]);
             }else{
                 return $this->render('_form', [
-                    'model'        => $model,
+                    'model' => $model,
                     'searchFriend' => $searchFriend,
                     'dataProvider' => $dataProvider
                 ]);

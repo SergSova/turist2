@@ -1,5 +1,6 @@
 <?php
     namespace app\widgets\FileManagerWidget;
+
     use Yii;
     use yii\alexposseda\fileManager\FileManager;
     use yii\base\Widget;
@@ -27,7 +28,6 @@
 
             $notSaveFiles = FileManager::getFilesFromSession();
 
-
             $script = <<<JS
 var fileManagerWidgetSetting = {
     uploadUrl: "{$this->uploadUrl}",
@@ -37,7 +37,8 @@ var fileManagerWidgetSetting = {
 }
 
 JS;
-            Yii::$app->getView()->registerJs($script, View::POS_END);
+            Yii::$app->getView()
+                     ->registerJs($script, View::POS_END);
             FileManagerWidgetAsset::register(Yii::$app->getView());
 
             return $this->render('baseWidget', [

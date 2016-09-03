@@ -7,8 +7,17 @@
      * @var                   $this yii\web\View
      */
     $this->title = 'Изменить: '.$model->title;
-    $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
-    $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
+    $this->params['breadcrumbs'][] = [
+        'label' => 'Events',
+        'url' => ['index']
+    ];
+    $this->params['breadcrumbs'][] = [
+        'label' => $model->title,
+        'url' => [
+            'view',
+            'id' => $model->id
+        ]
+    ];
     $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="event-update">

@@ -39,14 +39,14 @@ function particEventInit(id, username, foto) {
     $('.particEvents').append(item);
 }
 $(document).ready(function () {
-    try{
+    try {
         console.log(particEvent);
         for (var item in particEvent) {
             for (var name in particEvent[item]) {
                 particEventInit(item, name, particEvent[item][name]);
             }
         }
-    }catch(e){
+    } catch (e) {
         console.log(e)
     }
 });

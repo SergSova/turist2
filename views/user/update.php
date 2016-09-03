@@ -1,15 +1,23 @@
 <?php
 
-
-/* @var $this yii\web\View */
+    /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
 
     /* @var $model app\models\User */
 
-$this->title = 'Update User: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+    $this->title = 'Update User: '.$model->id;
+    $this->params['breadcrumbs'][] = [
+        'label' => 'Users',
+        'url' => ['index']
+    ];
+    $this->params['breadcrumbs'][] = [
+        'label' => $model->id,
+        'url' => [
+            'view',
+            'id' => $model->id
+        ]
+    ];
+    $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="user-update">
 

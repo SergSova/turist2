@@ -1,15 +1,23 @@
 <?php
 
-
-/* @var $this yii\web\View */
+    /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
 
     /* @var $model app\models\EventType */
 
-$this->title = 'Update Event Type: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Event Types', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+    $this->title = 'Update Event Type: '.$model->name;
+    $this->params['breadcrumbs'][] = [
+        'label' => 'Event Types',
+        'url' => ['index']
+    ];
+    $this->params['breadcrumbs'][] = [
+        'label' => $model->name,
+        'url' => [
+            'view',
+            'id' => $model->id
+        ]
+    ];
+    $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="event-type-update">
 

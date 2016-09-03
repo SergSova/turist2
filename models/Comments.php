@@ -17,8 +17,8 @@
      * @property Event   $event
      */
     class Comments extends \yii\db\ActiveRecord{
-        const ACTION_COMMENT_ADD  = 10;
-        const ACTION_COMMENT_EDIT = 11;
+        const ACTION_COMMENT_ADD    = 10;
+        const ACTION_COMMENT_EDIT   = 11;
         const ACTION_COMMENT_DELETE = 12;
 
         /**
@@ -33,10 +33,32 @@
          */
         public function rules(){
             return [
-                [['event_id', 'user_id', 'rate'], 'integer'],
-                [['text'], 'string'],
-                [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-                [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::className(), 'targetAttribute' => ['event_id' => 'id']],
+                [
+                    [
+                        'event_id',
+                        'user_id',
+                        'rate'
+                    ],
+                    'integer'
+                ],
+                [
+                    ['text'],
+                    'string'
+                ],
+                [
+                    ['user_id'],
+                    'exist',
+                    'skipOnError' => true,
+                    'targetClass' => User::className(),
+                    'targetAttribute' => ['user_id' => 'id']
+                ],
+                [
+                    ['event_id'],
+                    'exist',
+                    'skipOnError' => true,
+                    'targetClass' => Event::className(),
+                    'targetAttribute' => ['event_id' => 'id']
+                ],
             ];
         }
 
@@ -45,11 +67,11 @@
          */
         public function attributeLabels(){
             return [
-                'id'       => 'ID',
+                'id' => 'ID',
                 'event_id' => 'Event ID',
-                'user_id'  => 'User ID',
-                'text'     => 'Коментарий',
-                'rate'     => 'Rate',
+                'user_id' => 'User ID',
+                'text' => 'Коментарий',
+                'rate' => 'Rate',
             ];
         }
 

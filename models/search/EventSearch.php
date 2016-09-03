@@ -16,8 +16,30 @@
          */
         public function rules(){
             return [
-                [['id', 'event_type_id', 'creator_id', 'rate'], 'integer'],
-                [['title', 'photo', 'desc', 'organizators', 'particip', 'condition', 'date_start', 'date_end', 'date_creation', 'status'], 'safe'],
+                [
+                    [
+                        'id',
+                        'event_type_id',
+                        'creator_id',
+                        'rate'
+                    ],
+                    'integer'
+                ],
+                [
+                    [
+                        'title',
+                        'photo',
+                        'desc',
+                        'organizators',
+                        'particip',
+                        'condition',
+                        'date_start',
+                        'date_end',
+                        'date_creation',
+                        'status'
+                    ],
+                    'safe'
+                ],
             ];
         }
 
@@ -55,22 +77,50 @@
 
             // grid filtering conditions
             $query->andFilterWhere([
-                                       'id'            => $this->id,
+                                       'id' => $this->id,
                                        'event_type_id' => $this->event_type_id,
-                                       'creator_id'    => $this->creator_id,
-                                       'date_start'    => $this->date_start,
-                                       'date_end'      => $this->date_end,
+                                       'creator_id' => $this->creator_id,
+                                       'date_start' => $this->date_start,
+                                       'date_end' => $this->date_end,
                                        'date_creation' => $this->date_creation,
-                                       'rate'          => $this->rate,
+                                       'rate' => $this->rate,
                                    ]);
 
-            $query->andFilterWhere(['like', 'title', $this->title])
-                  ->andFilterWhere(['like', 'photo', $this->photo])
-                  ->andFilterWhere(['like', 'desc', $this->desc])
-                  ->andFilterWhere(['like', 'organizators', $this->organizators])
-                  ->andFilterWhere(['like', 'particip', $this->particip])
-                  ->andFilterWhere(['like', 'condition', $this->condition])
-                  ->andFilterWhere(['like', 'status', $this->status]);
+            $query->andFilterWhere([
+                                       'like',
+                                       'title',
+                                       $this->title
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'photo',
+                                       $this->photo
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'desc',
+                                       $this->desc
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'organizators',
+                                       $this->organizators
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'particip',
+                                       $this->particip
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'condition',
+                                       $this->condition
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'status',
+                                       $this->status
+                                   ]);
 
             return $dataProvider;
         }
@@ -82,7 +132,7 @@
          */
         public function searchCalendar($post){
             $events = $this->search($post)->models;
-            $calEvents=[];
+            $calEvents = [];
             /** @var Event $event */
             foreach($events as $event){
                 $cur = new \yii2fullcalendar\models\Event();
@@ -92,7 +142,10 @@
                 $cur->end = $event->date_end;
                 $cur->description = $event->desc;
                 $cur->source = '<div class= "test">testContent</div>';
-                $cur->url = Yii::$app->urlManager->createUrl(['event/view', 'id' => $event->id]);
+                $cur->url = Yii::$app->urlManager->createUrl([
+                                                                 'event/view',
+                                                                 'id' => $event->id
+                                                             ]);
                 switch($event->eventType->name){
                     case 'cash':
                         $cur->backgroundColor = 'green';
@@ -101,8 +154,9 @@
                         $cur->backgroundColor = 'red';
                         break;
                 }
-                $calEvents[]=$cur;
+                $calEvents[] = $cur;
             }
+
             return $calEvents;
         }
     }

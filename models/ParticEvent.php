@@ -14,7 +14,7 @@
      * @property string  $confirmedtext
      *
      * @property Event   $event
-     * @property User   $user
+     * @property User    $user
      */
     class ParticEvent extends \yii\db\ActiveRecord{
         /**
@@ -29,17 +29,47 @@
          */
         public function rules(){
             return [
-                [['user_id', 'event_id'], 'integer'],
-                [['confirmed'], 'boolean'],
-                [['confirmedtext'], 'string'],
-                [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Event::className(), 'targetAttribute' => ['event_id' => 'id']],
-                [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-                [['user_id', 'event_id'], 'uniquePara']
+                [
+                    [
+                        'user_id',
+                        'event_id'
+                    ],
+                    'integer'
+                ],
+                [
+                    ['confirmed'],
+                    'boolean'
+                ],
+                [
+                    ['confirmedtext'],
+                    'string'
+                ],
+                [
+                    ['event_id'],
+                    'exist',
+                    'skipOnError' => true,
+                    'targetClass' => Event::className(),
+                    'targetAttribute' => ['event_id' => 'id']
+                ],
+                [
+                    ['user_id'],
+                    'exist',
+                    'skipOnError' => true,
+                    'targetClass' => User::className(),
+                    'targetAttribute' => ['user_id' => 'id']
+                ],
+                [
+                    [
+                        'user_id',
+                        'event_id'
+                    ],
+                    'uniquePara'
+                ]
             ];
         }
 
         public function scenarios(){
-            return ['default'=>['confirmed']];
+            return ['default' => ['confirmed']];
         }
 
         /**
@@ -47,10 +77,10 @@
          */
         public function attributeLabels(){
             return [
-                'id'       => 'ID',
-                'user_id'  => 'User ID',
+                'id' => 'ID',
+                'user_id' => 'User ID',
                 'event_id' => 'Event ID',
-                'confirmedtext'=>'Запрос на подтверждение'
+                'confirmedtext' => 'Запрос на подтверждение'
             ];
         }
 

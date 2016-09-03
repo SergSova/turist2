@@ -13,7 +13,6 @@
         public $model;
 
 
-
         public function run(){
             $commentModel = new Comments();
             $commentQuery = $this->model->getComments();
@@ -21,8 +20,8 @@
 
             return $this->render('comment', [
                 'commentModel' => $commentModel,
-                'model'         => $this->model,
-                'dataProvider'  => $dataProvider
+                'model' => $this->model,
+                'dataProvider' => $dataProvider
             ]);
         }
 

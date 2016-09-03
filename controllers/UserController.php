@@ -26,18 +26,18 @@
                     'class' => AccessControl::className(),
                     'rules' => [
                         [
-                            'allow'   => true,
+                            'allow' => true,
                             'actions' => ['vote-user'],
-                            'roles'   => ['user'],
+                            'roles' => ['user'],
                         ],
                         [
-                            'allow'   => true,
-                            'roles'   => ['admin'],
+                            'allow' => true,
+                            'roles' => ['admin'],
                         ],
                     ],
                 ],
-                'verbs'  => [
-                    'class'   => VerbFilter::className(),
+                'verbs' => [
+                    'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
                     ],
@@ -49,10 +49,11 @@
             return [
                 'vote-user' => [
                     'class' => VoteAction::className(),
-                    'type'  => 'user'
+                    'type' => 'user'
                 ],
             ];
         }
+
         /**
          * Lists all User models.
          * @return mixed
@@ -62,7 +63,7 @@
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [
-                'searchModel'  => $searchModel,
+                'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
         }
@@ -89,7 +90,10 @@
             $model = new User();
 
             if($model->load(Yii::$app->request->post()) && $model->save()){
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect([
+                                           'view',
+                                           'id' => $model->id
+                                       ]);
             }else{
                 return $this->render('create', [
                     'model' => $model,
@@ -109,7 +113,10 @@
             $model = $this->findModel($id);
 
             if($model->load(Yii::$app->request->post()) && $model->save()){
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect([
+                                           'view',
+                                           'id' => $model->id
+                                       ]);
             }else{
                 return $this->render('update', [
                     'model' => $model,

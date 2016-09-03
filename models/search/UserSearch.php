@@ -17,8 +17,27 @@
          */
         public function rules(){
             return [
-                [['id', 'rate'], 'integer'],
-                [['username', 'password', 'auth_key', 'status', 'email', 'access_token', 'created_at', 'f_name', 'l_name'], 'safe'],
+                [
+                    [
+                        'id',
+                        'rate'
+                    ],
+                    'integer'
+                ],
+                [
+                    [
+                        'username',
+                        'password',
+                        'auth_key',
+                        'status',
+                        'email',
+                        'access_token',
+                        'created_at',
+                        'f_name',
+                        'l_name'
+                    ],
+                    'safe'
+                ],
             ];
         }
 
@@ -56,20 +75,51 @@
 
             // grid filtering conditions
             $query->andFilterWhere([
-                                       'id'         => $this->id,
+                                       'id' => $this->id,
                                        'created_at' => $this->created_at,
-                                       'rate'       => $this->rate,
+                                       'rate' => $this->rate,
                                    ]);
 
-
-            $query->andFilterWhere(['like', 'username', $this->username])
-                  ->andFilterWhere(['like', 'password', $this->password])
-                  ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-                  ->andFilterWhere(['like', 'status', $this->status])
-                  ->andFilterWhere(['like', 'email', $this->email])
-                  ->andFilterWhere(['like', 'access_token', $this->access_token])
-                  ->andFilterWhere(['like', 'f_name', $this->f_name])
-                  ->andFilterWhere(['like', 'l_name', $this->l_name]);
+            $query->andFilterWhere([
+                                       'like',
+                                       'username',
+                                       $this->username
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'password',
+                                       $this->password
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'auth_key',
+                                       $this->auth_key
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'status',
+                                       $this->status
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'email',
+                                       $this->email
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'access_token',
+                                       $this->access_token
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'f_name',
+                                       $this->f_name
+                                   ])
+                  ->andFilterWhere([
+                                       'like',
+                                       'l_name',
+                                       $this->l_name
+                                   ]);
 
             return $dataProvider;
         }

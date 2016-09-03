@@ -45,17 +45,16 @@
 
             //добавляем разрешение "addPhoto"  и привязываем к нему правило
             $addPhoto = $auth->createPermission('addPhoto');
-            $addPhoto->description='Add photo to post';
+            $addPhoto->description = 'Add photo to post';
             $addPhoto->ruleName = $photo->name;
             $auth->add($addPhoto);
 
             // добавляем роль "participant" и даём роли разрешение "addPhoto"
             $participant = $auth->createRole('participant');
             $auth->add($participant);
-            $auth->addChild($participant,$addPhoto);
+            $auth->addChild($participant, $addPhoto);
 
             $auth->addChild($author, $addPhoto);
-
 
             // добавляем роль "admin" и даём роли разрешение "updatePost"
             // а также все разрешения роли "author"
@@ -68,9 +67,9 @@
             $auth->add($moder);
             $auth->addChild($moder, $admin);
 
-//            // Назначение ролей пользователям. 1 и 2 это IDs возвращаемые IdentityInterface::getId()
-//            // обычно реализуемый в модели User.
-//            $auth->assign($author, 2);
-//            $auth->assign($admin, 1);
+            //            // Назначение ролей пользователям. 1 и 2 это IDs возвращаемые IdentityInterface::getId()
+            //            // обычно реализуемый в модели User.
+            //            $auth->assign($author, 2);
+            //            $auth->assign($admin, 1);
         }
     }

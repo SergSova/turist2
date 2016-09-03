@@ -1,6 +1,5 @@
 <?php
 
-
     /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\grid\GridView;
@@ -21,14 +20,14 @@
     </p>
     <?= GridView::widget([
                              'dataProvider' => $dataProvider,
-                             'filterModel'  => $searchModel,
-                             'columns'      => [
+                             'filterModel' => $searchModel,
+                             'columns' => [
                                  ['class' => 'yii\grid\SerialColumn'],
 
                                  'id',
                                  [
                                      'attribute' => 'photo',
-                                     'content'   => function($model){
+                                     'content' => function($model){
                                          return $model->getPhoto();
                                      }
                                  ],

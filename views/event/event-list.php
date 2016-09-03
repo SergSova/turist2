@@ -3,22 +3,22 @@
 
     use yii\widgets\ListView;
 
-    $events =  $dataProvider->models
-    ?>
+    $events = $dataProvider->models
+?>
 <?php
     $flashMessages = Yii::$app->session->getAllFlashes();
-    if ($flashMessages) {
+    if($flashMessages){
         echo '<ul class="flashes">';
-        foreach($flashMessages as $key => $message) {
-            echo '<li><div class="flash-' . $key . '">' . $message . "</div></li>\n";
+        foreach($flashMessages as $key => $message){
+            echo '<li><div class="flash-'.$key.'">'.$message."</div></li>\n";
         }
         echo '</ul>';
     }
 ?>
-<?php \yii\widgets\Pjax::begin()?>
+<?php \yii\widgets\Pjax::begin() ?>
 <?= ListView::widget([
-    'dataProvider'=>$dataProvider,
-    'itemView'=>'_list',
-    'layout' => '{items}{summary}{pager}'
-                    ])?>
-<?php \yii\widgets\Pjax::end()?>
+                         'dataProvider' => $dataProvider,
+                         'itemView' => '_list',
+                         'layout' => '{items}{summary}{pager}'
+                     ]) ?>
+<?php \yii\widgets\Pjax::end() ?>

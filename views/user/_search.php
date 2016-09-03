@@ -1,20 +1,19 @@
 <?php
 
-
-/* @var $this yii\web\View */
+    /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
 
     /* @var $model app\models\search\UserSearch */
-/* @var $form yii\widgets\ActiveForm */
+    /* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="user-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
-    ]); ?>
+                                        'action' => ['index'],
+                                        'method' => 'get',
+                                    ]); ?>
 
     <?= $form->field($model, 'id') ?>
 

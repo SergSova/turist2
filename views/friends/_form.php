@@ -15,7 +15,10 @@
 
     $this->registerJsFile('/web/js/friend.js', ['depends' => 'app\assets\AppAsset']);
     $this->title = 'Добавить друга';
-    $this->params['breadcrumbs'][] = ['label' => 'Friends', 'url' => ['index']];
+    $this->params['breadcrumbs'][] = [
+        'label' => 'Friends',
+        'url' => ['index']
+    ];
     $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -25,11 +28,14 @@
 
     <?php Pjax::begin(['id' => 'friends']) ?>
     <?php if(Yii::$app->user->identity->friends0): ?>
-        <?=Html::tag('h2','В друзьях')?>
+        <?= Html::tag('h2', 'В друзьях') ?>
     <?php endif; ?>
     <?php foreach(Yii::$app->user->identity->friends0 as $friend): ?>
         <p>
-            <?= Html::tag('b', $friend->friend->username, ['data-userId' => $friend->friend_id, 'class' => 'remove-friend']) ?>
+            <?= Html::tag('b', $friend->friend->username, [
+                'data-userId' => $friend->friend_id,
+                'class' => 'remove-friend'
+            ]) ?>
         </p>
     <?php endforeach; ?>
     <?php Pjax::end() ?>
@@ -43,7 +49,7 @@
         <?php ActiveForm::end() ?>
         <?= ListView::widget([
                                  'dataProvider' => $dataProvider,
-                                 'itemView'     => '_list',
+                                 'itemView' => '_list',
                              ]) ?>
     <?php endif; ?>
     <?php Pjax::end() ?>

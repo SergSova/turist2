@@ -7,32 +7,40 @@ body {
 main {
     flex: 1 0 auto;
 }
-.fullWidth{
+
+.fullWidth {
     width: 100%;
     box-sizing: border-box;
 }
-.marg-bot{
+
+.marg-bot {
     margin-bottom: 20px;
 }
-.no-marg-bot{
-    margin-bottom: 0!important;
+
+.no-marg-bot {
+    margin-bottom: 0 !important;
 }
-.input-field{
+
+.input-field {
     position: relative;
     margin-bottom: 1rem;
 }
-.checkbox-wrap label{
+
+.checkbox-wrap label {
     top: 0;
 }
-.invalid input, .invalid textarea{
+
+.invalid input, .invalid textarea {
     border-bottom: 1px solid #F44336;
     box-shadow: 0 1px 0 0 #F44336;
 }
-.valid input, .valid select, .valid textarea{
+
+.valid input, .valid select, .valid textarea {
     border-bottom: 1px solid #4CAF50;
     box-shadow: 0 1px 0 0 #4CAF50;
 }
-.invalid .help-block{
+
+.invalid .help-block {
     position: absolute;
     bottom: -5px;
     color: #F44336;
@@ -40,8 +48,15 @@ main {
     font-size: 0.8rem;
 }
 
-.rate-count{
+.rate-count {
     text-align: center;
     line-height: 37px;
     font-size: 1.5rem;
+}
+.btn_addOrganisator, .btn_addCondition{
+    padding: 0 1rem;
+}
+.condition .form-inline{
+    padding: 10px;
+    text-align: center;
 }

@@ -1,53 +1,52 @@
 <?php
 
-namespace app\models;
+    namespace app\models;
 
-use Yii;
-
-/**
- * This is the model class for table "tur_event_type".
- *
- * @property integer $id
- * @property string $name
- *
- * @property Event[] $events
- */
-class EventType extends \yii\db\ActiveRecord
-{
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'tur_event_type';
-    }
+    use Yii;
 
     /**
-     * @inheritdoc
+     * This is the model class for table "tur_event_type".
+     *
+     * @property integer $id
+     * @property string  $name
+     *
+     * @property Event[] $events
      */
-    public function rules()
-    {
-        return [
-            [['name'], 'string', 'max' => 50],
-        ];
-    }
+    class EventType extends \yii\db\ActiveRecord{
+        /**
+         * @inheritdoc
+         */
+        public static function tableName(){
+            return 'tur_event_type';
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'name' => 'Name',
-        ];
-    }
+        /**
+         * @inheritdoc
+         */
+        public function rules(){
+            return [
+                [
+                    ['name'],
+                    'string',
+                    'max' => 50
+                ],
+            ];
+        }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEvents()
-    {
-        return $this->hasMany(Event::className(), ['event_type_id' => 'id']);
+        /**
+         * @inheritdoc
+         */
+        public function attributeLabels(){
+            return [
+                'id' => 'ID',
+                'name' => 'Name',
+            ];
+        }
+
+        /**
+         * @return \yii\db\ActiveQuery
+         */
+        public function getEvents(){
+            return $this->hasMany(Event::className(), ['event_type_id' => 'id']);
+        }
     }
-}
