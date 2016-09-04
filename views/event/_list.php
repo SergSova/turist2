@@ -9,36 +9,38 @@
 ?>
 
 <div class="card">
-    <div class="card-content">
-        <div class="row no-marg-bot">
-            <div class="col s8">
-                <p class="card-title"><strong>Событие: </strong><?= $model->title ?></p>
-                <?= $model->desc ?>
-                <div class="event-conditions">
-                    <?php
-                        $conditions = json_decode($model->condition);
-                        if(is_array($conditions)):
-                            foreach($conditions as $condition):
-                                ?>
-                                <div class="chip"><?= $condition ?></div>
-                                <?php
-                            endforeach;
-                        endif;
-                    ?>
+    <a href="<?= \yii\helpers\Url::to(['event/view', 'id' => $model->id]) ?>" style="color:black;text-decoration: none ">
+        <div class="card-content">
+            <div class="row no-marg-bot">
+                <div class="col s8">
+                    <p class="card-title"><strong>Событие: </strong><?= $model->title ?></p>
+                    <?= $model->desc ?>
+                    <div class="event-conditions">
+                        <?php
+                            $conditions = json_decode($model->condition);
+                            if(is_array($conditions)):
+                                foreach($conditions as $condition):
+                                    ?>
+                                    <div class="chip"><?= $condition ?></div>
+                                    <?php
+                                endforeach;
+                            endif;
+                        ?>
+                    </div>
+                </div>
+                <div class="col s4">
+                    <ul class="collection">
+                        <li class="collection-item center-align">
+                            <i class="material-icons left">timer</i><strong><?= Yii::$app->formatter->asDatetime($model->date_start) ?></strong>
+                        </li>
+                        <li class="collection-item center-align">
+                            <i class="material-icons left">timer_off</i><strong><?= Yii::$app->formatter->asDatetime($model->date_end) ?></strong>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="col s4">
-                <ul class="collection">
-                    <li class="collection-item center-align">
-                        <i class="material-icons left">timer</i><strong><?= Yii::$app->formatter->asDatetime($model->date_start) ?></strong>
-                    </li>
-                    <li class="collection-item center-align">
-                        <i class="material-icons left">timer_off</i><strong><?= Yii::$app->formatter->asDatetime($model->date_end) ?></strong>
-                    </li>
-                </ul>
-            </div>
         </div>
-    </div>
+    </a>
     <div class="card-action">
         <div class="row no-marg-bot">
             <div class="col s3">
@@ -62,7 +64,7 @@
                                 '/event/remove-particip',
                                 'id' => $model->id
                             ], [
-                                            'class' => 'btn amber waves-effect waves-light fullWidth',
+                                            'class'     => 'btn amber waves-effect waves-light fullWidth',
                                             'data-pjax' => 0
                                         ]) ?>
                         <?php else: ?>
@@ -70,7 +72,7 @@
                                 '/event/add-particip',
                                 'id' => $model->id
                             ], [
-                                            'class' => 'btn light-blue waves-effect waves-light fullWidth',
+                                            'class'     => 'btn light-blue waves-effect waves-light fullWidth',
                                             'data-pjax' => 0
                                         ]) ?>
                             <?php
@@ -91,16 +93,13 @@
                             ], ['data-pjax' => 0]) ?>
                         <?php else: ?>
                             <?php Modal::begin([
-                                                   //'header'       => '<h2>Отправить запрос на добавление</h2>',
-                                                   'modalType' => Modal::TYPE_LEAN,
+                                                   'modalType'    => Modal::TYPE_LEAN,
                                                    'toggleButton' => [
-                                                       //                                               'tag'   => 'a',
-                                                       //                                               'class' => '',
                                                        'label' => 'Подать заявку!',
                                                    ],
-                                                   'closeButton' => [
+                                                   'closeButton'  => [
                                                        'label' => 'Закрыть',
-                                                       'tag' => 'span'
+                                                       'tag'   => 'span'
                                                    ],
                                                ]) ?>
                             <?php $form = ActiveForm::begin(['action' => ['event/send-confirm']]) ?>

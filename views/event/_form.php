@@ -1,5 +1,6 @@
 <?php
 
+    use app\models\Friends;
     use app\widgets\FileManagerWidget\FileManagerWidget;
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
@@ -40,7 +41,7 @@ JS;
         <div class="card-content">
             <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-            <?php if($model->isNewRecord || Yii::$app->user->can('upupdateOwnPost', ['event' => $model])): ?>
+            <?php if($model->isNewRecord || Yii::$app->user->can('updateOwnPost', ['event' => $model])): ?>
                 <div class="row">
                     <div class="col s8">
                         <div class="row">
@@ -160,7 +161,7 @@ JS;
                         <div class="card">
                             <?= Html::activeHiddenInput($model, 'organizators') ?>
                             <div class="card-content">
-                                <?= Html::dropDownList('friend-list', null, ArrayHelper::map(Yii::$app->user->identity->friends0, 'id', 'username'), [
+                                <?= Html::dropDownList('friend-list', null, Friends::getAllFriendArrayId(), [
                                     'prompt' => 'Организаторы',
                                     'multiple' => true
                                 ]) ?>

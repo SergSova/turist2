@@ -4,7 +4,7 @@
 
     use app\components\Logging\Logging;
     use Yii;
-    use yii\alexposseda\fileManager\FileManager;
+    use yii\sergsova\fileManager\FileManager;
     use yii\helpers\ArrayHelper;
     use yii\web\UploadedFile;
 
@@ -185,6 +185,11 @@
                 $m = substr($this->time_end, strpos($this->time_end, ':')+1, -2);
             }
             $this->date_end .= ' '.$h.':'.$m.':00';
+
+            $auth = Yii::$app->authManager;
+            $authorRole = $auth->getRole('user');
+            $auth->assign($authorRole, $user->getId());
+
 
             return parent::beforeSave($insert);
         }

@@ -4,51 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f848ee49ea90d0042aa27d6e7d806072",
-    "content-hash": "af50d8baad5311851d2d11a37ec71bed",
+    "hash": "118207d524e7026c2eb49d0fdbaa292d",
+    "content-hash": "81f3e98e3203219a9953bf10d87aa574",
     "packages": [
-        {
-            "name": "alexposseda/filemanager",
-            "version": "v1.0.3-stable",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alexposseda/fileManagerForYii2.git",
-                "reference": "8eeb4cef5ad3766ead14d757e61cba65cb0ce100"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alexposseda/fileManagerForYii2/zipball/8eeb4cef5ad3766ead14d757e61cba65cb0ce100",
-                "reference": "8eeb4cef5ad3766ead14d757e61cba65cb0ce100",
-                "shasum": ""
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "yii\\alexposseda\\fileManager\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Alex Posseda",
-                    "email": "alexposseda@gmail.com"
-                }
-            ],
-            "description": "The file manager for the Yii framework",
-            "keywords": [
-                "ajax",
-                "filemanager",
-                "uploadfile",
-                "yii2"
-            ],
-            "time": "2016-08-25 15:01:50"
-        },
         {
             "name": "bower-asset/bootstrap",
             "version": "v3.3.7",
@@ -672,6 +630,48 @@
                 "yii2"
             ],
             "time": "2016-04-23 15:30:06"
+        },
+        {
+            "name": "sergsova/filemanager",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SergSova/fileManagerForYii2.git",
+                "reference": "c159fbf00a4c4c1aa2bd9ad9066e01818e60fd0d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SergSova/fileManagerForYii2/zipball/c159fbf00a4c4c1aa2bd9ad9066e01818e60fd0d",
+                "reference": "c159fbf00a4c4c1aa2bd9ad9066e01818e60fd0d",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "yii\\sergsova\\fileManager\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Posseda",
+                    "email": "sergsova@gmail.com"
+                }
+            ],
+            "description": "The file manager for the Yii framework",
+            "keywords": [
+                "ajax",
+                "filemanager",
+                "uploadfile",
+                "yii2"
+            ],
+            "time": "2016-09-03 20:56:42"
         },
         {
             "name": "swiftmailer/swiftmailer",

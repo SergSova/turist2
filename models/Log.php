@@ -3,7 +3,6 @@
     namespace app\models;
 
     use Yii;
-    use yii\base\Event;
     use yii\helpers\Json;
 
     /**

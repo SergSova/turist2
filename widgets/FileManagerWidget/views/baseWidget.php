@@ -1,5 +1,5 @@
 <?php
-    use yii\alexposseda\fileManager\FileManager;
+    use yii\sergsova\fileManager\FileManager;
 
     /**
      * @var array $notSavedFiles

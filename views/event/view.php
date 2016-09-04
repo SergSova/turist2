@@ -15,11 +15,7 @@
      * @var \app\models\Comments         $commentModel
      */
     $this->title = $model->title;
-    $this->params['breadcrumbs'][] = [
-        'label' => 'Events',
-        'url' => ['index']
-    ];
-    $this->params['breadcrumbs'][] = $this->title;
+
     $event = $model;
 
     $conditions = $model->condition ? json_decode($model->condition) : null;

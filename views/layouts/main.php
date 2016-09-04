@@ -4,12 +4,15 @@
     /* @var $content string */
 
     use app\models\LoginForm;
+    use app\models\search\EventSearch;
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\Breadcrumbs;
     use macgyer\yii2materializecss\widgets\Nav;
     use macgyer\yii2materializecss\widgets\NavBar;
     use app\assets\AppAsset;
     use yii\helpers\Url;
+    use yii\web\JsExpression;
+    use yii2fullcalendar\yii2fullcalendar;
 
     AppAsset::register($this);
 ?>
@@ -69,9 +72,6 @@
     ?>
 </header>
 <main>
-    <?= Breadcrumbs::widget([
-                                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                            ]) ?>
     <div class="row">
         <div class="col s12 m9">
             <?= $content ?>
@@ -86,6 +86,46 @@
                     <a href="<?= Url::to(['event/index']) ?>" class="collection-item ">Все события</a>
                 </div>
             <?php endif; ?>
+            <div class="card-panel">
+                <?php $eventsSearch = new EventSearch();
+                     $eventsSearch->status = 'active';
+                     $events = $eventsSearch->searchCalendar(Yii::$app->request->post()); ?>
+                <?= yii2fullcalendar::widget([
+                                                 'events' => $events,
+                                                 'options' => [
+                                                     'id' => 'calendar',
+                                                     'lang' => 'ru',
+                                                 ],
+                                                 'clientOptions' => [
+                                                     'eventClick' => new JsExpression('function(calEvent, jsEvent, view) {
+                                    jsEvent.preventDefault();
+var eventTitle = $("#eventHeading");
+var eventBody = $("#eventBody");
+var buttonRedirect = $("#buttonRedirect");
+var eventPopup = $("#eventPopup");
+
+eventTitle.text(calEvent.title);
+eventBody.text(calEvent.description);
+buttonRedirect.attr("href", calEvent.url);
+eventPopup.css({
+    background: calEvent.backgroundColor?calEvent.backgroundColor:"white",
+    display: "block",
+    top: (parseInt(jsEvent.pageY) - $(window).scrollTop()) + "px",
+    left: jsEvent.pageX
+});
+}')
+                                                 ]
+
+                                             ]); ?>
+            </div>
+            <div class="card-panel">
+                <p class="card-title">Комментарии</p>
+                <?php $comments = \app\models\Comments::find()->orderBy(['id'=>'DESC'])->limit(10)->all();?>
+                <?php foreach($comments as $comment):?>
+                    <strong><?=$comment->user->username?></strong> -
+                    <?=$comment->text?>.<br>
+                <?php endforeach;?>
+            </div>
         </div>
     </div>
 </main>

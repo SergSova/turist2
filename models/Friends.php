@@ -86,9 +86,9 @@
                                                     ->all(), 'id', 'username');
         }
 
-        public function getAllFriendArrayId(){
+        public static function getAllFriendArrayId(){
             return self::find()
-                       ->filterWhere(['user_id' => Yii::$app->user->id])
+                       ->filterWhere(['user_id' => Yii::$app->user->id])->asArray()
                        ->all();
         }
 

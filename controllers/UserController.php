@@ -6,8 +6,8 @@
     use Yii;
     use app\models\User;
     use app\models\search\UserSearch;
-    use yii\alexposseda\fileManager\actions\UploadAction;
-    use yii\alexposseda\fileManager\models\UploadPictureModel;
+    use yii\sergsova\fileManager\actions\UploadAction;
+    use yii\sergsova\fileManager\models\UploadPictureModel;
     use yii\filters\AccessControl;
     use yii\web\Controller;
     use yii\web\NotFoundHttpException;

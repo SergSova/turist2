@@ -4,8 +4,7 @@
 
     use app\components\Logging\Logging;
     use Yii;
-    use yii\alexposseda\fileManager\FileManager;
-    use yii\base\Event;
+    use yii\sergsova\fileManager\FileManager;
     use yii\bootstrap\Html;
     use yii\web\IdentityInterface;
 
@@ -57,8 +56,8 @@
         public function afterFind(){
             $comment = $this->getComments()
                             ->sum('rate');
-            //        $event = $this->getEvents()
-            //            ->sum('rate');
+                    $event = $this->getEvents()
+                        ->sum('rate');
             $this->rate = $comment + $event;
         }
 

@@ -2,7 +2,7 @@
     namespace app\widgets\FileManagerWidget;
 
     use Yii;
-    use yii\alexposseda\fileManager\FileManager;
+    use yii\sergsova\fileManager\FileManager;
     use yii\base\Widget;
     use yii\web\View;
 

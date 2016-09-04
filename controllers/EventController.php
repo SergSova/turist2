@@ -9,8 +9,8 @@
     use Yii;
     use app\models\Event;
     use app\models\search\EventSearch;
-    use yii\alexposseda\fileManager\actions\UploadAction;
-    use yii\alexposseda\fileManager\models\UploadPictureModel;
+    use yii\sergsova\fileManager\actions\UploadAction;
+    use yii\sergsova\fileManager\models\UploadPictureModel;
     use yii\data\ActiveDataProvider;
     use yii\filters\AccessControl;
     use yii\web\Controller;
@@ -81,7 +81,7 @@
                                                             ])
                 ],
                 'event-remove-photo' => [
-                    'class' => '\yii\alexposseda\fileManager\actions\RemoveAction',
+                    'class' => '\yii\sergsova\fileManager\actions\RemoveAction',
                 ],
             ];
         }
@@ -199,6 +199,7 @@
          */
         public function actionIndex(){
             $searchModel = new EventSearch();
+            $searchModel->creator_id = Yii::$app->user->id;
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [

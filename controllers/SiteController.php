@@ -7,8 +7,8 @@
     use app\models\RegistrationForm;
     use app\models\User;
     use Yii;
-    use yii\alexposseda\fileManager\actions\UploadAction;
-    use yii\alexposseda\fileManager\models\UploadPictureModel;
+    use yii\sergsova\fileManager\actions\UploadAction;
+    use yii\sergsova\fileManager\models\UploadPictureModel;
     use yii\filters\AccessControl;
     use yii\web\Controller;
     use yii\filters\VerbFilter;
@@ -53,7 +53,7 @@
                                                             ])
                 ],
                 'user-remove-photo' => [
-                    'class' => '\yii\alexposseda\fileManager\actions\RemoveAction',
+                    'class' => '\yii\sergsova\fileManager\actions\RemoveAction',
                 ],
             ];
         }
