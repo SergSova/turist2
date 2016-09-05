@@ -6,6 +6,7 @@
     use app\models\forms\RequestChangeMailForm;
     use app\models\LoginForm;
     use app\models\RegistrationForm;
+    use app\models\SocialAcc;
     use app\widgets\rateCounter\VoteAction;
     use Yii;
     use app\models\User;
@@ -82,6 +83,10 @@
             }
 
             return $this->render('change_password', ['model' => $model]);
+        }
+
+        public function actionRemoveSocial($id){
+            return SocialAcc::findOne($id)->delete();
         }
 
         /**

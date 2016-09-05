@@ -40,12 +40,13 @@
         const STATUS_BLOCKED  = 'BLOCKED';
 
         public static function isPasswordResetTokenValid($password_reset_token){
-            if (empty($token)) {
+            if(empty($token)){
                 return false;
             }
 
-            $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+            $timestamp = (int)substr($token, strrpos($token, '_') + 1);
             $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+
             return $timestamp + $expire >= time();
         }
 
@@ -53,13 +54,13 @@
             parent::init();
         }
 
-
         /**
          * @inheritdoc
          */
         public static function tableName(){
             return 'tur_user';
         }
+
 
         public function afterFind(){
             $comment = $this->getComments()
@@ -69,10 +70,10 @@
             $this->rate = $comment + $event;
         }
 
-
         public static function findByUsername($username){
             return self::findOne(['username' => $username]);
         }
+
 
         /**
          * @inheritdoc
@@ -299,11 +300,14 @@
         public static function loginByToken($token){
             $s = file_get_contents('http://ulogin.ru/token.php?token='.$token.'&host='.Yii::$app->basePath);
             $token_user = json_decode($s, true);
-
-            $user = self::findOne(['email' => $token_user['email']]);
-            if(is_null($user)){
-                $transaction = Yii::$app->db->beginTransaction();
-                try{
+            $transaction = Yii::$app->db->beginTransaction();
+            try{
+                if(!Yii::$app->user->isGuest){
+                    $user = Yii::$app->user->identity;
+                }else{
+                    $user = self::findOne(['email' => $token_user['email']]);
+                }
+                if(is_null($user)){
                     $user = new self();
                     $user->access_token = $token_user['identity'];
                     $user->email = $token_user['email'];
@@ -321,39 +325,44 @@
                     $authorRole = $auth->getRole('user');
                     $auth->assign($authorRole, $user->getId());
 
-                    $social = new SocialAcc();
-                    $social->user_id = $user->id;
-                    $social->social_id = $token_user['identity'];
-                    $social->social_name = $token_user['network'];
-                    if(!$social->save()){
-                        throw new \Exception('ошибка сохранения social');
+                    self::addSocial($user, $token_user);
+                }else{
+                    if(!$user->getSocialAccs()
+                             ->where(['social_name' => $token_user['network']])
+                             ->exists()
+                    ){
+                        self::addSocial($user, $token_user);
                     }
                     $transaction->commit();
-                }catch(\Exception $e){
-                    $transaction->rollBack();
                 }
-            }else{
-                if(!$user->getSocialAccs()
-                         ->where(['social_name' => $token_user['network']])
-                         ->exists()
-                ){
-                    $social = new SocialAcc();
-                    $social->user_id = $user->id;
-                    $social->social_id = $token_user['identity'];
-                    $social->social_name = $token_user['network'];
-                    if(!$user->photo){
-                        $user->photo = json_encode([$token_user['photo_big']]);
-                    }
-                    if(!$social->save() && $user->save()){
-                        $user->addError('username', 'ошибка добавления соц. сети');
-                    }
-                }
+            }catch(\Exception $e){
+                $transaction->rollBack();
             }
+            /** @var User $user */
             if(!$user->hasErrors()){
                 return Yii::$app->user->login($user, 3600 * 24 * 30);
             }
 
             return false;
+        }
+
+        /**
+         * @param $user
+         * @param $token_user
+         *
+         * @throws \Exception
+         */
+        private static function addSocial($user, $token_user){
+            $social = new SocialAcc();
+            $social->user_id = $user->id;
+            $social->social_id = $token_user['identity'];
+            $social->social_name = $token_user['network'];
+            if(!$user->photo && $token_user['photo_big']){
+                $user->photo = json_encode([$token_user['photo_big']]);
+            }
+            if(!$social->save()){
+                throw new \Exception('ошибка сохранения social');
+            }
         }
 
         public function beforeSave($insert){
@@ -376,11 +385,6 @@
 
             return $photo[0] == 'http:' ? '<img src="'.$user_photo[0].'">' : Html::img(FileManager::getInstance()
                                                                                                   ->getStorageUrl().$user_photo[0]);
-        }
-
-        public function afterSave($insert, $changedAttributes){
-            //        $this->trigger(Logging::EVENT_ADD_LOG);
-            //parent::afterSave($insert, $changedAttributes); // TODO: Change the autogenerated stub
         }
 
         public function generatePasswordResetToken(){
