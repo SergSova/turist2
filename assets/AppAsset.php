@@ -23,5 +23,6 @@
         public $depends  = [
             'yii\web\YiiAsset',
             'macgyer\yii2materializecss\assets\MaterializeAsset',
+            'macgyer\yii2materializecss\assets\MaterializePluginAsset',
         ];
     }

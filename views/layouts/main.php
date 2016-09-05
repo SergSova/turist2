@@ -60,7 +60,7 @@
             //                'label' => 'Личный кабинет',
             //                'url' => ['/user/index']
             //            ];
-            $menuItems[] = '<li>'.Html::beginForm(['/site/logout'], 'post',
+            $menuItems[] = '<li>'.Html::beginForm(['/user/logout'], 'post',
                                                   ['class' => 'navbar-form']).Html::submitButton('Выйти ('.Yii::$app->user->identity->username.')',
                                                                                                  ['class' => 'btn btn-link']).Html::endForm().'</li>';
         }
@@ -78,7 +78,7 @@
         </div>
         <div class="col s12 m3">
             <?php if(Yii::$app->user->isGuest && Yii::$app->controller->action->id != 'login' && Yii::$app->controller->action->id != 'registration'): ?>
-                <?= $this->render('../site/inc/formLogin', ['model' => new LoginForm()]); ?>
+                <?= $this->render('//user/inc/formLogin', ['model' => new LoginForm()]); ?>
             <?php else: ?>
                 <div class="collection">
                     <h5 class="collection-header center-align">Мои события</h5>

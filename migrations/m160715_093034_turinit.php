@@ -12,6 +12,7 @@
                 'password' => $this->string(255)
                                    ->comment('Пароль'),
                 'auth_key' => $this->string(255),
+                'password_reset_token'=>$this->text(),
                 'status' => "enum('inactive', 'active', 'blocked')",
                 'email' => $this->string(50),
                 'access_token' => $this->string(255),

@@ -3,6 +3,7 @@
     return [
         'adminEmail' => 'admin@example.com',
         'supportEmail' => 'suport@turist.com',
+        'user.passwordResetTokenExpire' => 3600,
         'fileManager' => [
             'storagePath' => dirname(__DIR__).'/web/storage',
             'storageUrl' => 'http://turist.local/web/storage/',

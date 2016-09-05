@@ -4,11 +4,8 @@
     /* @var $form yii\bootstrap\ActiveForm */
     /* @var $model app\models\RegistrationForm */
 
-    use app\widgets\FileManagerWidget\FileManagerWidget;
-    use app\widgets\uLogin\uLoginWidget;
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
-    use yii\helpers\Url;
 
     $this->title = 'Registration';
 ?>

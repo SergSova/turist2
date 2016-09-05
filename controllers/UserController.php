@@ -2,13 +2,15 @@
 
     namespace app\controllers;
 
+    use app\models\forms\RequestChangeMailForm;
+    use app\models\LoginForm;
+    use app\models\RegistrationForm;
     use app\widgets\rateCounter\VoteAction;
     use Yii;
     use app\models\User;
-    use app\models\search\UserSearch;
+    use yii\filters\AccessControl;
     use yii\sergsova\fileManager\actions\UploadAction;
     use yii\sergsova\fileManager\models\UploadPictureModel;
-    use yii\filters\AccessControl;
     use yii\web\Controller;
     use yii\web\NotFoundHttpException;
     use yii\filters\VerbFilter;
@@ -26,13 +28,16 @@
                     'class' => AccessControl::className(),
                     'rules' => [
                         [
+                            'actions' => [
+                                'login',
+                                'registration'
+                            ],
                             'allow' => true,
-                            'actions' => ['vote-user'],
-                            'roles' => ['user'],
+                            'roles' => ['?'],
                         ],
                         [
                             'allow' => true,
-                            'roles' => ['admin'],
+                            'roles' => ['@'],
                         ],
                     ],
                 ],
@@ -40,103 +45,72 @@
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'logout' => ['post'],
                     ],
                 ],
             ];
         }
 
+        public function actionIndex(){
+            $model = $this->findModel(Yii::$app->user->id);
+
+            return $this->render('index', ['model' => $model]);
+        }
+
+        public function actionRequestChangeMail(){
+            $model = new RequestChangeMailForm();
+            if($model->load(Yii::$app->request->post()) && $model->sendConfirm()){
+                return $this->goBack();
+            }
+
+            return $this->render('requestChangeEmail', ['model' => $model]);
+        }
+
+        public function actionChangeEmailToken($token, $newEmail){
+            if(User::changeEmail($token, $newEmail)){
+                return $this->redirect('index');
+            }
+
+            return $this->render('error');
+        }
+
+        /**
+         * @param \yii\base\Action $action
+         *
+         * @return bool
+         */
+        public function beforeAction($action){
+            if($action->id == 'registration' || $action->id == 'login'){
+                $this->enableCsrfValidation = false;
+            }
+
+            return parent::beforeAction($action);
+        }
+
+        /**
+         * @return array
+         */
         public function actions(){
             return [
                 'vote-user' => [
                     'class' => VoteAction::className(),
                     'type' => 'user'
                 ],
+                'user-upload-photo' => [
+                    'class' => UploadAction::className(),
+                    'uploadPath' => 'user',
+                    'sessionEnable' => true,
+                    'uploadModel' => new UploadPictureModel([
+                                                                'validationRules' => [
+                                                                    'extensions' => 'jpg, png',
+                                                                    'maxSize' => 1024 * 50
+                                                                ]
+                                                            ])
+                ],
+                'user-remove-photo' => [
+                    'class' => '\yii\sergsova\fileManager\actions\RemoveAction',
+                ],
             ];
-        }
-
-        /**
-         * Lists all User models.
-         * @return mixed
-         */
-        public function actionIndex(){
-            $searchModel = new UserSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
-            ]);
-        }
-
-        /**
-         * Displays a single User model.
-         *
-         * @param integer $id
-         *
-         * @return mixed
-         */
-        public function actionView($id){
-            return $this->render('view', [
-                'model' => $this->findModel($id),
-            ]);
-        }
-
-        /**
-         * Creates a new User model.
-         * If creation is successful, the browser will be redirected to the 'view' page.
-         * @return mixed
-         */
-        public function actionCreate(){
-            $model = new User();
-
-            if($model->load(Yii::$app->request->post()) && $model->save()){
-                return $this->redirect([
-                                           'view',
-                                           'id' => $model->id
-                                       ]);
-            }else{
-                return $this->render('create', [
-                    'model' => $model,
-                ]);
-            }
-        }
-
-        /**
-         * Updates an existing User model.
-         * If update is successful, the browser will be redirected to the 'view' page.
-         *
-         * @param integer $id
-         *
-         * @return mixed
-         */
-        public function actionUpdate($id){
-            $model = $this->findModel($id);
-
-            if($model->load(Yii::$app->request->post()) && $model->save()){
-                return $this->redirect([
-                                           'view',
-                                           'id' => $model->id
-                                       ]);
-            }else{
-                return $this->render('update', [
-                    'model' => $model,
-                ]);
-            }
-        }
-
-        /**
-         * Deletes an existing User model.
-         * If deletion is successful, the browser will be redirected to the 'index' page.
-         *
-         * @param integer $id
-         *
-         * @return mixed
-         */
-        public function actionDelete($id){
-            $this->findModel($id)
-                 ->delete();
-
-            return $this->redirect(['index']);
         }
 
         /**
@@ -155,4 +129,42 @@
                 throw new NotFoundHttpException('The requested page does not exist.');
             }
         }
+
+        public function actionLogin(){
+            if(!Yii::$app->user->isGuest){
+                return $this->goHome();
+            }
+
+            $token = Yii::$app->request->post('token');
+            if(isset($token) && User::loginByToken($token)){
+                return $this->goBack();
+            }
+
+            $model = new LoginForm();
+            if($model->load(Yii::$app->request->post()) && $model->login()){
+                return $this->goBack();
+            }
+
+            return $this->render('login', [
+                'model' => $model,
+            ]);
+        }
+
+        public function actionRegistration(){
+            $model = new RegistrationForm();
+            if($model->load(Yii::$app->request->post()) && $model->register()){
+                return $this->goBack();
+            }
+
+            return $this->render('registration', [
+                'model' => $model,
+            ]);
+        }
+
+        public function actionLogout(){
+            Yii::$app->user->logout();
+
+            return $this->goHome();
+        }
+
     }

@@ -13,7 +13,7 @@
         <p class="card-title">Вход</p>
         <?php
             $form = ActiveForm::begin([
-                                          'action' => ['site/login'],
+                                          'action' => ['user/login'],
                                           'method' => 'post',
                                           'fieldConfig' => [
                                               'template' => "{input}\n{label}\n{error}"
@@ -48,10 +48,10 @@
     <div class="card-action">
         <div class="row  center-align">
             <?= uLoginWidget::widget([
-                                         'redirect' => \yii\helpers\Url::to(['site/login'])
+                                         'redirect' => \yii\helpers\Url::to(['user/login'])
                                      ]) ?>
         </div>
-        <?= Html::a('Регистрация<i class="material-icons right">account_circle</i>', ['site/registration'],
+        <?= Html::a('Регистрация<i class="material-icons right">account_circle</i>', ['user/registration'],
                     ['class' => 'btn amber waves-effect waves-light fullWidth']) ?>
     </div>
 </div>
