@@ -2,6 +2,7 @@
 
     namespace app\controllers;
 
+    use app\models\forms\PasswordChangeModel;
     use app\models\forms\RequestChangeMailForm;
     use app\models\LoginForm;
     use app\models\RegistrationForm;
@@ -72,6 +73,15 @@
             }
 
             return $this->render('error');
+        }
+
+        public function actionChangePassword(){
+            $model = new PasswordChangeModel();
+            if($model->load(Yii::$app->request->post()) && $model->changePassword()){
+                return $this->goBack();
+            }
+
+            return $this->render('change_password', ['model' => $model]);
         }
 
         /**
