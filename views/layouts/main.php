@@ -3,10 +3,9 @@
     /* @var $this \yii\web\View */
     /* @var $content string */
 
-    use app\models\LoginForm;
+    use app\models\forms\LoginForm;
     use app\models\search\EventSearch;
     use macgyer\yii2materializecss\lib\Html;
-    use macgyer\yii2materializecss\widgets\Breadcrumbs;
     use macgyer\yii2materializecss\widgets\Nav;
     use macgyer\yii2materializecss\widgets\NavBar;
     use app\assets\AppAsset;

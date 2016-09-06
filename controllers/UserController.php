@@ -2,10 +2,10 @@
 
     namespace app\controllers;
 
+    use app\models\forms\LoginForm;
     use app\models\forms\PasswordChangeModel;
+    use app\models\forms\RegistrationForm;
     use app\models\forms\RequestChangeMailForm;
-    use app\models\LoginForm;
-    use app\models\RegistrationForm;
     use app\models\SocialAcc;
     use app\widgets\rateCounter\VoteAction;
     use Yii;

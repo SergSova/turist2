@@ -1,10 +1,10 @@
 <?php
 
-    namespace app\models;
+    namespace app\models\forms;
 
+    use app\models\User;
     use Yii;
     use yii\base\Model;
-    use yii\web\UploadedFile;
 
     class RegistrationForm extends Model{
 

@@ -6,18 +6,6 @@
     /* @var $model app\models\EventType */
 
     $this->title = 'Update Event Type: '.$model->name;
-    $this->params['breadcrumbs'][] = [
-        'label' => 'Event Types',
-        'url' => ['index']
-    ];
-    $this->params['breadcrumbs'][] = [
-        'label' => $model->name,
-        'url' => [
-            'view',
-            'id' => $model->id
-        ]
-    ];
-    $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="event-type-update">
 

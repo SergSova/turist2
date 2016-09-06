@@ -5,7 +5,6 @@
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
 
     /* @var $model app\models\EventType */
-    /* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="event-type-form">
