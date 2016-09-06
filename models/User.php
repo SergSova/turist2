@@ -39,17 +39,6 @@
         const STATUS_ACTIVE   = 'ACTIVE';
         const STATUS_BLOCKED  = 'BLOCKED';
 
-        public static function isPasswordResetTokenValid($password_reset_token){
-            if(empty($token)){
-                return false;
-            }
-
-            $timestamp = (int)substr($token, strrpos($token, '_') + 1);
-            $expire = Yii::$app->params['user.passwordResetTokenExpire'];
-
-            return $timestamp + $expire >= time();
-        }
-
         public function init(){
             parent::init();
         }
@@ -61,7 +50,6 @@
             return 'tur_user';
         }
 
-
         public function afterFind(){
             $comment = $this->getComments()
                             ->sum('rate');
@@ -70,10 +58,10 @@
             $this->rate = $comment + $event;
         }
 
+
         public static function findByUsername($username){
             return self::findOne(['username' => $username]);
         }
-
 
         /**
          * @inheritdoc
@@ -128,6 +116,14 @@
                     'unique'
                 ],
             ];
+        }
+
+
+        public function scenarios(){
+            $scenarios = parent::scenarios();
+            $scenarios['photo'] = ['photo'];
+
+            return $scenarios;
         }
 
         /**
@@ -283,6 +279,17 @@
             return Yii::$app->security->validatePassword($password, $this->password);
         }
 
+        public static function isPasswordResetTokenValid($password_reset_token){
+            if(empty($token)){
+                return false;
+            }
+
+            $timestamp = (int)substr($token, strrpos($token, '_') + 1);
+            $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+
+            return $timestamp + $expire >= time();
+        }
+
         public function registration(){
 
             $this->status = self::STATUS_INACTIVE;
@@ -333,8 +340,8 @@
                     ){
                         self::addSocial($user, $token_user);
                     }
-                    $transaction->commit();
                 }
+                $transaction->commit();
             }catch(\Exception $e){
                 $transaction->rollBack();
             }
@@ -380,6 +387,9 @@
         }
 
         public function getPhoto(){
+            if(json_decode($this->photo)==[]){
+                return '';
+            }
             $user_photo = json_decode($this->photo);
             $photo = explode('/', $user_photo[0]);
 

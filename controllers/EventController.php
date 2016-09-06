@@ -135,10 +135,7 @@
 
                 $model->event_id = $id;
                 if($model->save()){
-                    $auth = Yii::$app->authManager;
-                    $authorRole = $auth->getRole('participant');
-                    $auth->assign($authorRole, $model->user_id);
-
+                    //todo  сделать роль rbac
                     Yii::$app->session->setFlash('success', 'Вы добавлены к событию.');
                 }else{
                     foreach($model->getErrors() as $error){
@@ -163,32 +160,32 @@
 
             $partEvent->delete();
 
-            return $this->redirect('event-list');
+            return $this->goBack();
         }
 
         public function actionSendConfirm(){
             $user = Yii::$app->user->identity;
-            $requset = Yii::$app->request->post('Mail');
-            $event = Event::findOne($requset['event_id']);
+            $request = Yii::$app->request->post('Mail');
+            $event = Event::findOne($request['event_id']);
 
             /** @var User $user */
             if(Yii::$app->mailer->compose()
                                 ->setFrom([Yii::$app->params['supportEmail'] => $user->username])
                                 ->setTo($event->creator->email)
-                                ->setTextBody($requset['body'])
+                                ->setTextBody($request['body'])
                                 ->setSubject('Request from '.$user->username.' to event '.$event->title)
                                 ->send()
             ){
-                Yii::$app->session->setFlash('success', 'Запрос отправлен');
+                $particEvent = new ParticEvent([
+                                                   'user_id' => $user->id,
+                                                   'event_id' => $event->id,
+                                                   'confirmed' => false,
+                                                   'confirmedtext' => $request['body']
+                                               ]);
+                if($particEvent->save()){
+                    Yii::$app->session->setFlash('success', 'Запрос отправлен');
+                }
             }
-            $particEvent = new ParticEvent([
-                                               'user_id' => $user->id,
-                                               'event_id' => $event->id
-                                           ]);
-            $particEvent->confirmed = false;
-            $particEvent->confirmedtext = $requset['body'];
-            $particEvent->save();
-
             $this->redirect('event-list');
         }
         //endregion
@@ -294,8 +291,13 @@
          * @return mixed
          */
         public function actionDelete($id){
-            $this->findModel($id)
-                 ->delete();
+
+            $model = $this->findModel($id);
+            foreach($model->particEvents as $particEvent){
+                $particEvent->delete();
+            }
+
+            $model->delete();
 
             return $this->redirect(['index']);
         }
@@ -328,4 +330,6 @@
 
             return $this->refresh();
         }
+
+
     }

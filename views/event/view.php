@@ -72,31 +72,30 @@
                     <?php endforeach; ?>
                 </table>
             <?php endif; ?>
-            <? //todo выкидывает ошибку если поставить php
-                if(Yii::$app->user->can('updatePost', ['event' => $model])): ?>
-                    <label for="w0">Запросы на участие</label>
-                    <?= GridView::widget([
-                                             'dataProvider' => $pendingDataProvider,
-                                             'columns' => [
-                                                 ['class' => '\yii\grid\SerialColumn'],
-                                                 'user.username',
-                                                 'confirmedtext',
-                                                 [
-                                                     'label' => 'Подтверждение',
-                                                     'content' => function($data){
-                                                         return Html::a('Подтвердить', [
-                                                             'confirm-particip',
-                                                             'id' => $data->id
-                                                         ], ['data-pjax' => 0]).' | '.Html::a('Отказать', [
-                                                             'confirm-particip',
-                                                             'id' => $data->id,
-                                                             'confirm' => false,
-                                                         ], ['data-pjax' => 0]);
-                                                     }
-                                                 ]
-                                             ],
-                                         ]) ?>
-                <? endif; ?>
+            <?php if(Yii::$app->user->can('updatePost', ['event' => $model])): ?>
+                <label for="w0">Запросы на участие</label>
+                <?= GridView::widget([
+                                         'dataProvider' => $pendingDataProvider,
+                                         'columns' => [
+                                             ['class' => '\yii\grid\SerialColumn'],
+                                             'user.username',
+                                             'confirmedtext',
+                                             [
+                                                 'label' => 'Подтверждение',
+                                                 'content' => function($data){
+                                                     return Html::a('Подтвердить', [
+                                                         'confirm-particip',
+                                                         'id' => $data->id
+                                                     ], ['data-pjax' => 0]).' | '.Html::a('Отказать', [
+                                                         'confirm-particip',
+                                                         'id' => $data->id,
+                                                         'confirm' => false,
+                                                     ], ['data-pjax' => 0]);
+                                                 }
+                                             ]
+                                         ],
+                                     ]) ?>
+            <?php endif; ?>
             <label for="w0">Участники</label>
             <?= GridView::widget([
                                      'dataProvider' => $participantsDataProvider,

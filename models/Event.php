@@ -3,6 +3,7 @@
     namespace app\models;
 
     use app\components\Logging\Logging;
+    use Faker\Provider\DateTime;
     use Yii;
     use yii\sergsova\fileManager\FileManager;
     use yii\helpers\ArrayHelper;
@@ -34,6 +35,8 @@
     class Event extends \yii\db\ActiveRecord{
         const STATUS_ACTIVE   = 'ACTIVE';
         const STATUS_INACTIVE = 'INACTIVE';
+        const STATUS_BLOCKED  = 'BLOCKED';
+        const STATUS_FINISH   = 'FINISH';
 
         public $imageFiles;
         public $particip_temp;
@@ -165,35 +168,53 @@
         public function afterFind(){
             $this->organizators = json_decode($this->organizators);
             $this->_countRate();
+
+            if(strtotime($this->date_end) < strtotime(date('Y-m-d H:i:s'))){
+                $this->status = self::STATUS_FINISH;
+                $this->save(false);
+            }
+
             parent::afterFind();
         }
 
         public function beforeSave($insert){
-            if(strpos($this->time_start, 'PM')){
-                $h = 12 + substr($this->time_start, 0, strpos($this->time_start, ':'));
-                $m = substr($this->time_start, strpos($this->time_start, ':')+1, -2);
-            }else{
-                $h = substr($this->time_start, 0, strpos($this->time_start, ':'));
-                $m = substr($this->time_start, strpos($this->time_start, ':')+1, -2);
-            }
-            $this->date_start .= ' '.$h.':'.$m.':00';
-            if(strpos($this->time_end, 'PM')){
-                $h = 12 + substr($this->time_end, 0, strpos($this->time_end, ':'));
-                $m = substr($this->time_end, strpos($this->time_end, ':')+1, -2);
-            }else{
-                $h = substr($this->time_end, 0, strpos($this->time_end, ':'));
-                $m = substr($this->time_end, strpos($this->time_end, ':')+1, -2);
-            }
-            $this->date_end .= ' '.$h.':'.$m.':00';
-
-            $auth = Yii::$app->authManager;
-            $authorRole = $auth->getRole('user');
-            $auth->assign($authorRole, $user->getId());
-
+//            if(strpos($this->time_start, 'PM')){
+//                $h = 12 + substr($this->time_start, 0, strpos($this->time_start, ':'));
+//                $m = substr($this->time_start, strpos($this->time_start, ':') + 1, -2);
+//            }else{
+//                $h = substr($this->time_start, 0, strpos($this->time_start, ':'));
+//                $m = substr($this->time_start, strpos($this->time_start, ':') + 1, -2);
+//            }
+//            if($h == 24){
+//                $h = 0;
+//            }
+//            $this->date_start .= ' '.$h.':'.$m.':00';
+//
+//            if(strpos($this->time_end, 'PM')){
+//                $h = 12 + substr($this->time_end, 0, strpos($this->time_end, ':'));
+//                $m = substr($this->time_end, strpos($this->time_end, ':') + 1, -2);
+//            }else{
+//                $h = substr($this->time_end, 0, strpos($this->time_end, ':'));
+//                $m = substr($this->time_end, strpos($this->time_end, ':') + 1, -2);
+//            }
+//            if($h == 24){
+//                $h = 0;
+//            }
+//            $this->date_end .= ' '.$h.':'.$m.':00';
 
             return parent::beforeSave($insert);
         }
 
+        public function afterSave($insert, $changedAttributes){
+            if($insert){
+                $participant = new ParticEvent();
+                $participant->user_id = Yii::$app->user->id;
+                $participant->event_id = $this->id;
+                $participant->confirmed = true;
+                $participant->insert();
+            }
+            parent::afterSave($insert, $changedAttributes);
+        }
 
         public function upload(){
             if($this->validate()){

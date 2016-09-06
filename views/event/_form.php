@@ -6,7 +6,6 @@
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
     use macgyer\yii2materializecss\widgets\form\DatePicker;
     use macgyer\yii2materializecss\widgets\form\TimePicker;
-    use yii\helpers\ArrayHelper;
     use yii\helpers\Url;
 
     /**

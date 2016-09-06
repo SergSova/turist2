@@ -59,7 +59,12 @@
          * @return ActiveDataProvider
          */
         public function search($params){
-            $query = Event::find();
+            $query = Event::find()
+                          ->where([
+                                      'not in',
+                                      'status',
+                                      strtolower(Event::STATUS_FINISH)
+                                  ]);
 
             // add conditions that should always apply here
 
@@ -93,11 +98,6 @@
                                    ])
                   ->andFilterWhere([
                                        'like',
-                                       'photo',
-                                       $this->photo
-                                   ])
-                  ->andFilterWhere([
-                                       'like',
                                        'desc',
                                        $this->desc
                                    ])
@@ -105,16 +105,6 @@
                                        'like',
                                        'organizators',
                                        $this->organizators
-                                   ])
-                  ->andFilterWhere([
-                                       'like',
-                                       'particip',
-                                       $this->particip
-                                   ])
-                  ->andFilterWhere([
-                                       'like',
-                                       'condition',
-                                       $this->condition
                                    ])
                   ->andFilterWhere([
                                        'like',

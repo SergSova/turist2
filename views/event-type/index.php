@@ -24,7 +24,7 @@
                                  'id',
                                  'name',
 
-                                 ['class' => 'yii\grid\ActionColumn'],
+                                 ['class' => \macgyer\yii2materializecss\widgets\grid\ActionColumn::className()],
                              ],
                          ]); ?>
 </div>

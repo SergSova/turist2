@@ -1,9 +1,30 @@
 <?php
     /** @var \app\models\User $model */
+    use app\widgets\FileManagerWidget\FileManagerWidget;
     use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+    use yii\helpers\Url;
 
 ?>
 <div class="card-panel">
+    <?= $model->getPhoto() ?>
+
+    <?php //todo сделать модалку для изменения аватары?>
+    <?php $form = ActiveForm::begin([
+                                        'action' => Url::to('change-photo'),
+                                        'method' => 'post'
+                                    ]) ?>
+    <?= Html::activeHiddenInput($model, 'photo', ['id' => 'user_foto']) ?>
+    <?= FileManagerWidget::widget([
+                                      'uploadUrl' => Url::to('user-upload-photo'),
+                                      'removeUrl' => Url::to('user-remove-photo'),
+                                      'files' => $model->photo,
+                                      'targetInputId' => 'user_foto',
+                                      'maxFiles' => 1,
+                                  ]) ?>
+    <?= Html::submitButton('Изменить') ?>
+    <?php ActiveForm::end() ?>
+
     <p><?= $model->username ?></p>
     <p>
         <?= $model->email ?>

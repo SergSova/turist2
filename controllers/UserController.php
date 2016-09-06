@@ -11,6 +11,7 @@
     use Yii;
     use app\models\User;
     use yii\filters\AccessControl;
+    use yii\sergsova\fileManager\actions\RemoveAction;
     use yii\sergsova\fileManager\actions\UploadAction;
     use yii\sergsova\fileManager\models\UploadPictureModel;
     use yii\web\Controller;
@@ -53,42 +54,6 @@
             ];
         }
 
-        public function actionIndex(){
-            $model = $this->findModel(Yii::$app->user->id);
-
-            return $this->render('index', ['model' => $model]);
-        }
-
-        public function actionRequestChangeMail(){
-            $model = new RequestChangeMailForm();
-            if($model->load(Yii::$app->request->post()) && $model->sendConfirm()){
-                return $this->goBack();
-            }
-
-            return $this->render('requestChangeEmail', ['model' => $model]);
-        }
-
-        public function actionChangeEmailToken($token, $newEmail){
-            if(User::changeEmail($token, $newEmail)){
-                return $this->redirect('index');
-            }
-
-            return $this->render('error');
-        }
-
-        public function actionChangePassword(){
-            $model = new PasswordChangeModel();
-            if($model->load(Yii::$app->request->post()) && $model->changePassword()){
-                return $this->goBack();
-            }
-
-            return $this->render('change_password', ['model' => $model]);
-        }
-
-        public function actionRemoveSocial($id){
-            return SocialAcc::findOne($id)->delete();
-        }
-
         /**
          * @param \yii\base\Action $action
          *
@@ -123,9 +88,46 @@
                                                             ])
                 ],
                 'user-remove-photo' => [
-                    'class' => '\yii\sergsova\fileManager\actions\RemoveAction',
+                    'class' => RemoveAction::className(),
                 ],
             ];
+        }
+
+        public function actionIndex(){
+            $model = $this->findModel(Yii::$app->user->id);
+
+            return $this->render('index', ['model' => $model]);
+        }
+
+        public function actionRequestChangeMail(){
+            $model = new RequestChangeMailForm();
+            if($model->load(Yii::$app->request->post()) && $model->sendConfirm()){
+                return $this->goBack();
+            }
+
+            return $this->render('requestChangeEmail', ['model' => $model]);
+        }
+
+        public function actionChangeEmailToken($token, $newEmail){
+            if(User::changeEmail($token, $newEmail)){
+                return $this->redirect('index');
+            }
+
+            return $this->render('error');
+        }
+
+        public function actionChangePassword(){
+            $model = new PasswordChangeModel();
+            if($model->load(Yii::$app->request->post()) && $model->changePassword()){
+                return $this->goBack();
+            }
+
+            return $this->render('change_password', ['model' => $model]);
+        }
+
+        public function actionRemoveSocial($id){
+            return SocialAcc::findOne($id)
+                            ->delete();
         }
 
         /**
@@ -145,6 +147,7 @@
             }
         }
 
+        #region Login Registaration Logout
         public function actionLogin(){
             if(!Yii::$app->user->isGuest){
                 return $this->goHome();
@@ -182,4 +185,17 @@
             return $this->goHome();
         }
 
+        #endregion
+
+        public function actionChangePhoto(){
+            /** @var User $model */
+            $model = Yii::$app->user->identity;
+            $model->scenario = 'photo';
+
+            if($model->load(Yii::$app->request->post())&&$model->save()){
+                return true;
+            }
+
+            return false;
+        }
     }
