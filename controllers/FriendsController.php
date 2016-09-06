@@ -7,60 +7,39 @@
     use app\models\search\FriendsSearch;
     use yii\helpers\ArrayHelper;
     use yii\web\Controller;
-    use yii\filters\VerbFilter;
 
     /**
      * FriendsController implements the CRUD actions for Friends model.
      */
     class FriendsController extends Controller{
-        /**
-         * @inheritdoc
-         */
-        public function behaviors(){
-            return [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                ],
-            ];
-        }
 
-        /**
-         * Lists all Friends models.
-         * @return mixed
-         */
         public function actionIndex(){
-            return $this->render('index');
-        }
+            $model = new Friends(['user_id' => Yii::$app->user->id]);
 
-
-        public function actionCreate(){
-            $model = new Friends();
-            $model->user_id = Yii::$app->user->id;
             $searchFriend = new FriendsSearch();
             $searchFriend->selfFriends = ArrayHelper::getColumn($model->getAllFriendArrayId(), 'friend_id');
 
             $dataProvider = $searchFriend->search(Yii::$app->request->post());
 
-            if(Yii::$app->request->isAjax && $userId = Yii::$app->request->post('userId')){
-                $model->addFriend($userId);
-            }
+            return $this->render('index', [
+                'model' => $model,
+                'searchFriend' => $searchFriend,
+                'dataProvider' => $dataProvider
+            ]);
+        }
 
-            if(Yii::$app->request->isAjax && $userId = Yii::$app->request->post('removeId')){
-                $model->removeFriend($userId);
+        public function actionAdd($id){
+            $friend =new Friends(['user_id'=>Yii::$app->user->id,'friend_id'=>$id]);
+            if($friend->save()){
+                return $this->redirect('index');
             }
+        }
 
-            if($model->load(Yii::$app->request->post()) && $model->save()){
-                return $this->redirect([
-                                           'view',
-                                           'id' => $model->id
-                                       ]);
-            }else{
-                return $this->render('_form', [
-                    'model' => $model,
-                    'searchFriend' => $searchFriend,
-                    'dataProvider' => $dataProvider
-                ]);
-            }
+        public function actionRemove($id){
+            Friends::findOne($id)
+                   ->delete();
+
+            return $this->redirect('index');
         }
 
     }

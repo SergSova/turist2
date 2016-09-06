@@ -9,6 +9,7 @@
     class AdminController extends Controller{
 
 
+        //region Condition CRUD
         public function actionIndexCondition(){
             $model = Condition::find()
                               ->all();
@@ -41,7 +42,9 @@
 
             return $this->goBack();
         }
+        //endregion
 
+        //region OrganizatorRole CRUD
         public function actionIndexOrgRole(){
             $model = Condition::find()
                               ->all();
@@ -74,6 +77,7 @@
 
             return $this->goBack();
         }
+        //endregion
 
 
 

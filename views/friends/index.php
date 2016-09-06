@@ -2,31 +2,61 @@
 
     /* @var $this yii\web\View */
     use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+    use yii\widgets\ListView;
     use yii\widgets\Pjax;
 
     /**
-     * @var $searchModel  app\models\search\FriendsSearch
-     * @var $dataProvider yii\data\ActiveDataProvider
+     * @var                                  $model app\models\Friends
+     * @var \yii\data\ActiveDataProvider     $dataProvider
+     * @var \app\models\search\FriendsSearch $searchFriend
      */
 
-    $this->title = 'Друзья';
-    $this->params['breadcrumbs'][] = $this->title;
+    $this->title = 'Добавить друга';
+
 ?>
-<div class="friends-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Add Friends', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-    <?php Pjax::begin(['id' => 'friends']) ?>
+<?php Pjax::begin(['id' => 'friends']) ?>
+<?php if(Yii::$app->user->identity->friends0): ?>
+    <div class="card">
+        <p class="card-title">В друзьях</p>
+        <div class="card-content">
+            <?php foreach(Yii::$app->user->identity->friends0 as $friend): ?>
+                <p class="chip"><?= $friend->friend->username ?>
+                    <?= Html::a('<i class="close material-icons">close</i>', [
+                            'remove',
+                            'id' => $friend->id
+                        ], [
+                                    'data' => [
+                                        'pjax' => true,
+                                        'confirm' => "Вы уверены, что хотите удалить этот элемент?"
+                                    ]
+                                ]) ?>
+                </p>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
+<?php Pjax::end() ?>
 
-    <?php foreach(Yii::$app->user->identity->friends0 as $friend): ?>
-        <p>
-            <b class="remove-friend" data-userId="<?= $friend->friend_id ?>">
-                <?= $friend->friend->username ?>
-            </b>
-        </p>
-    <?php endforeach; ?>
-    <?php Pjax::end() ?>
-</div>
+<?php Pjax::begin(['id' => 'users']) ?>
+<?php if($searchFriend->username || $dataProvider->count > 0): ?>
+    <div class="card">
+        <p class="card-title">Все пользователи</p>
+        <div class="card-content">
+            <?php $form = ActiveForm::begin() ?>
+            <?= $form->field($searchFriend, 'username') ?>
+            <?= Html::submitButton('Search') ?>
+            <?php ActiveForm::end() ?>
+            <?= ListView::widget([
+                                     'dataProvider' => $dataProvider,
+                                     'itemView' => '_list',
+                                 ]) ?>
+        </div>
+    </div>
+<?php endif; ?>
+<?php Pjax::end() ?>
+
+
+

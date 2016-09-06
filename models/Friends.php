@@ -88,7 +88,8 @@
 
         public static function getAllFriendArrayId(){
             return self::find()
-                       ->filterWhere(['user_id' => Yii::$app->user->id])->asArray()
+                       ->filterWhere(['user_id' => Yii::$app->user->id])
+                       ->asArray()
                        ->all();
         }
 
@@ -97,11 +98,4 @@
             $this->save();
         }
 
-        public function removeFriend($userId){
-            $friend = Friends::findOne([
-                                           'user_id' => $this->user_id,
-                                           'friend_id' => $userId
-                                       ]);
-            $friend->delete();
-        }
     }
