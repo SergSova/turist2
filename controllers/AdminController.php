@@ -8,7 +8,6 @@
 
     class AdminController extends Controller{
 
-
         //region Condition CRUD
         public function actionIndexCondition(){
             $model = Condition::find()
@@ -78,7 +77,5 @@
             return $this->goBack();
         }
         //endregion
-
-
 
     }
