@@ -147,7 +147,7 @@
             }
         }
 
-        #region Login Registaration Logout
+        #region Login Registration Logout
         public function actionLogin(){
             if(!Yii::$app->user->isGuest){
                 return $this->goHome();

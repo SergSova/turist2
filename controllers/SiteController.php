@@ -19,4 +19,7 @@
             return $this->render('index');
         }
 
+        public function actionMap(){
+            return $this->render('map');
+        }
     }

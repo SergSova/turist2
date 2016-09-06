@@ -13,7 +13,6 @@
      * @var $model app\models\Event
      * @var $form  yii\widgets\ActiveForm
      */
-    $this->registerJsFile('/web/js/event.js', ['depends' => 'app\assets\AppAsset']);
     $this->registerJsFile('/web/js/eventCondition.js', ['depends' => 'app\assets\AppAsset']);
     $this->registerJsFile('/web/js/particip.js', ['depends' => 'app\assets\AppAsset']);
     $permissions = json_encode([
