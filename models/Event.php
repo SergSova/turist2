@@ -2,11 +2,11 @@
 
     namespace app\models;
 
-    use app\components\Logging\Logging;
-    use Faker\Provider\DateTime;
     use Yii;
-    use yii\sergsova\fileManager\FileManager;
+    use yii\db\ActiveRecord;
     use yii\helpers\ArrayHelper;
+    use yii\helpers\Json;
+    use yii\sergsova\fileManager\FileManager;
     use yii\web\UploadedFile;
 
     /**
@@ -26,22 +26,22 @@
      * @property string        $date_creation
      * @property string        $status
      * @property integer       $rate
-     *
+     * @property string        $track_path
      * @property Comments[]    $comments
-     * @property EventType     $eventType
      * @property User          $creator
+     * @property EventType     $eventType
      * @property ParticEvent[] $particEvents
      */
-    class Event extends \yii\db\ActiveRecord{
+    class Event extends ActiveRecord{
         const STATUS_ACTIVE   = 'ACTIVE';
         const STATUS_INACTIVE = 'INACTIVE';
         const STATUS_BLOCKED  = 'BLOCKED';
         const STATUS_FINISH   = 'FINISH';
 
-        public $imageFiles;
-        public $particip_temp;
         public $time_start;
         public $time_end;
+
+        public $track;
 
         /**
          * @inheritdoc
@@ -49,7 +49,6 @@
         public static function tableName(){
             return 'tur_event';
         }
-
 
         /**
          * @inheritdoc
@@ -81,13 +80,13 @@
                         'desc',
                         'particip',
                         'condition',
-                        'status'
+                        'status',
+                        'track_path'
                     ],
                     'string'
                 ],
                 [
                     [
-                        'particip_temp',
                         'organizators',
                         'date_creation'
                     ],
@@ -104,13 +103,6 @@
                     'skipOnError' => true,
                     'targetClass' => EventType::className(),
                     'targetAttribute' => ['event_type_id' => 'id']
-                ],
-                [
-                    ['imageFiles'],
-                    'file',
-                    'skipOnEmpty' => true,
-                    'extensions' => 'jpg, jpeg',
-                    'maxFiles' => 4
                 ],
                 [
                     ['creator_id'],
@@ -139,6 +131,11 @@
                     'default',
                     'value' => self::STATUS_INACTIVE
                 ],
+                [
+                    'track',
+                    'file',
+                    'extensions' => 'kml'
+                ]
 
             ];
         }
@@ -174,33 +171,25 @@
                 $this->save(false);
             }
 
+            $this->time_start = date('H:i', strtotime($this->date_start));
+            $this->time_end = date('H:i', strtotime($this->date_end));
             parent::afterFind();
         }
 
         public function beforeSave($insert){
-//            if(strpos($this->time_start, 'PM')){
-//                $h = 12 + substr($this->time_start, 0, strpos($this->time_start, ':'));
-//                $m = substr($this->time_start, strpos($this->time_start, ':') + 1, -2);
-//            }else{
-//                $h = substr($this->time_start, 0, strpos($this->time_start, ':'));
-//                $m = substr($this->time_start, strpos($this->time_start, ':') + 1, -2);
-//            }
-//            if($h == 24){
-//                $h = 0;
-//            }
-//            $this->date_start .= ' '.$h.':'.$m.':00';
-//
-//            if(strpos($this->time_end, 'PM')){
-//                $h = 12 + substr($this->time_end, 0, strpos($this->time_end, ':'));
-//                $m = substr($this->time_end, strpos($this->time_end, ':') + 1, -2);
-//            }else{
-//                $h = substr($this->time_end, 0, strpos($this->time_end, ':'));
-//                $m = substr($this->time_end, strpos($this->time_end, ':') + 1, -2);
-//            }
-//            if($h == 24){
-//                $h = 0;
-//            }
-//            $this->date_end .= ' '.$h.':'.$m.':00';
+            if($this->time_start){
+                $this->date_start = date('Y-m-d H:i:s', strtotime($this->date_start) + strtotime($this->time_start) - strtotime(date('Y-m-d')));
+            }
+            if($this->time_end){
+                $this->date_end = date('Y-m-d H:i:s', strtotime($this->date_end) + strtotime($this->time_end) - strtotime(date('Y-m-d')));
+            }
+
+            $this->track = UploadedFile::getInstance($this, 'track');
+            FileManager::getInstance()
+                       ->createDirectory('event_track');
+            $this->track->saveAs(FileManager::getInstance()
+                                            ->getStoragePath().'event_track/'.$this->track->baseName.'.'.$this->track->extension);
+            $this->track_path = Json::encode(['event_track/'.$this->track->baseName.'.'.$this->track->extension]);
 
             return parent::beforeSave($insert);
         }
@@ -213,20 +202,8 @@
                 $participant->confirmed = true;
                 $participant->insert();
             }
+
             parent::afterSave($insert, $changedAttributes);
-        }
-
-        public function upload(){
-            if($this->validate()){
-                /** @var UploadedFile $file */
-                foreach($this->imageFiles as $file){
-                    $file->saveAs('uploads/'.$this->id.'_'.$file->baseName.'.'.$file->extension);
-                }
-
-                return true;
-            }else{
-                return false;
-            }
         }
 
         /**
@@ -239,15 +216,15 @@
         /**
          * @return \yii\db\ActiveQuery
          */
-        public function getEventType(){
-            return $this->hasOne(EventType::className(), ['id' => 'event_type_id']);
+        public function getCreator(){
+            return $this->hasOne(User::className(), ['id' => 'creator_id']);
         }
 
         /**
          * @return \yii\db\ActiveQuery
          */
-        public function getCreator(){
-            return $this->hasOne(User::className(), ['id' => 'creator_id']);
+        public function getEventType(){
+            return $this->hasOne(EventType::className(), ['id' => 'event_type_id']);
         }
 
         /**
@@ -257,34 +234,9 @@
             return $this->hasMany(ParticEvent::className(), ['event_id' => 'id']);
         }
 
-        public function getAllOrganizators(){
-            return ArrayHelper::map(User::find()
-                                        ->filterWhere([
-                                                          'not in',
-                                                          'id',
-                                                          $this->organizators
-                                                      ])
-                                        ->all(), 'id', 'username');
-        }
-
-        public function getOrganizatorsList(){
-            $aa = User::findAll($this->organizators);
-            $usen = '';
-            foreach($aa as $item){
-                //todo сделать ссылки на страницы пользователей
-                $usen .= $item->username.', ';
-            }
-
-            return substr($usen, 0, -2);
-        }
-
         public function getTypes(){
             return ArrayHelper::map(EventType::find()
                                              ->all(), 'id', 'name');
-        }
-
-        public function getOrganisatorById($id){
-            return User::findOne($id)->username;
         }
 
         public function getParticToEvent(){

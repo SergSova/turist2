@@ -16,7 +16,6 @@
     use yii\web\Controller;
     use yii\web\NotFoundHttpException;
     use yii\filters\VerbFilter;
-    use yii\web\UploadedFile;
 
     /**
      * EventController implements the CRUD actions for Event model.
@@ -240,19 +239,15 @@
         public function actionCreate(){
             $model = new Event();
             if($model->load(Yii::$app->request->post()) && $model->save()){
-                $model->imageFiles = UploadedFile::getInstance($model, 'imageFiles');
-
-                //                if($model->upload()){
                 return $this->redirect([
                                            'view',
                                            'id' => $model->id
                                        ]);
-                //                }
-            }else{
-                return $this->render('create', [
-                    'model' => $model,
-                ]);
             }
+
+            return $this->render('create', [
+                'model' => $model,
+            ]);
         }
 
         /**
@@ -267,19 +262,16 @@
             $model = $this->findModel($id);
 
             if($model->load(Yii::$app->request->post()) && $model->save()){
-                $model->imageFiles = UploadedFile::getInstance($model, 'imageFiles');
 
-                //                if($model->upload() && ){
                 return $this->redirect([
                                            'view',
                                            'id' => $model->id
                                        ]);
-                //                }
-            }else{
-                return $this->render('update', [
-                    'model' => $model,
-                ]);
             }
+
+            return $this->render('update', [
+                'model' => $model,
+            ]);
         }
 
         /**

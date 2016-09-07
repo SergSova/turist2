@@ -26,7 +26,6 @@
                 'errorAction' => 'site/error',
             ],
             'mailer' => require(__DIR__.'/mail.php'),
-
             'loggining' => [
                 'class' => 'app\components\Logging\Logging',
                 //            'on addLog' => function($event){\app\models\Log::addLog($event);} /*['app\components\Logging\Logging', 'addLog']*/

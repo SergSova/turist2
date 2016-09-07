@@ -5,6 +5,9 @@
     use esoftkz\timer\Timer;
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\grid\GridView;
+    use macgyer\yii2materializecss\widgets\Modal;
+    use yii\helpers\Json;
+    use yii\sergsova\fileManager\FileManager;
 
     /**
      * @var                              $this yii\web\View
@@ -16,12 +19,20 @@
      */
     $this->title = $model->title;
 
-    $event = $model;
-
     $conditions = $model->condition ? json_decode($model->condition) : null;
+
 ?>
 <div class="event-view">
-
+    <?php if($model->track_path): ?>
+        <div class="card-panel">
+            <?= $this->render('//site/map', [
+                'path' => FileManager::getInstance()
+                                     ->getStoragePath().Json::decode($model->track_path)[0]
+            ]) ?>
+            <?php Modal::begin(['toggleButton' => ['label' => 'Показать трек']]) ?>
+            <?php Modal::end() ?>
+        </div>
+    <?php endif; ?>
     <div class="panel-default">
         <div class="panel-heading">
             Событие: <?= Html::encode($this->title) ?>

@@ -6,6 +6,8 @@
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
     use macgyer\yii2materializecss\widgets\form\DatePicker;
     use macgyer\yii2materializecss\widgets\form\TimePicker;
+    use yii\helpers\ArrayHelper;
+    use yii\helpers\Json;
     use yii\helpers\Url;
 
     /**
@@ -174,7 +176,7 @@ JS;
                                             ?>
                                             <li class="collection-item">
                                                 <div class="chip">
-                                                    <img src="<?= $person->user->getPhoto() ?>" alt="Contact Person">
+                                                    <?= $person->user->getPhoto() ?>
                                                     <?= $person->user->username ?>
                                                 </div>
                                             </li>
@@ -205,6 +207,9 @@ JS;
                 <?php endif; ?>
             <?php endif; ?>
             <!-- end add photo-->
+
+                <?= $form->field($model, 'track')
+                         ->fileInput() ?>
 
             <div class="form-group">
                 <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update',
