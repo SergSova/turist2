@@ -81,7 +81,8 @@
                         'particip',
                         'condition',
                         'status',
-                        'track_path'
+                        'track_path',
+                        'photo'
                     ],
                     'string'
                 ],
@@ -185,12 +186,13 @@
             }
 
             $this->track = UploadedFile::getInstance($this, 'track');
-            FileManager::getInstance()
-                       ->createDirectory('event_track');
-            $this->track->saveAs(FileManager::getInstance()
-                                            ->getStoragePath().'event_track/'.$this->track->baseName.'.'.$this->track->extension);
-            $this->track_path = Json::encode(['event_track/'.$this->track->baseName.'.'.$this->track->extension]);
-
+            if($this->track){
+                FileManager::getInstance()
+                           ->createDirectory('event_track');
+                $this->track->saveAs(FileManager::getInstance()
+                                                ->getStoragePath().'event_track/'.$this->track->baseName.'.'.$this->track->extension);
+                $this->track_path = Json::encode(['event_track/'.$this->track->baseName.'.'.$this->track->extension]);
+            }
             return parent::beforeSave($insert);
         }
 
