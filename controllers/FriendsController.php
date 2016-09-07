@@ -28,10 +28,13 @@
             ]);
         }
 
-        public function actionAdd($id){
-            $friend =new Friends(['user_id'=>Yii::$app->user->id,'friend_id'=>$id]);
+        public function actionAdd($id, $return = 'index'){
+            $friend = new Friends([
+                                      'user_id' => Yii::$app->user->id,
+                                      'friend_id' => $id
+                                  ]);
             if($friend->save()){
-                return $this->redirect('index');
+                return $this->redirect($return);
             }
         }
 

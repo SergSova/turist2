@@ -14,12 +14,9 @@ JS;
     $this->registerJsFile('/web/js/map/draggable_directions.js', ['depends' => 'app\assets\AppAsset']);
     $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyABhH01dCe6IhW78H8uPNfySJn-qOa1tKQ', [
         'depends' => 'app\assets\AppAsset',
-//        'async' => true,
-//        'defer' => true
     ]);
     $this->registerJs($js,3);
 
-    $this->title = "Карта";
 ?>
 <div id="map"></div>
 

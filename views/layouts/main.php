@@ -3,6 +3,7 @@
     /* @var $this \yii\web\View */
     /* @var $content string */
 
+    use app\models\Comments;
     use app\models\forms\LoginForm;
     use app\models\search\EventSearch;
     use macgyer\yii2materializecss\lib\Html;
@@ -35,9 +36,9 @@
                           'options' => [
                               'class' => 'teal navbar-fixed-top',
                           ],
-//                          'wrapperOptions' => [
-//                              'class' => 'container'
-//                          ]
+                          //                          'wrapperOptions' => [
+                          //                              'class' => 'container'
+                          //                          ]
                       ]);
         $menuItems = [
             [
@@ -87,8 +88,8 @@
             <?php endif; ?>
             <div class="card-panel">
                 <?php $eventsSearch = new EventSearch();
-                     $eventsSearch->status = 'active';
-                     $events = $eventsSearch->searchCalendar(Yii::$app->request->post()); ?>
+                    $eventsSearch->status = 'active';
+                    $events = $eventsSearch->searchCalendar(Yii::$app->request->post()); ?>
                 <?= yii2fullcalendar::widget([
                                                  'events' => $events,
                                                  'options' => [
@@ -119,11 +120,23 @@ eventPopup.css({
             </div>
             <div class="card-panel">
                 <p class="card-title">Комментарии</p>
-                <?php $comments = \app\models\Comments::find()->orderBy(['id'=>'DESC'])->limit(10)->all();?>
-                <?php foreach($comments as $comment):?>
-                    <strong><?=$comment->user->username?></strong> -
-                    <?=$comment->text?>.<br>
-                <?php endforeach;?>
+                <?php $comments = Comments::find()
+                                                      ->orderBy(['id' => 'DESC'])
+                                                      ->limit(10)
+                                                      ->all(); ?>
+                <?php foreach($comments as $comment): ?>
+                    <div class="card-panel">
+                        <?= Html::a($comment->user->username, [
+                            '//friends/add',
+                            'id' => $comment->user->id,
+                            'return' => Url::to('')
+                        ], [
+                                        'data-confirm' => 'Добавить '.$comment->user->username.' вам в друзья?',
+                                        'data-pjax' => true
+                                    ]) ?> :
+                        <?= $comment->text ?>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>

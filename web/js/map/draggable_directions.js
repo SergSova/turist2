@@ -1,6 +1,6 @@
 function init2() {
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
+        zoom: 15,
         center: coord[0],
         mapTypeId: google.maps.MapTypeId.TERRAIN
     });

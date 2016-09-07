@@ -10,6 +10,7 @@
     use app\models\Event;
     use app\models\search\EventSearch;
     use yii\sergsova\fileManager\actions\UploadAction;
+    use yii\sergsova\fileManager\FileManager;
     use yii\sergsova\fileManager\models\UploadPictureModel;
     use yii\data\ActiveDataProvider;
     use yii\filters\AccessControl;
@@ -323,5 +324,8 @@
             return $this->refresh();
         }
 
-
+        public function actionDownloadTrack($path){
+            return Yii::$app->response->sendFile(FileManager::getInstance()
+                                                            ->getStoragePath().$path);
+        }
     }

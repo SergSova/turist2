@@ -23,7 +23,13 @@
 
 ?>
 <div class="event-view">
-    <?php if($model->track_path): ?>
+    <?php if($model->track_path && file_exists(FileManager::getInstance()
+                                                          ->getStoragePath().Json::decode($model->track_path)[0])
+    ): ?>
+        <?= Html::a('Скачать трек', [
+            'download-track',
+            'path' => Json::decode($model->track_path)[0]
+        ], ['class' => 'btn']) ?>
         <div class="card-panel">
             <?= $this->render('//site/map', [
                 'path' => FileManager::getInstance()
@@ -58,7 +64,7 @@
                 <div class="col-lg-3 text-center">
                     <?= Timer::widget([
                                           'clientOptions' => [
-                                              'scaleColor' => false,
+                                              'scaleColor' => true,
                                               'trackColor' => 'rgba(255,255,255,0.3)',
                                               'barColor' => '#E7F7F5',
                                               'lineWidth' => 6,
@@ -158,11 +164,11 @@
         </div>
         <div class="panel-footer">
             <?php if(Yii::$app->user->can('updatePost', ['event' => $model])): ?>
-                <?= Html::a('Update', [
+                <?= Html::a('Изменить', [
                     'update',
                     'id' => $model->id
                 ], ['class' => 'btn btn-primary']) ?>
-                <?= Html::a('Delete', [
+                <?= Html::a('Удалить', [
                     'delete',
                     'id' => $model->id
                 ], [
