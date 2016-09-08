@@ -28,6 +28,7 @@
      * @property integer       $rate
      * @property string        $track_path
      * @property integer       $people_count
+     * @property integer       $difficult
      *
      *
      * @property Comments[]    $comments
@@ -75,7 +76,8 @@
                         'event_type_id',
                         'creator_id',
                         'rate',
-                        'people_count'
+                        'people_count',
+                        'difficult'
                     ],
                     'integer'
                 ],
@@ -164,7 +166,8 @@
                 'date_creation' => 'Дата создания',
                 'status' => 'Статус',
                 'rate' => 'Регйтинг',
-                'people_count' => 'Максимальное количество участников'
+                'people_count' => 'Максимальное количество участников',
+                'difficult' => 'Сложность'
             ];
         }
 
@@ -281,6 +284,10 @@
                          ->joinWith('user')
                          ->sum('rate');
             $this->rate = $comment + $user;
+        }
+
+        public static function getMaxRate(){
+            return self::find()->max('rate');
         }
 
     }

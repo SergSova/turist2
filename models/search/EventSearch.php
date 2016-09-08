@@ -18,8 +18,8 @@ class EventSearch extends Event
     public function rules()
     {
         return [
-            [['id', 'event_type_id', 'creator_id', 'rate', 'people_count'], 'integer'],
-            [['title', 'photo', 'desc', 'organizators', 'particip', 'condition', 'date_start', 'date_end', 'date_creation', 'status', 'track_path'], 'safe'],
+            [['id', 'event_type_id', 'creator_id', 'rate', 'people_count','difficult'], 'integer'],
+            [['title', 'desc', 'condition', 'date_start', 'date_end', 'date_creation', 'status'], 'safe'],
         ];
     }
 
@@ -65,6 +65,7 @@ class EventSearch extends Event
             'date_creation' => $this->date_creation,
             'rate' => $this->rate,
             'people_count' => $this->people_count,
+            'difficult' => $this->difficult,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
