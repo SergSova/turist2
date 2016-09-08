@@ -27,6 +27,9 @@
      * @property string        $status
      * @property integer       $rate
      * @property string        $track_path
+     * @property integer       $people_count
+     *
+     *
      * @property Comments[]    $comments
      * @property User          $creator
      * @property EventType     $eventType
@@ -71,7 +74,8 @@
                     [
                         'event_type_id',
                         'creator_id',
-                        'rate'
+                        'rate',
+                        'people_count'
                     ],
                     'integer'
                 ],
@@ -160,6 +164,7 @@
                 'date_creation' => 'Дата создания',
                 'status' => 'Статус',
                 'rate' => 'Регйтинг',
+                'people_count' => 'Максимальное количество участников'
             ];
         }
 
@@ -193,6 +198,7 @@
                                                 ->getStoragePath().'event_track/'.$this->track->baseName.'.'.$this->track->extension);
                 $this->track_path = Json::encode(['event_track/'.$this->track->baseName.'.'.$this->track->extension]);
             }
+
             return parent::beforeSave($insert);
         }
 

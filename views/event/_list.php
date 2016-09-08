@@ -4,16 +4,20 @@
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
     use macgyer\yii2materializecss\widgets\Modal;
+    use yii\helpers\Url;
 
     $d = new DateTime($model->date_start);
 ?>
 
 <div class="card">
-    <a href="<?= \yii\helpers\Url::to(['event/view', 'id' => $model->id]) ?>" style="color:black;text-decoration: none ">
+    <a href="<?= Url::to([
+                             'event/view',
+                             'id' => $model->id
+                         ]) ?>" style="color:black;text-decoration: none ">
         <div class="card-content">
             <div class="row no-marg-bot">
                 <div class="col s8">
-                    <p class="card-title"><strong>Событие: </strong><?= $model->title ?></p>
+                    <p class="card-title"><strong>Событие: </strong><?= $model->title ?> <b class="center-align"><?= $model->status ?></b></p>
                     <?= $model->desc ?>
                     <div class="event-conditions">
                         <?php
@@ -46,7 +50,7 @@
             <div class="col s3">
                 <?= rateCounterWidget::widget([
                                                   'rate' => $model->rate,
-                                                  'vote' => [
+                                                  'action_vote' => [
                                                       'vote-event',
                                                       'model_id' => $model->id
                                                   ],
@@ -62,17 +66,17 @@
                         <?php if($particip): ?>
                             <?= Html::a('Отменить', [
                                 '/event/remove-particip',
-                                'id' => $model->id
+                                'event_id' => $model->id
                             ], [
-                                            'class'     => 'btn amber waves-effect waves-light fullWidth',
+                                            'class' => 'btn amber waves-effect waves-light fullWidth',
                                             'data-pjax' => 0
                                         ]) ?>
                         <?php else: ?>
                             <?= Html::a('Участвовать', [
                                 '/event/add-particip',
-                                'id' => $model->id
+                                'event_id' => $model->id
                             ], [
-                                            'class'     => 'btn light-blue waves-effect waves-light fullWidth',
+                                            'class' => 'btn light-blue waves-effect waves-light fullWidth',
                                             'data-pjax' => 0
                                         ]) ?>
                             <?php
@@ -93,13 +97,13 @@
                             ], ['data-pjax' => 0]) ?>
                         <?php else: ?>
                             <?php Modal::begin([
-                                                   'modalType'    => Modal::TYPE_LEAN,
+                                                   'modalType' => Modal::TYPE_LEAN,
                                                    'toggleButton' => [
                                                        'label' => 'Подать заявку!',
                                                    ],
-                                                   'closeButton'  => [
+                                                   'closeButton' => [
                                                        'label' => 'Закрыть',
-                                                       'tag'   => 'span'
+                                                       'tag' => 'span'
                                                    ],
                                                ]) ?>
                             <?php $form = ActiveForm::begin(['action' => ['event/send-confirm']]) ?>

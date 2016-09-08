@@ -1,8 +1,7 @@
 <?php
     use yii\web\JsExpression;
     use yii2fullcalendar\yii2fullcalendar;
-
-    /** @var \yii2fullcalendar\models\Event[] $calEvents */
+    /** @var \yii2fullcalendar\models\Event[] $events */
 
 ?>
 <div class="panel-default" style="position:absolute; display: none; z-index: 1000; transform: translateX(-50%);min-width: 300px; background: white;"

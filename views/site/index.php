@@ -8,6 +8,8 @@
     $this->title = 'Добро пожаловать, человек!';
 ?>
     <div class="card-panel">
+        <?=\app\widgets\GalleryWidget\GalleryWidget::widget()?>
+
         <article class="main-items">
             <div id="news_list">
                 <section class="items"><h2><a lc="229" href="//www.ukr.net/news/main.html">Головне</a></h2><!--noindex-->

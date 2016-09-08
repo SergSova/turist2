@@ -130,7 +130,7 @@
                                              'content' => function($data){
                                                  return rateCounterWidget::widget([
                                                                                       'rate' => $data->user->rate,
-                                                                                      'vote' => [
+                                                                                      'action_vote' => [
                                                                                           'user/vote-user',
                                                                                           'model_id' => $data->user->id
                                                                                       ],

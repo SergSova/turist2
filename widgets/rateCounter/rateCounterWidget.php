@@ -7,13 +7,13 @@
     class rateCounterWidget extends Widget{
         public $rate;
         public $params;
-        public $vote;
+        public $action_vote;
 
         public function init(){
             parent::init();
             $this->params = [
                 'rate' => $this->rate,
-                'vote' => $this->vote,
+                'action_vote' => $this->action_vote,
             ];
         }
 

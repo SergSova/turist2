@@ -5,6 +5,7 @@
 
     $events = $dataProvider->models
 ?>
+    <?=$this->render('_search', ['model' => $searchModel])?>
 <?php
     $flashMessages = Yii::$app->session->getAllFlashes();
     if($flashMessages){

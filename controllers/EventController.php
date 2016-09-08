@@ -92,6 +92,7 @@
          */
         public function actionEventList(){
             $searchModel = new EventSearch();
+            $searchModel->status = Event::STATUS_ACTIVE;
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('event-list', [
@@ -128,12 +129,12 @@
             return $this->redirect(Yii::$app->request->referrer);
         }
 
-        public function actionAddParticip($id){
+        public function actionAddParticip($event_id){
             $model = new ParticEvent();
             $model->user_id = Yii::$app->user->id;
-            if(Event::findOne($id)->eventType->name == 'free'){
+            if(Event::findOne($event_id)->eventType->name == 'free'){
 
-                $model->event_id = $id;
+                $model->event_id = $event_id;
                 if($model->save()){
                     //todo  сделать роль rbac
                     Yii::$app->session->setFlash('success', 'Вы добавлены к событию.');
@@ -149,9 +150,9 @@
             return $this->redirect('event-list');
         }
 
-        public function actionRemoveParticip($id){
+        public function actionRemoveParticip($event_id){
             $partEvent = ParticEvent::findOne([
-                                                  'event_id' => $id,
+                                                  'event_id' => $event_id,
                                                   'user_id' => Yii::$app->user->id
                                               ]);
             $auth = Yii::$app->authManager;
