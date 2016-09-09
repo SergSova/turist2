@@ -15,7 +15,7 @@
     <div class="panel-footer">
         <?= rateCounterWidget::widget([
                                           'rate' => $model->rate,
-                                          'vote' => [
+                                          'action_vote' => [
                                               '/event/vote-comment',
                                               'model_id' => $model->id
                                           ]

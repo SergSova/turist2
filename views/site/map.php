@@ -4,7 +4,7 @@
 
     use app\components\MapParser\MapParser;
 
-    $crd = MapParser::getInstance()->getLatLng_kml($path);
+    $crd = MapParser::getInstance()->getLatLng($path);
 $js = <<<JS
 var coord = JSON.parse('{$crd}');
 init2();

@@ -141,7 +141,7 @@
                 [
                     'track',
                     'file',
-                    'extensions' => 'kml'
+                    'extensions' => 'kml, gpx, plt'
                 ]
 
             ];
