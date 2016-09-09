@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "tur_condition".
@@ -43,5 +44,9 @@ class Condition extends \yii\db\ActiveRecord
             'name' => 'Требование',
             'desc' => 'Описание',
         ];
+    }
+
+    public static function getAllAsArray(){
+        return ArrayHelper::map(self::find()->all(),'id','name');
     }
 }

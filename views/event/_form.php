@@ -1,6 +1,7 @@
 <?php
 
     use app\assets\CreateEventAsset;
+    use app\models\Condition;
     use app\models\Event;
     use app\models\Friends;
     use app\widgets\FileManagerWidget\FileManagerWidget;
@@ -17,59 +18,41 @@
      * @var $model app\models\Event
      * @var $form  yii\widgets\ActiveForm
      */
-//    $this->registerJsFile('/web/js/autocomplete.js', [
-//        'position' => \yii\web\View::POS_END,
-//        'depends' => \app\assets\AppAsset::className()
-//    ]);
-//
-//    $this->registerJsFile('/web/js/eventForm.js', [
-//        'position' => \yii\web\View::POS_END,
-//        'depends' => \app\assets\AppAsset::className()
-//    ]);
+    //    $this->registerJsFile('/web/js/autocomplete.js', [
+    //        'position' => \yii\web\View::POS_END,
+    //        'depends' => \app\assets\AppAsset::className()
+    //    ]);
+    //
+    //    $this->registerJsFile('/web/js/eventForm.js', [
+    //        'position' => \yii\web\View::POS_END,
+    //        'depends' => \app\assets\AppAsset::className()
+    //    ]);
     CreateEventAsset::register($this);
 ?>
 <div class="section event">
     <div class="participants card-panel">
         <h5 class="center-align">Учасники</h5>
         <ul class="collection no-margin-bot">
-            <li class="collection-item avatar">
-                <a href="#">
-                    <img src="img/ava.jpg" alt="" class="circle">
-                    <span class="title">UserName</span>
-                </a>
-                <div class="secondary-content">
-                    <i class="material-icons tooltipped" data-position="top" data-tooltip="Организатор">child_care</i>
-                    <i class="material-icons tooltipped grey-text" data-position="top" data-tooltip="в друзья">grade</i>
-                </div>
-
-            </li>
-            <li class="collection-item avatar">
-                <a href="#">
-                    <img src="img/ava.jpg" alt="" class="circle">
-                    <span class="title">UserName</span>
-                </a>
-                <div class="secondary-content">
-                    <i class="material-icons tooltipped grey-text" data-position="top" data-tooltip="в друзья">grade</i>
-                    <i class="material-icons tooltipped" data-position="top" data-tooltip="название должности">assignment_ind</i>
-                    <i class="material-icons tooltipped red-text" data-position="top" data-tooltip="удалить">remove_circle_outline</i>
-                </div>
-            </li>
-            <li class="collection-item avatar">
-                <a href="#">
-                    <img src="img/ava.jpg" alt="" class="circle">
-                    <span class="title">UserName</span>
-                </a>
-                <div class="secondary-content">
-                    <i class="material-icons tooltipped grey-text" data-position="top" data-tooltip="в друзья">grade</i>
-                    <i
-                        class="material-icons tooltipped grey-text modal-trigger" data-position="top"
-                        data-tooltip="назначить должность"
-                        data-target="positionModal"
-                    >assignment_ind</i>
-                    <i class="material-icons tooltipped red-text" data-position="top" data-tooltip="удалить">remove_circle_outline</i>
-                </div>
-
-            </li>
+            <?php foreach($model->particEvents as $participant): ?>
+                <li class="collection-item avatar">
+                    <a href="<?= Url::to([
+                                             'user/view',
+                                             'id' => $participant->user_id
+                                         ]) ?>">
+                        <img src="<?= $participant->user->getPhoto() ?>" alt="" class="circle">
+                        <span class="title"><?= $participant->user->username ?></span>
+                    </a>
+                    <div class="secondary-content">
+                        <i class="material-icons tooltipped grey-text" data-position="top" data-tooltip="в друзья">grade</i>
+                        <i
+                            class="material-icons tooltipped grey-text modal-trigger" data-position="top"
+                            data-tooltip="назначить должность"
+                            data-target="positionModal"
+                        >assignment_ind</i>
+                        <i class="material-icons tooltipped red-text" data-position="top" data-tooltip="удалить">remove_circle_outline</i>
+                    </div>
+                </li>
+            <?php endforeach; ?>
         </ul>
     </div>
     <?php $form = ActiveForm::begin([
@@ -82,7 +65,7 @@
             <h1>Создать Событие</h1>
             <ul class="collapsible" data-collapsible="expandable">
                 <li class="card-panel">
-                    <h4 class="collapsible-header active">Информация о событии</h4>
+                    <h4 class="collapsible-header">Информация о событии</h4>
                     <div class="collapsible-body">
                         <div class="row">
                             <?= $form->field($model, 'title') ?>
@@ -102,19 +85,19 @@
                                 </div>
                                 <p>Старт</p>
                                 <div class="input-field col s6">
-                                    <input type="text" value="<?=$model->date_start?>" class="c-datepicker-input">
+                                    <input type="text" value="<?= $model->date_start ?>" class="c-datepicker-input">
                                 </div>
                                 <div class="input-field col s6">
-                                    <input type="text" value="<?=$model->time_start?>">
+                                    <input type="text" value="<?= $model->time_start ?>">
                                     <label>время</label>
                                 </div>
                                 <p>финиш</p>
                                 <div class="input-field col s6">
-                                    <input type="text" value="<?=$model->date_end?>">
+                                    <input type="text" value="<?= $model->date_end ?>">
                                     <label>дата</label>
                                 </div>
                                 <div class="input-field col s6">
-                                    <input type="text" value="<?=$model->time_end?>">
+                                    <input type="text" value="<?= $model->time_end ?>">
                                     <label>время</label>
                                 </div>
                             </div>
@@ -128,14 +111,16 @@
                                         </ul>
                                     </div>
                                     <div id="description" class="col s12">
-                                        <?=$form->field($model,'desc')->label(false)->textarea(['placeholder'=>'Введите описание'])?>
+                                        <?= $form->field($model, 'desc')
+                                                 ->label(false)
+                                                 ->textarea(['placeholder' => 'Введите описание']) ?>
                                     </div>
                                     <div id="map" class="col s12">
                                         <div class="file-field input-field">
                                             <div class="btn">
                                                 <span>Загрузить трек</span>
-<!--                                                <input type="file" name="Event['track']">-->
-                                                <?= Html::activeFileInput($model, 'track')?>
+                                                <!--                                                <input type="file" name="Event['track']">-->
+                                                <?= Html::activeFileInput($model, 'track') ?>
                                             </div>
                                             <div class="file-path-wrapper">
                                                 <input class="file-path validate" type="text"
@@ -160,12 +145,17 @@
                     </div>
                 </li>
                 <li class="card-panel">
-                    <h4 class="collapsible-header">Условия участия</h4>
+                    <h4 class="collapsible-header active">Условия участия</h4>
                     <div class="collapsible-body">
-                        <p class="condition-item">
-                            <input type="checkbox" id="test5"/>
-                            <label for="test5">Red</label>
-                        </p>
+                        <?= $form->field($model, 'condition', ['template' => '{input}{label}'])
+                                 ->checkboxList(Condition::getAllAsArray(), [
+                                     'class' => 'condition-item',
+                                     'tag' => 'p',
+                                     'options' => [
+
+                                     ],
+                                     'itemOptions' => ['template' => '{input}{label}']
+                                 ]) ?>
                         <p class="condition-item">
                             <input type="checkbox" id="test5"/>
                             <label for="test5">Red</label>
