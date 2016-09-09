@@ -1,33 +1,337 @@
-body {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-}
-
-main {
-    flex: 1 0 auto;
-}
-
-.fullWidth {
+.full {
+    height: 100%;
     width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.no-margin-top {
+    margin-top: 0;
+}
+
+.no-margin-bot {
+    margin-bottom: 0;
+}
+
+.bg-shadow {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#herobox {
+    margin-top: -64px;
+}
+
+nav {
+    background: rgba(0, 150, 136, 0.95);
+    transition: background 0.5s ease;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.nav-container {
+    padding: 0 1%;
+}
+
+nav.transparent {
+    box-shadow: none;
+}
+.parallax-container {
+    height: 564px;
+}
+
+.more-but {
+    margin-bottom: 5px;
+}
+
+.ava-container-small {
+    width: 50px;
+    height: 50px;
+}
+
+.page-content {
+    padding-left: 300px;
+    padding-right: 1%;
+}
+
+.filter {
+    position: fixed;
+    width: 270px;
+    left: 1%;
+    z-index: 2;
+}
+
+.filter .switches-group .switch {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.filter .switches-group .switch-label {
+    position: absolute;
+    width: 60%;
+    right: 0;
+}
+
+.participants {
+    position: fixed;
+    top: 70px;
+    bottom: 0;
+    right: 1%;
+    width: 22%;
+    overflow-y: auto;
+}
+
+.event .actions-box {
+    width: 250px;
+}
+
+.event .actions-box .sBtn {
+    margin-right: 10px;
+}
+
+.event .actions-box .rating-box {
+    margin-bottom: 15px;
+}
+
+.event .actions-box .rating-box span {
+    padding: 0 10px;
+    font-size: 2rem;
+    vertical-align: middle;
+}
+
+.event .collapsible {
+    border: none;
+    box-shadow: none;
+    margin: 0;
+}
+
+.event .collapsible-header {
+    border: none;
+}
+
+.event .collapsible-body {
+    border: none;
+}
+
+.event .condition-item {
+    display: inline-block;
+    padding: 0 10px;
+}
+
+.event .org-list {
+    border: 1px solid #e0e0e0 !important;
+}
+
+.event .org-list .collection-item {
+    line-height: 42px;
+}
+
+.event .position-list {
+    border: 1px solid #e0e0e0 !important;
+}
+
+.event .collection-item {
+    transition: background 0.5s ease;
+}
+
+.event .collection-item.avatar {
+    height: 62px !important;
+    min-height: auto !important;
+}
+
+.event .collection-item.avatar:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.event .collection-item:hover {
+    background-color: #ddd;
+}
+
+.event .collection-item .title {
+    vertical-align: middle;
+}
+
+.event .collection-item .material-icons {
+    cursor: pointer;
+}
+
+.event .tabs .tab a {
+    color: #0c9a8d;
+}
+
+.event .tabs .indicator {
+    background-color: #0c9a8d;
+}
+
+.event h1 .material-icons {
+    vertical-align: middle;
+    font-size: 3rem;
+    margin-right: 10px;
+}
+
+.event .info td {
+    padding: 5px;
+}
+
+.event .info td:first-child {
+    text-align: center;
+}
+
+.event .info td .material-icons {
+    font-size: 1.2rem;
+}
+
+.event-type {
+    cursor: pointer;
+}
+
+.event-small-type {
+    cursor: pointer;
+}
+
+.event-small .description {
+    height: 150px;
+    overflow: hidden;
+    margin-bottom: 5px !important;
+}
+
+.event-small .info .col {
+    padding: 0;
+    padding-left: 5px;
+}
+
+.event-small .info-title {
+    font-weight: 500;
+    margin-bottom: 8px !important;
+}
+
+.event-small .info .material-icons {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.event-small .info .time-start {
     box-sizing: border-box;
+    border-left: 2px solid #66bb6a;
 }
 
-.marg-bot {
-    margin-bottom: 20px;
+.event-small .info .time-finish {
+    box-sizing: border-box;
+    border-left: 2px solid #ef5350;
 }
 
-.no-marg-bot {
-    margin-bottom: 0 !important;
+.event-small .info .graph-wrap {
+    height: 100px;
 }
 
+.event-small .info-graph {
+    width: 33%;
+    float: left;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.event-small .info-graph .graph {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.event-small .info-graph .graph-people {
+    height: 60%;
+    background: linear-gradient(to top, rgba(13, 71, 161, 0.5) 0%, #0d47a1 100%);
+}
+
+.event-small .info-graph .graph-rate {
+    height: 30%;
+    background: linear-gradient(to top, rgba(76, 175, 80, 0.5) 0%, #4caf50 100%);
+}
+
+.event-small .info-graph .graph-difficult {
+    height: 100%;
+    background: linear-gradient(to top, rgba(255, 152, 0, 0.5) 0%, #ff9800 100%);
+}
+
+.event-medium .description {
+    height: 110px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.event-medium .info .col {
+    padding: 0;
+    padding-left: 5px;
+}
+
+.event-medium .info-title {
+    font-weight: 500;
+    margin-bottom: 8px !important;
+}
+
+.event-medium .info .material-icons {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.event-medium .info .time-start {
+    box-sizing: border-box;
+    border-left: 2px solid #66bb6a;
+}
+
+.event-medium .info .time-finish {
+    box-sizing: border-box;
+    border-left: 2px solid #ef5350;
+}
+
+.event-medium .info .graph-wrap {
+    height: 100px;
+}
+
+.event-medium .info-graph {
+    width: 33%;
+    float: left;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.event-medium .info-graph .graph {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.event-medium .info-graph .graph-people {
+    height: 60%;
+    background: linear-gradient(to top, rgba(13, 71, 161, 0.5) 0%, #0d47a1 100%);
+}
+
+.event-medium .info-graph .graph-rate {
+    height: 30%;
+    background: linear-gradient(to top, rgba(76, 175, 80, 0.5) 0%, #4caf50 100%);
+}
+
+.event-medium .info-graph .graph-difficult {
+    height: 100%;
+    background: linear-gradient(to top, rgba(255, 152, 0, 0.5) 0%, #ff9800 100%);
+}
 .input-field {
     position: relative;
     margin-bottom: 1rem;
-}
-
-.checkbox-wrap label {
-    top: 0;
 }
 
 .invalid input, .invalid textarea {
@@ -46,17 +350,4 @@ main {
     color: #F44336;
     opacity: 1;
     font-size: 0.8rem;
-}
-
-.rate-count {
-    text-align: center;
-    line-height: 37px;
-    font-size: 1.5rem;
-}
-.btn_addOrganisator, .btn_addCondition{
-    padding: 0 1rem;
-}
-.condition .form-inline{
-    padding: 10px;
-    text-align: center;
 }

@@ -19,7 +19,9 @@
         public $css      = [
             'css/site.css',
         ];
-        public $js       = [];
+        public $js       = [
+            'js/main.js'
+        ];
         public $depends  = [
             'yii\web\YiiAsset',
             'macgyer\yii2materializecss\assets\MaterializeAsset',

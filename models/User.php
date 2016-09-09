@@ -387,14 +387,14 @@
         }
 
         public function getPhoto(){
-            if(json_decode($this->photo)==[]){
+            if(json_decode($this->photo) == []){
                 return '';
             }
             $user_photo = json_decode($this->photo);
             $photo = explode('/', $user_photo[0]);
 
-            return $photo[0] == 'http:' ? '<img src="'.$user_photo[0].'">' : Html::img(FileManager::getInstance()
-                                                                                                  ->getStorageUrl().$user_photo[0]);
+            return $photo[0] == 'http:' ? $user_photo[0] : FileManager::getInstance()
+                                                                      ->getStorageUrl().$user_photo[0];
         }
 
         public function generatePasswordResetToken(){
