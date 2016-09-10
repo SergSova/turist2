@@ -14,6 +14,10 @@
      * @property Event[] $events
      */
     class EventType extends \yii\db\ActiveRecord{
+        const TYPE_FREE      = 1;
+        const TYPE_CASH      = 2;
+        const TYPE_CLOSED    = 3;
+        const TYPE_REGISTRED = 4;
 
         /**
          * @inheritdoc

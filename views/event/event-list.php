@@ -10,7 +10,13 @@
     use yii\widgets\ListView;
     use yii\widgets\Pjax;
 
-    $events = $dataProvider->models
+    $events = $dataProvider->models;
+    $js = <<<JS
+var a = $('.list-view').find('.modal');
+a.clone().insertAfter($('footer'));
+a.remove();
+JS;
+$this->registerJs($js, 3);
 ?>
 <?= $this->render('_search', ['model' => $searchModel]) ?>
 

@@ -367,14 +367,13 @@
                         if(!$particip->confirmed){
                             return Html::tag('z', 'подтверждается', ['class' => 'btn tilt lighten-2 full-width waves-effect waves-light']);
                         }
-
                         return Html::a('Отменить', [
                             'remove-particip',
                             'event_id'  => $this->id,
                             'returnUrl' => Url::to('')
                         ], ['class' => 'btn amber full-width waves-effect waves-light', 'data-pjax' => 0]);
                     }else{
-                        echo Yii::$app->getView()->render('_confirmForm', ['model' => $this]);
+                        echo Yii::$app->getView()->render('/event/_confirmForm', ['model' => $this]);
                         return Html::a('Подать заявку!', '#confirmModal-'.$this->id, ['class' => "btn amber full-width waves-effect waves-light modal-trigger"]);
                     }
                     break;

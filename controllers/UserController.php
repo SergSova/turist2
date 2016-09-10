@@ -102,6 +102,11 @@
             return $this->render('index', ['model' => $model]);
         }
 
+        public function actionView($id){
+            $model = $this->findModel($id);
+
+            return $this->render('view',['model'=>$model]);
+        }
         public function actionRequestChangeMail(){
             $model = new RequestChangeMailForm();
             if($model->load(Yii::$app->request->post()) && $model->sendConfirm()){

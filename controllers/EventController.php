@@ -127,7 +127,6 @@
             }
 
             return $this->redirect($returnUrl);
-
             //return $this->redirect(Yii::$app->request->referrer);
         }
 
@@ -168,6 +167,9 @@
 
         public function actionSendConfirm($returnUrl = 'event-list'){
             $user = Yii::$app->user->identity;
+            if(!$user){
+                throw new NotFoundHttpException('The requested page does not exist.');
+            }
             $request = Yii::$app->request->post('Mail');
             $event = Event::findOne($request['event_id']);
 

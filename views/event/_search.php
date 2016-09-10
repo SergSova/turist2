@@ -2,8 +2,10 @@
 
     /* @var $this yii\web\View */
     use app\models\Event;
+    use app\models\EventType;
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
+    use macgyer\yii2materializecss\widgets\form\DatePicker;
 
     /* @var $model app\models\search\EventSearch */
 
@@ -38,14 +40,14 @@ JS;
         <div class="switches-group"><p class="label">Доступность события</p>
             <div class="switch">
                 <label>
-                    <input type="checkbox" checked>
+                    <input type="checkbox" name="EventSearch[event_type_id][0]" value="<?= EventType::TYPE_FREE ?>">
                     <span class="lever"></span>
                     <span class="switch-label">Открытые</span>
                 </label>
             </div>
             <div class="switch">
                 <label>
-                    <input type="checkbox">
+                    <input type="checkbox" name="EventSearch[event_type_id][1]" value="<?= EventType::TYPE_CASH ?>">
                     <span class="lever"></span>
                     <span class="switch-label">Платные</span>
                 </label>
@@ -53,14 +55,16 @@ JS;
             <div class="switch">
                 <label>
                     <span class="switch-label">Предварительная регистрация</span>
-                    <input type="checkbox">
+                    <input type="checkbox" name="EventSearch[event_type_id][2]" value="<?= EventType::TYPE_REGISTRED ?>">
                     <span class="lever"></span>
                 </label>
             </div>
         </div>
         <div class="input-field">
-            <?= $form->field($model, 'date_start')
-                     ->datetimeInput(['class'=>"datepicker"]) ?>
+            <?= DatePicker::widget([
+                                       'model'     => $model,
+                                       'attribute' => 'date_start',
+                                   ]) ?>
         </div>
         <p class="label">Сложность</p>
         <p class="range-field">
