@@ -33,9 +33,8 @@
                                       'user_id' => Yii::$app->user->id,
                                       'friend_id' => $id
                                   ]);
-            if($friend->save()){
-                return $this->redirect($return);
-            }
+            $friend->save();
+            return $this->redirect($return);
         }
 
         public function actionRemove($id){

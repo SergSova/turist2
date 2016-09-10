@@ -216,6 +216,7 @@
         public function actionView($id){
             $model = $this->findModel($id);
             $commentModel = new Comments();
+
             $pendingDataProvider = new ActiveDataProvider([
                                                               'query' => $model->getParticEvents()
                                                                                ->andWhere(['confirmed' => 0])

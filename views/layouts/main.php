@@ -8,6 +8,11 @@
 
     /* @var $content string */
     AppAsset::register($this);
+
+    if(!Yii::$app->user->isGuest){
+        $user = Yii::$app->user->identity;
+    }
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -24,9 +29,9 @@
 <header>
     <?php if(!Yii::$app->user->isGuest):?>
         <ul id="personalBox" class="dropdown-content">
-            <li><a href="#!"><div class="right"><span class="badge">1</span></div>Мои события</a></li>
+            <li><a href="<?=Url::to(['/event'])?>"><div class="right"><span class="badge"><?=count($user->events)?></span></div>Мои события</a></li>
             <li><a href="#!"><div class="right"><span class="new badge">1</span></div>Мои заявки</a></li>
-            <li><a href="#!">Настройки</a></li>
+            <li><a href="<?=Url::to(['/user'])?>">Настройки</a></li>
             <li class="divider"></li>
             <li><a href="<?= Url::to(['user/logout'])?>" data-method="post"><i class="material-icons right">exit_to_app</i>Выход</a></li>
         </ul>

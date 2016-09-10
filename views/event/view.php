@@ -1,191 +1,169 @@
 <?php
 
-    use app\widgets\CommentWidget\CommentWidget;
-    use app\widgets\rateCounter\rateCounterWidget;
-    use esoftkz\timer\Timer;
-    use macgyer\yii2materializecss\lib\Html;
-    use macgyer\yii2materializecss\widgets\grid\GridView;
-    use macgyer\yii2materializecss\widgets\Modal;
-    use yii\helpers\Json;
-    use yii\sergsova\fileManager\FileManager;
-
     /**
      * @var                              $this yii\web\View
      *
      * @var \app\models\Event            $model
-     * @var \yii\data\ActiveDataProvider $participantsDataProvider
-     * @var \yii\data\ActiveDataProvider $pendingDataProvider
-     * @var \app\models\Comments         $commentModel
-     */
+     * @var \app\models\User             $user
+     **/
+    use macgyer\yii2materializecss\lib\Html;
+    use yii\helpers\ArrayHelper;
+    use yii\helpers\Json;
+    use yii\helpers\Url;
+    use yii\sergsova\fileManager\FileManager;
+
     $this->title = $model->title;
 
     $conditions = $model->condition ? json_decode($model->condition) : null;
 
-?>
-<div class="event-view">
-    <?php if($model->track_path && file_exists(FileManager::getInstance()
-                                                          ->getStoragePath().Json::decode($model->track_path)[0])
-    ): ?>
-        <?= Html::a('Скачать трек', [
-            'download-track',
-            'path' => Json::decode($model->track_path)[0]
-        ], ['class' => 'btn']) ?>
-        <div class="card-panel">
-            <?= $this->render('//site/map', [
-                'path' => FileManager::getInstance()
-                                     ->getStoragePath().Json::decode($model->track_path)[0]
-            ]) ?>
-            <?php Modal::begin(['toggleButton' => ['label' => 'Показать трек']]) ?>
-            <?php Modal::end() ?>
-        </div>
-    <?php endif; ?>
-    <div class="panel-default">
-        <div class="panel-heading">
-            Событие: <?= Html::encode($this->title) ?>
-            <b><?= $model->status ?></b>
-        </div>
-        <div class="panel-body">
-            <label for="desc">Описание</label>
-            <div id="desc">
-                <?= $model->desc ?>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-9">
-                    <div class="alert-info">
-                        <label for="dateStart">Дата начала</label>
-                        <div id="dateStart"><?= $model->date_start ?></div>
-                    </div>
-                    <div class="alert-danger">
-                        <label for="dateEnd">Дата завершения</label>
-                        <div id="dateEnd"><?= $model->date_end ?></div>
-                    </div>
-                </div>
-                <div class="col-lg-3 text-center">
-                    <?= Timer::widget([
-                                          'clientOptions' => [
-                                              'scaleColor' => true,
-                                              'trackColor' => 'rgba(255,255,255,0.3)',
-                                              'barColor' => '#E7F7F5',
-                                              'lineWidth' => 6,
-                                              'lineCap' => 'butt',
-                                              'size' => 50
-                                          ],
-                                          'endTimeStamp' => $model->date_end,
-                                      ]) ?>
-                </div>
-            </div>
-            <?php if($conditions): ?>
-                <br>
-                <label for="conditionData">Требования</label>
-                <table class="table table-striped conditionData" id="conditionData">
-                    <?php foreach($conditions as $condition): ?>
-                        <tr>
-                            <?php foreach($condition as $key => $value): ?>
-                                <td class="col-lg-6 "><?= $key ?>:</td>
-                                <td class="col-lg-6"><?= $value ?></td>
-                            <?php endforeach; ?>
-                        </tr>
-                    <?php endforeach; ?>
-                </table>
-            <?php endif; ?>
-            <?php if(Yii::$app->user->can('updatePost', ['event' => $model])): ?>
-                <label for="w0">Запросы на участие</label>
-                <?= GridView::widget([
-                                         'dataProvider' => $pendingDataProvider,
-                                         'columns' => [
-                                             ['class' => '\yii\grid\SerialColumn'],
-                                             'user.username',
-                                             'confirmedtext',
-                                             [
-                                                 'label' => 'Подтверждение',
-                                                 'content' => function($data){
-                                                     return Html::a('Подтвердить', [
-                                                         'confirm-particip',
-                                                         'id' => $data->id
-                                                     ], ['data-pjax' => 0]).' | '.Html::a('Отказать', [
-                                                         'confirm-particip',
-                                                         'id' => $data->id,
-                                                         'confirm' => false,
-                                                     ], ['data-pjax' => 0]);
-                                                 }
-                                             ]
-                                         ],
-                                     ]) ?>
-            <?php endif; ?>
-            <label for="w0">Участники</label>
-            <?= GridView::widget([
-                                     'dataProvider' => $participantsDataProvider,
-                                     'columns' => [
-                                         ['class' => 'yii\grid\SerialColumn'],
-                                         [
-                                             'attribute' => 'user.photo',
-                                             'content' => function($data){
-                                                 return $data->user->getPhoto();
-                                             }
-                                         ],
-                                         'user.username',
-                                         [
-                                             'attribute' => 'user.rate',
-                                             'content' => function($data){
-                                                 return rateCounterWidget::widget([
-                                                                                      'rate' => $data->user->rate,
-                                                                                      'action_vote' => [
-                                                                                          'user/vote-user',
-                                                                                          'model_id' => $data->user->id
-                                                                                      ],
-                                                                                  ]);
-                                             }
-                                         ],
-                                         [
-                                             'label' => 'ФИО',
-                                             'content' => function($data){
-                                                 return $data->user->f_name.' '.$data->user->l_name;
-                                             }
-                                         ],
-                                         'user.email',
-                                         [
-                                             'label' => 'Подтверждение',
-                                             'content' => function($data){
-                                                 return Yii::$app->user->can('updatePost', ['event' => $data->event]) ? Html::tag('div',
-                                                                                                                                  Html::a('Отказать',
-                                                                                                                                          [
-                                                                                                                                              'confirm-particip',
-                                                                                                                                              'id' => $data->id,
-                                                                                                                                              'confirm' => false,
-                                                                                                                                          ],
-                                                                                                                                          ['data-pjax' => 0]),
-                                                                                                                                  ['class' => 'row']) : '';
-                                             }
-                                         ],
+    if(!Yii::$app->user->isGuest){
+        $user = Yii::$app->user->identity;
+        $friends = $user->friends0;
+        $friends = ArrayHelper::map($friends, 'id', 'friend_id');
 
-                                     ],
-                                 ]) ?>
-        </div>
-        <div class="panel-footer">
-            <?php if(Yii::$app->user->can('updatePost', ['event' => $model])): ?>
-                <?= Html::a('Изменить', [
-                    'update',
-                    'id' => $model->id
-                ], ['class' => 'btn btn-primary']) ?>
-                <?= Html::a('Удалить', [
-                    'delete',
-                    'id' => $model->id
-                ], [
-                                'class' => 'btn btn-danger',
-                                'data' => [
-                                    'confirm' => 'Are you sure you want to delete this item?',
-                                    'method' => 'post',
-                                ],
-                            ]) ?>
-            <?php endif; ?>
-            <div class="text-right">Создано: <?= $model->date_creation ?></div>
-            <div class="text-right">Рейтинг: <?= $model->rate ?></div>
-            <div class="text-right">Создатель: <strong><?= $model->creator->username ?></strong></div>
+        $particip = '';
+        if($model->particip){
+            $particip = json_decode($model->particip);
+        }
+    }
+?>
+
+<div class="section event">
+    <div class="row">
+        <div class="col s12 m9">
+            <div class="right actions-box">
+                <div class="rating-box right-align">
+                    <button class="sBtn btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">share</i></button>
+                    <button class="btn-floating btn-small waves-effect waves-light green">
+                        <i class="materialize-icons"><i class="material-icons">thumb_up</i></i>
+                    </button>
+                    <span>5</span>
+                    <button class="btn-floating btn-small waves-effect waves-light red">
+                        <i class="materialize-icons"><i class="material-icons">thumb_down</i></i>
+                    </button>
+                </div>
+                <div class="button-box">
+                    <?= Html::a('Принять участие', [
+                        'add-particip',
+                        'event_id' => $model->id
+                    ], ['class' => 'btn blue full-width waves-effect waves-light']) ?>
+                </div>
+            </div>
+            <h1><i class="material-icons">monetization_on</i><?= $model->title ?></h1>
+            <div class="row card-panel">
+                <div class="col s3">
+                    <div class="conditions">
+                        <p>Условия</p>
+                        <i class="material-icons">beach_access</i>
+                        <i class="material-icons">smoke_free</i>
+                        <i class="material-icons">airline_seat_individual_suite</i>
+                    </div>
+                    <table class="info">
+                        <tr>
+                            <td class="grey" colspan="2">Старт</td>
+                        </tr>
+                        <tr>
+                            <td><i class="material-icons">event</i></td>
+                            <td><?= $model->date_start ?></td>
+                        </tr>
+                        <tr>
+                            <td><i class="material-icons">access_time</i></td>
+                            <td><?php // $model->time_start ?></td>
+                        </tr>
+                        <tr>
+                            <td class="grey" colspan="2">Финиш</td>
+                        </tr>
+                        <tr>
+                            <td><i class="material-icons">event</i></td>
+                            <td><?= $model->date_end ?></td>
+                        </tr>
+                        <tr>
+                            <td><i class="material-icons">access_time</i></td>
+                            <td><?php // $model->time_end ?></td>
+                        </tr>
+                        <tr>
+                            <td class="grey" colspan="2">Сложность</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Высокая</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col s9">
+                    <div class="row">
+                        <div class="col s12">
+                            <ul class="tabs">
+                                <li class="tab col s3"><a class="active" href="#description">Описание</a></li>
+                                <li class="tab col s3"><a href="#map">Трек</a></li>
+                                <li class="tab col s3"><a href="#gallery">Галерея</a></li>
+                            </ul>
+                        </div>
+                        <div id="description" class="col s12">
+                            <p><?= $model->desc ?></p>
+                        </div>
+                        <div id="map" class="col s12">
+                            <?php if($model->track_path && file_exists(FileManager::getInstance()
+                                                                                  ->getStoragePath().Json::decode($model->track_path)[0])
+                            ): ?>
+                                <?= Html::a('Скачать трек', [
+                                    'download-track',
+                                    'path' => Json::decode($model->track_path)[0]
+                                ], ['class' => 'btn teal waves-effect waves-light']) ?>
+                                <div class="card-panel">
+                                    <?= $this->render('//site/map', [
+                                        'path' => FileManager::getInstance()
+                                                             ->getStoragePath().Json::decode($model->track_path)[0]
+                                    ]) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div id="gallery" class="col s12">
+                            <button class="btn teal waves-effect waves-light">Добавить фото</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <?= CommentWidget::widget([
-                                  'model' => $model
-                              ]) ?>
+    <!--<div class="participants">-->
+    <div class="participants card-panel">
+        <h5 class="center-align">Учасники</h5>
+        <ul class="collection no-margin-bot">
+            <?php foreach($model->particEvents as $participant): ?>
+                <li class="collection-item avatar">
+                    <a href="<?= Url::to([
+                                             'user/view',
+                                             'id' => $participant->user_id
+                                         ]) ?>">
+                        <img src="<?= $participant->user->getPhoto() ?>" alt="" class="circle">
+                        <span class="title"><?= $participant->user->username ?></span>
+                    </a>
+                    <div class="secondary-content">
+                        <?php
+                            if(!Yii::$app->user->isGuest):
+                                if($user->id != $participant->user_id):
+                                    if(count($friends) && array_search($participant->user_id, $friends)): ?>
+                                        <i class="material-icons tooltipped yellow-text" data-position="top" data-tooltip="в друзьях">grade</i>
+                                        <?php
+                                    else: ?>
+                                        <?= Html::a('<i class="material-icons tooltipped grey-text" data-position="top" data-tooltip="в друзья">grade</i>', [
+                                            '/friends/add',
+                                            'id'     => $participant->user_id,
+                                            'return' => Url::to('')
+                                        ]) ?>
+                                        <?php
+                                    endif;
+                                endif; ?>
+                                <i
+                                    class="material-icons tooltipped orange-text" data-position="top"
+                                    data-tooltip="должность"
+                                >assignment_ind</i>
+                            <?php endif; ?>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <!--</div>-->
 </div>
+

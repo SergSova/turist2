@@ -29,4 +29,8 @@
         public function actionMap(){
             return $this->render('map');
         }
+
+        public function actionLogin(){
+            return $this->redirect('/web/user/login');
+        }
     }

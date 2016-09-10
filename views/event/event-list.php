@@ -1,25 +1,22 @@
 <?php
-    /** @var \yii\data\ActiveDataProvider $dataProvider */
+    /**
+     * @var \yii\data\ActiveDataProvider   $dataProvider
+     * @var \app\models\search\EventSearch $searchModel
+     */
 
     use yii\widgets\ListView;
+    use yii\widgets\Pjax;
 
     $events = $dataProvider->models
 ?>
-    <?=$this->render('_search', ['model' => $searchModel])?>
-<?php
-    $flashMessages = Yii::$app->session->getAllFlashes();
-    if($flashMessages){
-        echo '<ul class="flashes">';
-        foreach($flashMessages as $key => $message){
-            echo '<li><div class="flash-'.$key.'">'.$message."</div></li>\n";
-        }
-        echo '</ul>';
-    }
-?>
-<?php \yii\widgets\Pjax::begin() ?>
-<?= ListView::widget([
-                         'dataProvider' => $dataProvider,
-                         'itemView' => '_list',
-                         'layout' => '{items}{summary}{pager}'
-                     ]) ?>
-<?php \yii\widgets\Pjax::end() ?>
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+
+<?php Pjax::begin() ?>
+<div class="page-content">
+    <?= ListView::widget([
+                             'dataProvider' => $dataProvider,
+                             'itemView'     => '_list',
+                             'layout'       => '{items}{summary}{pager}'
+                         ]) ?>
+</div>
+<?php Pjax::end() ?>

@@ -1,123 +1,75 @@
 <?php
     /** @var \app\models\Event $model */
-    use app\widgets\rateCounter\rateCounterWidget;
-    use macgyer\yii2materializecss\lib\Html;
-    use macgyer\yii2materializecss\widgets\form\ActiveForm;
-    use macgyer\yii2materializecss\widgets\Modal;
+
     use yii\helpers\Url;
 
     $d = new DateTime($model->date_start);
 ?>
 
-<div class="card">
-    <a href="<?= Url::to([
-                             'event/view',
-                             'id' => $model->id
-                         ]) ?>" style="color:black;text-decoration: none ">
-        <div class="card-content">
-            <div class="row no-marg-bot">
-                <div class="col s8">
-                    <p class="card-title"><strong>Событие: </strong><?= $model->title ?> <b class="center-align"><?= $model->status ?></b></p>
-                    <?= $model->desc ?>
-                    <div class="event-conditions">
-                        <?php
-                            $conditions = json_decode($model->condition);
-                            if(is_array($conditions)):
-                                foreach($conditions as $condition):
-                                    ?>
-                                    <div class="chip"><?= $condition ?></div>
-                                    <?php
-                                endforeach;
-                            endif;
-                        ?>
-                    </div>
+
+<div class="card event-medium">
+    <div class="card-content">
+        <i class="material-icons event-type tooltipped" data-position="top" data-tooltip="Free">accessibility</i>
+        <a href="<?= Url::to(['user/view', 'id' => $model->creator_id]) ?>" class="right ava-container-small tooltipped" data-position="top"
+           data-tooltip="<?= $model->creator->username ?>">
+            <img src="<?= $model->creator->getPhoto() ?>" class="responsive-img circle">
+        </a>
+        <p class="card-title truncate"><?= $model->title ?></p>
+        <p class="description"><?= $model->desc ?></p>
+        <div class="row info">
+            <div class="col s12 m4 l2 time-start">
+                <p class="info-title">Старт</p>
+                <div class="info-item">
+                    <i class="material-icons">event</i>
+                    <span><?= $model->date_start ?></span>
                 </div>
-                <div class="col s4">
-                    <ul class="collection">
-                        <li class="collection-item center-align">
-                            <i class="material-icons left">timer</i><strong><?= Yii::$app->formatter->asDatetime($model->date_start) ?></strong>
-                        </li>
-                        <li class="collection-item center-align">
-                            <i class="material-icons left">timer_off</i><strong><?= Yii::$app->formatter->asDatetime($model->date_end) ?></strong>
-                        </li>
-                    </ul>
+                <div class="info-item">
+                    <i class="material-icons">access_time</i>
+                    <span><?= $model->time_start ?></span>
+                </div>
+            </div>
+            <div class="col s12 m4 l2 time-finish">
+                <p class="info-title">Финиш</p>
+                <div class="info-item">
+                    <i class="material-icons">event</i>
+                    <span><?= $model->date_end ?></span>
+                </div>
+                <div class="info-item">
+                    <i class="material-icons">access_time</i>
+                    <span><?= $model->time_end ?></span>
+                </div>
+            </div>
+            <div class="col s12 m4 l1 offset-l7 graph-wrap">
+                <div class="info-graph tooltipped"
+                     data-position="bottom"
+                     data-tooltip="Участники: " .<?= count($model->particEvents) ?>
+                >
+                    <div class="graph graph-people"></div>
+                </div>
+                <div class="info-graph tooltipped"
+                     data-position="bottom"
+                     data-tooltip="Рейтинг: " .<?= $model->rate ?>
+                >
+                    <div class="graph graph-rate"></div>
+                </div>
+                <div class="info-graph tooltipped"
+                     data-position="bottom"
+                     data-tooltip="Сложность: высокая"
+                >
+                    <div class="graph graph-difficult"></div>
                 </div>
             </div>
         </div>
-    </a>
+    </div>
     <div class="card-action">
-        <div class="row no-marg-bot">
-            <div class="col s3">
-                <?= rateCounterWidget::widget([
-                                                  'rate' => $model->rate,
-                                                  'action_vote' => [
-                                                      'vote-event',
-                                                      'model_id' => $model->id
-                                                  ],
-                                              ]) ?>
+        <div class="row no-margin-bot">
+            <div class="col s12 m6">
+                <a href="<?= Url::to(['event/view', 'id' => $model->id]) ?>" class="full-width btn teal darken-2 waves-effect waves-light more-but">Подробнее</a>
             </div>
-            <div class="col s4 push-s5">
-                <?php
-                    $event_type = $model->eventType->name;
-                    /** @var \app\models\ParticEvent $particip если существует возвращает связку пользователь-событие */
-                    $particip = $model->isRegistred(); ?>
-                <?php switch($event_type):
-                    case 'free': ?>
-                        <?php if($particip): ?>
-                            <?= Html::a('Отменить', [
-                                '/event/remove-particip',
-                                'event_id' => $model->id
-                            ], [
-                                            'class' => 'btn amber waves-effect waves-light fullWidth',
-                                            'data-pjax' => 0
-                                        ]) ?>
-                        <?php else: ?>
-                            <?= Html::a('Участвовать', [
-                                '/event/add-particip',
-                                'event_id' => $model->id
-                            ], [
-                                            'class' => 'btn light-blue waves-effect waves-light fullWidth',
-                                            'data-pjax' => 0
-                                        ]) ?>
-                            <?php
-                        endif;
-                        break; ?>
-
-                    <?php case 'cash': ?>
-                        <?= 'заплатить' ?>
-                        <?php break; ?>
-                    <?php case 'registred': ?>
-                        <?php if($particip): ?>
-                            <?php if(!$particip->confirmed): ?>
-                                <?= 'подтверждается ' ?>
-                            <?php endif; ?>
-                            <?= Html::a('Отменить', [
-                                '/event/remove-particip',
-                                'id' => $model->id
-                            ], ['data-pjax' => 0]) ?>
-                        <?php else: ?>
-                            <?php Modal::begin([
-                                                   'modalType' => Modal::TYPE_LEAN,
-                                                   'toggleButton' => [
-                                                       'label' => 'Подать заявку!',
-                                                   ],
-                                                   'closeButton' => [
-                                                       'label' => 'Закрыть',
-                                                       'tag' => 'span'
-                                                   ],
-                                               ]) ?>
-                            <?php $form = ActiveForm::begin(['action' => ['event/send-confirm']]) ?>
-                            <?= Html::hiddenInput('Mail[event_id]', $model->id) ?>
-                            <?= Html::textarea('Mail[body]', null, ['class' => 'col-lg-12']) ?>
-                            <?= Html::submitButton('Отправить') ?>
-                            <?php ActiveForm::end();
-                            Modal::end(); ?>
-                        <?php endif; ?>
-                        <?php break; ?>
-
-                    <?php default: ?>
-                    <?php endswitch; ?>
+            <div class="col s12 m6">
+                <button class="btn full-width modal-trigger orange waves-effect waves-light" data-target="participateModal">Участвовать</button>
             </div>
         </div>
     </div>
 </div>
+

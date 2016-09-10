@@ -22,7 +22,7 @@
                 </div>
                 <div class="row">
                     <div class="col s10 offset-s1 m4 offset-m2 l3 offset-l3">
-                        <a href="<?= Url::to(['event/calendar']) ?>" class="full-width btn btn-large red waves-effect waves-light">Календарь
+                        <a href="<?= Url::to(['event/event-calendar']) ?>" class="full-width btn btn-large red waves-effect waves-light">Календарь
                             событий</a>
                     </div>
                     <div class="col s10 offset-s1 m4 l3">
