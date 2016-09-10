@@ -1,24 +1,24 @@
 <?php
 
-    use app\widgets\rateCounter\rateCounterWidget;
+use app\widgets\rateCounter\rateCounterWidget;
 
-    /** @var \app\models\Comments $model */
+/** @var \app\models\Comments $model */
 ?>
 
-<div class="panel-info">
-    <div class="panel-heading">
+<div class="card">
+    <div class="card-title">
         <?= $model->user->username ?>
     </div>
-    <div class="panel-body">
+    <div class="card-content">
         <?= $model->text ?>
     </div>
-    <div class="panel-footer">
+    <div class="card-action">
         <?= rateCounterWidget::widget([
-                                          'rate' => $model->rate,
-                                          'action_vote' => [
-                                              '/event/vote-comment',
-                                              'model_id' => $model->id
-                                          ]
-                                      ]) ?>
+            'rate' => $model->rate,
+            'action_vote' => [
+                '/event/vote-comment',
+                'model_id' => $model->id
+            ]
+        ]) ?>
     </div>
 </div>
