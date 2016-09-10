@@ -27,10 +27,10 @@
          */
         public function behaviors(){
             return [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
+                'verbs'  => [
+                    'class'   => VerbFilter::className(),
                     'actions' => [
-                        'delete' => ['POST'],
+                        'delete'       => ['POST'],
                         'upvote-event' => ['POST'],
                     ],
                 ],
@@ -38,13 +38,13 @@
                     'class' => AccessControl::className(),
                     'rules' => [
                         [
-                            'allow' => true,
+                            'allow'   => true,
                             'actions' => [
                                 'event-list',
                                 'event-calendar',
                                 'view'
                             ],
-                            'roles' => ['?'],
+                            'roles'   => ['?'],
                         ],
                         [
                             'allow' => true,
@@ -61,24 +61,24 @@
 
         public function actions(){
             return [
-                'vote-event' => [
+                'vote-event'         => [
                     'class' => VoteAction::className(),
-                    'type' => 'event'
+                    'type'  => 'event'
                 ],
-                'vote-comment' => [
+                'vote-comment'       => [
                     'class' => VoteAction::className(),
-                    'type' => 'comments'
+                    'type'  => 'comments'
                 ],
                 'event-upload-photo' => [
-                    'class' => UploadAction::className(),
-                    'uploadPath' => 'event',
+                    'class'         => UploadAction::className(),
+                    'uploadPath'    => 'event',
                     'sessionEnable' => true,
-                    'uploadModel' => new UploadPictureModel([
-                                                                'validationRules' => [
-                                                                    'extensions' => 'jpg, png',
-                                                                    'maxSize' => 1024 * 1024
-                                                                ]
-                                                            ])
+                    'uploadModel'   => new UploadPictureModel([
+                                                                  'validationRules' => [
+                                                                      'extensions' => 'jpg, png',
+                                                                      'maxSize'    => 1024 * 1024
+                                                                  ]
+                                                              ])
                 ],
                 'event-remove-photo' => [
                     'class' => '\yii\sergsova\fileManager\actions\RemoveAction',
@@ -96,7 +96,7 @@
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('event-list', [
-                'searchModel' => $searchModel,
+                'searchModel'  => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
         }
@@ -113,7 +113,7 @@
         }
 
         //region Particip
-        public function actionConfirmParticip($id, $confirm = true){
+        public function actionConfirmParticip($id, $confirm = true, $returnUrl = 'event-list'){
             $model = ParticEvent::findOne($id);
             $auth = Yii::$app->authManager;
             $authorRole = $auth->getRole('participant');
@@ -126,10 +126,12 @@
                 $model->delete();
             }
 
-            return $this->redirect(Yii::$app->request->referrer);
+            return $this->redirect($returnUrl);
+
+            //return $this->redirect(Yii::$app->request->referrer);
         }
 
-        public function actionAddParticip($event_id){
+        public function actionAddParticip($event_id, $returnUrl = 'event-list'){
             $model = new ParticEvent();
             $model->user_id = Yii::$app->user->id;
             if(Event::findOne($event_id)->eventType->name == 'free'){
@@ -147,13 +149,13 @@
                 Yii::$app->session->setFlash('error', 'Событие не доступно для регистрации');
             }
 
-            return $this->redirect('event-list');
+            return $this->redirect($returnUrl);
         }
 
-        public function actionRemoveParticip($event_id){
+        public function actionRemoveParticip($event_id, $returnUrl = 'event-list'){
             $partEvent = ParticEvent::findOne([
                                                   'event_id' => $event_id,
-                                                  'user_id' => Yii::$app->user->id
+                                                  'user_id'  => Yii::$app->user->id
                                               ]);
             $auth = Yii::$app->authManager;
             $authorRole = $auth->getRole('participant');
@@ -161,10 +163,10 @@
 
             $partEvent->delete();
 
-            return $this->goBack();
+            return $this->redirect($returnUrl);
         }
 
-        public function actionSendConfirm(){
+        public function actionSendConfirm($returnUrl = 'event-list'){
             $user = Yii::$app->user->identity;
             $request = Yii::$app->request->post('Mail');
             $event = Event::findOne($request['event_id']);
@@ -178,16 +180,16 @@
                                 ->send()
             ){
                 $particEvent = new ParticEvent([
-                                                   'user_id' => $user->id,
-                                                   'event_id' => $event->id,
-                                                   'confirmed' => false,
+                                                   'user_id'       => $user->id,
+                                                   'event_id'      => $event->id,
+                                                   'confirmed'     => false,
                                                    'confirmedtext' => $request['body']
                                                ]);
                 if($particEvent->save()){
                     Yii::$app->session->setFlash('success', 'Запрос отправлен');
                 }
             }
-            $this->redirect('event-list');
+            $this->redirect($returnUrl);
         }
         //endregion
 
@@ -201,7 +203,7 @@
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [
-                'searchModel' => $searchModel,
+                'searchModel'  => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
         }
@@ -227,10 +229,10 @@
                                                                ]);
 
             return $this->render('view', [
-                'model' => $this->findModel($id),
-                'pendingDataProvider' => $pendingDataProvider,
+                'model'                    => $this->findModel($id),
+                'pendingDataProvider'      => $pendingDataProvider,
                 'participantsDataProvider' => $participantsDataProvider,
-                'commentModel' => $commentModel
+                'commentModel'             => $commentModel
             ]);
         }
 

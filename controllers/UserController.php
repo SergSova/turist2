@@ -11,8 +11,10 @@
     use Yii;
     use app\models\User;
     use yii\filters\AccessControl;
+    use yii\helpers\ArrayHelper;
     use yii\sergsova\fileManager\actions\RemoveAction;
     use yii\sergsova\fileManager\actions\UploadAction;
+    use yii\sergsova\fileManager\FileManager;
     use yii\sergsova\fileManager\models\UploadPictureModel;
     use yii\web\Controller;
     use yii\web\NotFoundHttpException;
@@ -49,6 +51,7 @@
                     'actions' => [
                         'delete' => ['POST'],
                         'logout' => ['post'],
+                        'get-users' => ['post']
                     ],
                 ],
             ];
@@ -197,5 +200,20 @@
             }
 
             return false;
+        }
+
+        public function actionGetUsers(){
+            $users = User::find()->select(['id', 'username', 'photo'])->where(['like', 'username', Yii::$app->request->post('search')])->asArray()->all();
+            if(!empty($users)){
+                foreach($users as $k=>$v){
+                    $photo = json_decode($v['photo'])[0];
+                    if(strpos('http', $photo) != -1){
+                        $photo = FileManager::getInstance()->getStorageUrl().$photo;
+                    }
+                    $users[$k]['photo'] = $photo;
+                }
+                $users = $users;
+            }
+            return json_encode($users);
         }
     }

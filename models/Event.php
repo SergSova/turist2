@@ -2,39 +2,42 @@
 
     namespace app\models;
 
+    use macgyer\yii2materializecss\lib\Html;
     use Yii;
     use yii\db\ActiveRecord;
     use yii\helpers\ArrayHelper;
     use yii\helpers\Json;
+    use yii\helpers\Url;
     use yii\sergsova\fileManager\FileManager;
     use yii\web\UploadedFile;
 
     /**
      * This is the model class for table "tur_event".
      *
-     * @property integer       $id
-     * @property integer       $event_type_id
-     * @property integer       $creator_id
-     * @property string        $title
-     * @property string        $photo
-     * @property string        $desc
-     * @property string        $organizators
-     * @property string        $particip
-     * @property string        $condition
-     * @property string        $date_start
-     * @property string        $date_end
-     * @property string        $date_creation
-     * @property string        $status
-     * @property integer       $rate
-     * @property string        $track_path
-     * @property integer       $people_count
-     * @property integer       $difficult
+     * @property integer         $id
+     * @property integer         $event_type_id
+     * @property integer         $creator_id
+     * @property string          $title
+     * @property string          $photo
+     * @property string          $desc
+     * @property string          $organizators
+     * @property string          $particip
+     * @property string          $condition
+     * @property string          $date_start
+     * @property string          $date_end
+     * @property string          $date_creation
+     * @property string          $status
+     * @property integer         $rate
+     * @property string          $track_path
+     * @property integer         $people_count
+     * @property integer         $difficult
      *
      *
-     * @property Comments[]    $comments
-     * @property User          $creator
-     * @property EventType     $eventType
-     * @property ParticEvent[] $particEvents
+     * @property Comments[]      $comments
+     * @property User            $creator
+     * @property EventType       $eventType
+     * @property ParticEvent[]   $particEvents
+     * @property EventUserRule[] $eventUserRules
      */
     class Event extends ActiveRecord{
         const STATUS_ACTIVE   = 'ACTIVE';
@@ -107,15 +110,15 @@
                 [
                     ['event_type_id'],
                     'exist',
-                    'skipOnError' => true,
-                    'targetClass' => EventType::className(),
+                    'skipOnError'     => true,
+                    'targetClass'     => EventType::className(),
                     'targetAttribute' => ['event_type_id' => 'id']
                 ],
                 [
                     ['creator_id'],
                     'exist',
-                    'skipOnError' => true,
-                    'targetClass' => User::className(),
+                    'skipOnError'     => true,
+                    'targetClass'     => User::className(),
                     'targetAttribute' => ['creator_id' => 'id']
                 ],
                 [
@@ -152,22 +155,22 @@
          */
         public function attributeLabels(){
             return [
-                'id' => 'ID',
+                'id'            => 'ID',
                 'event_type_id' => 'Тип события',
-                'creator_id' => 'Автор',
-                'title' => 'Название',
-                'photo' => 'Фотографии',
-                'desc' => 'Описание',
-                'organizators' => 'Организаторы',
-                'particip' => 'Должности помошников',
-                'condition' => 'Условия',
-                'date_start' => 'Дата начала',
-                'date_end' => 'Дата оклнчания',
+                'creator_id'    => 'Автор',
+                'title'         => 'Название',
+                'photo'         => 'Фотографии',
+                'desc'          => 'Описание',
+                'organizators'  => 'Организаторы',
+                'particip'      => 'Должности помошников',
+                'condition'     => 'Условия',
+                'date_start'    => 'Дата начала',
+                'date_end'      => 'Дата оклнчания',
                 'date_creation' => 'Дата создания',
-                'status' => 'Статус',
-                'rate' => 'Регйтинг',
-                'people_count' => 'Максимальное количество участников',
-                'difficult' => 'Сложность'
+                'status'        => 'Статус',
+                'rate'          => 'Регйтинг',
+                'people_count'  => 'Максимальное количество участников',
+                'difficult'     => 'Сложность'
             ];
         }
 
@@ -206,12 +209,29 @@
         }
 
         public function afterSave($insert, $changedAttributes){
+
             if($insert){
                 $participant = new ParticEvent();
                 $participant->user_id = Yii::$app->user->id;
                 $participant->event_id = $this->id;
                 $participant->confirmed = true;
                 $participant->insert();
+                $m = new EventUserRule();
+                $m->eventId = $this->id;
+                $m->userId = Yii::$app->user->getId();;
+                $m->ruleId = EventRule::ALL;
+                $m->save();
+            }else{
+                if($this->organizators){
+                    $orgs = json_decode($this->organizators);
+                    foreach($orgs as $org){
+                        $m = new EventUserRule();
+                        $m->eventId = $this->id;
+                        $m->userId = $org['id'];
+                        $m->ruleId = EventRule::ALL;
+                        $m->save();
+                    }
+                }
             }
 
             parent::afterSave($insert, $changedAttributes);
@@ -236,6 +256,13 @@
          */
         public function getEventType(){
             return $this->hasOne(EventType::className(), ['id' => 'event_type_id']);
+        }
+
+        /**
+         * @return \yii\db\ActiveQuery
+         */
+        public function getEventUserRule(){
+            return $this->hasOne(EventUserRule::className(), ['eventId' => 'id']);
         }
 
         /**
@@ -272,7 +299,7 @@
             return $this->getParticEvents()
                         ->where([
                                     'event_id' => $this->id,
-                                    'user_id' => Yii::$app->user->id
+                                    'user_id'  => Yii::$app->user->id
                                 ])
                         ->one();
         }
@@ -283,11 +310,74 @@
             $user = $this->getParticEvents()
                          ->joinWith('user')
                          ->sum('rate');
-            $this->rate = $comment + $user;
+            $this->rate += $comment + $user;
         }
 
         public static function getMaxRate(){
-            return self::find()->max('rate');
+            return self::find()
+                       ->max('rate');
         }
 
+
+        public function canChangePhoto(){
+            return $this->getEventUserRule()
+                        ->where(['userId' => Yii::$app->user->getId()])
+                        ->andWhere(['ruleId' => EventRule::PHOTO])
+                        ->exists();
+        }
+
+        public function canParticipiat(){
+            return $this->getEventUserRule()
+                        ->where(['userId' => Yii::$app->user->getId()])
+                        ->andWhere(['ruleId' => EventRule::PARTICIPIANT])
+                        ->exists();
+        }
+
+        public function canAllChange(){
+            return $this->getEventUserRule()
+                        ->where(['userId' => Yii::$app->user->getId()])
+                        ->andWhere(['ruleId' => EventRule::ALL])
+                        ->all();
+        }
+
+        public function getButton(){
+            /** @var \app\models\ParticEvent $particip если существует возвращает связку пользователь-событие */
+            $particip = $this->isRegistred();
+            switch($this->eventType->name){
+                case 'free':
+                    if($particip){
+                        return Html::a('Отменить', [
+                            'remove-particip',
+                            'event_id'  => $this->id,
+                            'returnUrl' => Url::to('')
+                        ], ['class' => 'btn amber full-width waves-effect waves-light', 'data-pjax' => 0]);
+                    }else{
+                        return Html::a('Участвовать', [
+                            'add-particip',
+                            'event_id'  => $this->id,
+                            'returnUrl' => Url::to('')
+                        ], ['class' => 'btn blue full-width waves-effect waves-light', 'data-pjax' => 0]);
+                    }
+                    break;
+                case 'cash':
+                    return Html::tag('z', 'Заплатить', ['class' => 'btn red lighten-2 full-width waves-effect waves-light']);
+                    break;
+                case 'registred':
+                    if($particip){
+                        if(!$particip->confirmed){
+                            return Html::tag('z', 'подтверждается', ['class' => 'btn tilt lighten-2 full-width waves-effect waves-light']);
+                        }
+
+                        return Html::a('Отменить', [
+                            'remove-particip',
+                            'event_id'  => $this->id,
+                            'returnUrl' => Url::to('')
+                        ], ['class' => 'btn amber full-width waves-effect waves-light', 'data-pjax' => 0]);
+                    }else{
+                        echo Yii::$app->getView()->render('_confirmForm', ['model' => $this]);
+                        return Html::a('Подать заявку!', '#confirmModal-'.$this->id, ['class' => "btn amber full-width waves-effect waves-light modal-trigger"]);
+                    }
+                    break;
+            }
+        }
     }

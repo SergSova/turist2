@@ -7,26 +7,25 @@
 ?>
 
 <?php Pjax::begin(['enablePushState' => false]); ?>
-<div class="row no-marg-bot">
-    <div class="col s4 right-align">
-        <?php $form = ActiveForm::begin(['action' => Url::to($params['action_vote'])]) ?>
-        <?= Html::hiddenInput('rate_type', 'up') ?>
-        <?= Html::hiddenInput('rate', $params['rate']) ?>
-        <?= Html::hiddenInput('goBack', Url::to('')) ?>
-        <?= Html::submitButton('<i class="material-icons">add</i>', ['class' => 'btn-floating waves-effect waves-light teal']) ?>
-        <?php ActiveForm::end() ?>
-    </div>
-    <div class="col s4 rate-count"><strong><?= $params['rate'] ? $params['rate'] : 0 ?></strong></div>
-    <div class="col s4">
-        <?php $form = ActiveForm::begin(['action' => Url::to($params['action_vote'])]) ?>
-        <?= Html::hiddenInput('rate_type', 'down') ?>
-        <?= Html::hiddenInput('rate', $params['rate']) ?>
-        <?= Html::hiddenInput('goBack', Url::to('')) ?>
-        <?= Html::submitButton('<i class="material-icons">remove</i>', ['class' => 'btn-floating waves-effect waves-light materialize-red']) ?>
-        <?php ActiveForm::end() ?>
-    </div>
-</div>
-<?php Pjax::end()?>
+<?php $form = ActiveForm::begin(['action' => Url::to($params['action_vote']), 'id' => 'rate_up']) ?>
+<?= Html::hiddenInput('rate_type', 'up') ?>
+<?= Html::hiddenInput('rate', $params['rate']) ?>
+<?= Html::hiddenInput('goBack', Url::to('')) ?>
+<?= Html::submitButton('<i class="materialize-icons"><i class="material-icons">thumb_up</i></i>', ['form'  => 'rate_up',
+                                                                                             'class' => 'btn-floating btn-small waves-effect waves-light green'
+]) ?>
+<?php ActiveForm::end() ?>
+<span><?= $params['rate'] ? $params['rate'] : 0 ?></span>
+<?php $form = ActiveForm::begin(['action' => Url::to($params['action_vote']), 'id' => 'rate_down']) ?>
+<?= Html::hiddenInput('rate_type', 'down') ?>
+<?= Html::hiddenInput('rate', $params['rate']) ?>
+<?= Html::hiddenInput('goBack', Url::to('')) ?>
+<?= Html::submitButton('<i class="materialize-icons"><i class="material-icons">thumb_down</i></i>', ['form'  => 'rate_down',
+                                                                                               'class' => 'btn-floating btn-small waves-effect waves-light red'
+]) ?>
+<?php ActiveForm::end() ?>
+
+<?php Pjax::end() ?>
 
 
 

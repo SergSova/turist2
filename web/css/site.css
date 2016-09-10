@@ -351,3 +351,18 @@ nav.transparent {
     opacity: 1;
     font-size: 0.8rem;
 }
+.input-field-ladel{
+    padding: 0 !important;
+    font-weight: 500;
+ }
+.autocomplete-content {
+    margin-top: -130px;
+    display: block;
+    opacity: 1;
+    position: static;
+}
+.autocomplete-content li img {
+    height: 40px;
+    width: 40px;
+    margin: 5px 15px;
+}

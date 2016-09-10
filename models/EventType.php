@@ -9,10 +9,12 @@
      *
      * @property integer $id
      * @property string  $name
+     * @property string  $icon
      *
      * @property Event[] $events
      */
     class EventType extends \yii\db\ActiveRecord{
+
         /**
          * @inheritdoc
          */
@@ -38,7 +40,7 @@
          */
         public function attributeLabels(){
             return [
-                'id' => 'ID',
+                'id'   => 'ID',
                 'name' => 'Name',
             ];
         }

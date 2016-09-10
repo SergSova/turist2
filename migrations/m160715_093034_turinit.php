@@ -70,13 +70,15 @@
                 'id'   => $this->primaryKey(10),
                 'name' => $this->string(50)
                                ->notNull()
-                               ->comment('Тип события')
+                               ->comment('Тип события'),
+                'icon' => $this->string(25)
+                               ->notNull()
             ]);
 
-            $this->insert('{{%event_type}}', ['name' => 'free']);
-            $this->insert('{{%event_type}}', ['name' => 'cash']);
-            $this->insert('{{%event_type}}', ['name' => 'closed']);
-            $this->insert('{{%event_type}}', ['name' => 'registred']);
+            $this->insert('{{%event_type}}', ['name' => 'free', 'icon' => 'accessibility']);
+            $this->insert('{{%event_type}}', ['name' => 'cash', 'icon' => 'monetization_on']);
+            $this->insert('{{%event_type}}', ['name' => 'closed', 'icon' => 'lock']);
+            $this->insert('{{%event_type}}', ['name' => 'registred', 'icon' => 'record_voice_over']);
 
             $this->createTable('{{%comments}}', [
                 'id'       => $this->primaryKey(10),

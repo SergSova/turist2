@@ -4,6 +4,9 @@
      * @var \app\models\search\EventSearch $searchModel
      */
 
+    use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
+    use yii\helpers\Url;
     use yii\widgets\ListView;
     use yii\widgets\Pjax;
 

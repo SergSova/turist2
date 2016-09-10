@@ -6,7 +6,10 @@
      * @var \app\models\Event            $model
      * @var \app\models\User             $user
      **/
+    use app\models\EventType;
+    use app\widgets\rateCounter\rateCounterWidget;
     use macgyer\yii2materializecss\lib\Html;
+    use macgyer\yii2materializecss\widgets\form\ActiveForm;
     use yii\helpers\ArrayHelper;
     use yii\helpers\Json;
     use yii\helpers\Url;
@@ -27,29 +30,29 @@
         }
     }
 ?>
-
+<?php if($model->eventType->name == 'registred'){
+    $this->render('_confirmForm', ['model' => $model->id]);
+} ?>
 <div class="section event">
     <div class="row">
         <div class="col s12 m9">
             <div class="right actions-box">
                 <div class="rating-box right-align">
-                    <button class="sBtn btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">share</i></button>
-                    <button class="btn-floating btn-small waves-effect waves-light green">
-                        <i class="materialize-icons"><i class="material-icons">thumb_up</i></i>
-                    </button>
-                    <span>5</span>
-                    <button class="btn-floating btn-small waves-effect waves-light red">
-                        <i class="materialize-icons"><i class="material-icons">thumb_down</i></i>
-                    </button>
+                    <!--                    <button class="sBtn btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">share</i></button>-->
+                    <?= rateCounterWidget::widget([
+                                                      'rate'        => $model->rate,
+                                                      'action_vote' => [
+                                                          'vote-event',
+                                                          'model_id' => $model->id
+                                                      ],
+                                                  ]) ?>
+
                 </div>
                 <div class="button-box">
-                    <?= Html::a('Принять участие', [
-                        'add-particip',
-                        'event_id' => $model->id
-                    ], ['class' => 'btn blue full-width waves-effect waves-light']) ?>
+                    <?= $model->getButton() ?>
                 </div>
             </div>
-            <h1><i class="material-icons">monetization_on</i><?= $model->title ?></h1>
+            <h1><i class="material-icons"><?= $model->eventType->icon ?></i><?= $model->title ?></h1>
             <div class="row card-panel">
                 <div class="col s3">
                     <div class="conditions">
@@ -64,22 +67,22 @@
                         </tr>
                         <tr>
                             <td><i class="material-icons">event</i></td>
-                            <td><?= $model->date_start ?></td>
+                            <td><?= date('Y-m-d', strtotime($model->date_start)) ?></td>
                         </tr>
                         <tr>
                             <td><i class="material-icons">access_time</i></td>
-                            <td><?php // $model->time_start ?></td>
+                            <td><?= $model->time_start ?></td>
                         </tr>
                         <tr>
                             <td class="grey" colspan="2">Финиш</td>
                         </tr>
                         <tr>
                             <td><i class="material-icons">event</i></td>
-                            <td><?= $model->date_end ?></td>
+                            <td><?= date('Y-m-d', strtotime($model->date_end)) ?></td>
                         </tr>
                         <tr>
                             <td><i class="material-icons">access_time</i></td>
-                            <td><?php // $model->time_end ?></td>
+                            <td><?= $model->time_end ?></td>
                         </tr>
                         <tr>
                             <td class="grey" colspan="2">Сложность</td>
@@ -156,7 +159,7 @@
                                 endif; ?>
                                 <i
                                     class="material-icons tooltipped orange-text" data-position="top"
-                                    data-tooltip="должность"
+                                    data-tooltip="Должность"
                                 >assignment_ind</i>
                             <?php endif; ?>
                     </div>

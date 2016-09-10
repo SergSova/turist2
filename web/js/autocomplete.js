@@ -1,80 +1,40 @@
-(function ($) {
-    $.fn.autocomplete = function (options) {
-        // Defaults
-        var defaults = {
-            data: {}
-        };
-
-        options = $.extend(defaults, options);
-
-        return this.each(function () {
-            var $input = $(this);
-            var data = options.data,
-                $inputDiv = $input.closest('.input-field'); // Div to append on
-
-            // Check if data isn't empty
-            if (!$.isEmptyObject(data)) {
-                // Create autocomplete element
-                var $autocomplete = $('<ul class="autocomplete-content dropdown-content"></ul>');
-
-                // Append autocomplete element
-                if ($inputDiv.length) {
-                    $inputDiv.append($autocomplete); // Set ul in body
-                } else {
-                    $input.after($autocomplete);
-                }
-
-                var highlight = function (string, $el) {
-                    var img = $el.find('img');
-                    var matchStart = $el.text().toLowerCase().indexOf("" + string.toLowerCase() + ""),
-                        matchEnd = matchStart + string.length - 1,
-                        beforeMatch = $el.text().slice(0, matchStart),
-                        matchText = $el.text().slice(matchStart, matchEnd + 1),
-                        afterMatch = $el.text().slice(matchEnd + 1);
-                    $el.html("<span>" + beforeMatch + "<span class='highlight'>" + matchText + "</span>" + afterMatch + "</span>");
-                    if (img.length) {
-                        $el.prepend(img);
-                    }
-                };
-
-                // Perform search
-                $input.on('keyup', function (e) {
-                    // Capture Enter
-                    if (e.which === 13) {
-                        $autocomplete.find('li').first().click();
-                        return;
-                    }
-
-                    var val = $input.val().toLowerCase();
-                    $autocomplete.empty();
-
-                    // Check if the input isn't empty
-                    if (val !== '') {
-                        for (var key in data) {
-                            if (data.hasOwnProperty(key) &&
-                                key.toLowerCase().indexOf(val) !== -1 &&
-                                key.toLowerCase() !== val) {
-                                var autocompleteOption = $('<li></li>');
-                                if (!!data[key]) {
-                                    autocompleteOption.append('<img src="' + data[key] + '" class="right circle"><span>' + key + '</span>');
-                                } else {
-                                    autocompleteOption.append('<span>' + key + '</span>');
-                                }
-                                $autocomplete.append(autocompleteOption);
-
-                                highlight(val, autocompleteOption);
-                            }
-                        }
-                    }
-                });
-
-                // Set input value
-                $autocomplete.on('click', 'li', function () {
-                    $input.val($(this).text().trim());
-                    $autocomplete.empty();
-                });
+function autocomplete(){
+    $.post(requestUsersUrl, 'search='+$('input.autocomplete').val(), function(responce){
+        try{
+            responce = JSON.parse(responce);
+        }catch(e){
+            responce = [];
+        }
+        var result = '';
+        if(responce.length > 0){
+            for(var i = 0; i < responce.length; i++){
+                result += '<li id="user-'+responce[i].id+'"><img src="'+responce[i].photo+'" class="right circle"><span>'+responce[i].username+'</span></li>'
             }
-        });
-    };
+        }else{
+            result = '<li><span>Ничего не найдено</span></li>'
+        }
 
-})(jQuery);
+        var list = '<ul class="autocomplete-content dropdown-content">'+result+'</ul>';
+        $(list).appendTo($('#autocomplete-input').parent());
+
+        $('.autocomplete-content li').on('click', function(){
+            if($(this).get(0).hasAttribute('id')) {
+                $('#autocomplete-input').val($(this).find('span').text());
+                $('#add-org').removeClass('disabled').removeAttr('disabled').attr('data-userId', $(this).attr('id').substr($(this).attr('id').lastIndexOf('-') + 1));
+                autocompleteDestroy();
+            }
+        })
+
+    })
+}
+function autocompleteDestroy(){
+    $('.autocomplete-content').remove();
+}
+
+$('#autocomplete-input').on('keyup', function(){
+    autocompleteDestroy();
+    $('#add-org').addClass('disabled').removeAttr('data-userId').attr('disabled', 'disabled');
+    if($(this).val().length > 3){
+        autocomplete();
+    }
+});

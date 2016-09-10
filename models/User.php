@@ -33,6 +33,7 @@
      * @property ParticEvent[] $particEvents
      * @property SocialAcc[]   $socialAccs
      * @property Vote[]        $votes
+     * @property EventUserRule[] $eventUserRules
      */
     class User extends \yii\db\ActiveRecord implements IdentityInterface{
         const STATUS_INACTIVE = 'INACTIVE';
@@ -167,6 +168,13 @@
             return $this->hasMany(Friends::className(), ['friend_id' => 'id']);
         }
 
+        /**
+         * @return \yii\db\ActiveQuery
+         */
+        public function getEventUserRule(){
+            return $this->hasOne(EventUserRule::className(), ['eventId' => 'id']);
+        }
+        
         /**
          * @return \yii\db\ActiveQuery
          */
