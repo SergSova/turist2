@@ -7,7 +7,7 @@
      */
     use macgyer\yii2materializecss\lib\Html;
     use macgyer\yii2materializecss\widgets\form\ActiveForm;
-    use yii\widgets\ListView;
+use yii\widgets\ListView;
 
 ?>
 
