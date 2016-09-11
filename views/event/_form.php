@@ -96,7 +96,8 @@ JS;
     <?php $form = ActiveForm::begin([
                                         'fieldConfig' => [
                                             'template' => "{input}\n{label}\n{error}"
-                                        ]
+                                        ],
+                                        'options' => ['enctype' => 'multipart/form-data']
                                     ]) ?>
     <div class="row">
         <div class="col s12 m9">
@@ -188,7 +189,6 @@ JS;
                                             <div class="file-field input-field">
                                                 <div class="btn">
                                                     <span>Загрузить трек</span>
-                                                    <!--                                                <input type="file" name="Event['track']">-->
                                                     <?= Html::activeFileInput($model, 'track') ?>
                                                 </div>
                                                 <div class="file-path-wrapper">

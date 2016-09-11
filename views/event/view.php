@@ -97,14 +97,14 @@
                         <div class="col s12">
                             <ul class="tabs">
                                 <li class="tab col s3"><a class="active" href="#description">Описание</a></li>
-                                <li class="tab col s3"><a href="#map">Трек</a></li>
+                                <li class="tab col s3"><a href="#track">Трек</a></li>
                                 <li class="tab col s3"><a href="#gallery">Галерея</a></li>
                             </ul>
                         </div>
                         <div id="description" class="col s12">
                             <p><?= $model->desc ?></p>
                         </div>
-                        <div id="map" class="col s12">
+                        <div id="track" class="col s12">
                             <?php if($model->track_path && file_exists(FileManager::getInstance()
                                                                                   ->getStoragePath().Json::decode($model->track_path)[0])
                             ): ?>
@@ -112,7 +112,7 @@
                                     'download-track',
                                     'path' => Json::decode($model->track_path)[0]
                                 ], ['class' => 'btn teal waves-effect waves-light']) ?>
-                                <div class="card-panel">
+                                <div class="map">
                                     <?= $this->render('//site/map', [
                                         'path' => FileManager::getInstance()
                                                              ->getStoragePath().Json::decode($model->track_path)[0]
@@ -121,7 +121,14 @@
                             <?php endif; ?>
                         </div>
                         <div id="gallery" class="col s12">
-                            <button class="btn teal waves-effect waves-light">Добавить фото</button>
+                            <?php
+                                if($model->photo):
+                                    foreach(json_decode($model->photo) as $itemphoto):?>
+                                        <img src="<?= FileManager::getInstance()
+                                                                 ->getStorageUrl().$itemphoto ?>" class="materialboxed" width="350">
+                                        <?php
+                                    endforeach;
+                                endif; ?>
                         </div>
                     </div>
                 </div>
